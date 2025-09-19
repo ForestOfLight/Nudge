@@ -1,0 +1,15 @@
+{
+    "version": "0.3.0",
+    "configurations": [
+        {
+            "type": "minecraft-js",
+            "request": "attach",
+            "name": "Debug with Minecraft",
+            "mode": "listen",
+            "targetModuleUuid": "30091237-3eaf-4e72-983c-405b1ed84704",
+            "localRoot": "${workspaceFolder}/packs/BP/scripts",
+            "port": 19144,
+            "preLaunchTask": "regolith: watch"
+        }
+    ]
+}

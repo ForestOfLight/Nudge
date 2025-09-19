@@ -1,0 +1,8 @@
+{
+  "resource_pack_name": "SimpleAxiom Resource Pack",
+  "texture_data": {
+    "simpleaxiom:selector": {
+      "textures": "textures/items/selector"
+    }
+  }
+}
