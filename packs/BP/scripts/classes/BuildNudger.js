@@ -9,7 +9,8 @@ export class BuildNudger {
     constructor(player, selection) {
         this.player = player;
         this.selection = selection;
-        this.selection.startNudge();
+        this.playerMovement = new PlayerMovement(this.player);
+        this.selection.startNudge(this.playerMovement);
         this.#runner = system.runInterval(this.onNudgeTick.bind(this));
     }
 
@@ -19,12 +20,11 @@ export class BuildNudger {
     }
 
     onNudgeTick() {
-        const playerMovement = new PlayerMovement(this.player);
-        const { minOffset, maxOffset } = this.getOffset(playerMovement);
+        const { minOffset, maxOffset } = this.getOffset();
         this.selection.nudgeOffset(minOffset, maxOffset);
     }
 
-    getOffset(playerMovement) {
+    getOffset() {
         throw new Error('getNewBounds() must be implemented.');
     }
 }

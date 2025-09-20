@@ -1,9 +1,8 @@
 import { Vector } from "../../lib/Vector";
-import { MovingCuboidRenderer } from "./MovingCuboidRenderer";
+import { NudgingCuboidRenderer } from "./NudgingCuboidRenderer";
 import { StaticCuboidRenderer } from "./StaticCuboidRenderer";
 
 export class SelectionRenderer {
-    dimension;
     min;
     max;
     drawFrequencyTicks = 5;
@@ -11,41 +10,38 @@ export class SelectionRenderer {
     staticRenderer;
     movingRenderer;
 
-    constructor(dimension, min, max) {
-        this.dimension = dimension;
+    constructor(min, max) {
         this.min = min;
-        this.max = max.add(new Vector(1, 1, 1));
-        this.staticRenderer = new StaticCuboidRenderer(this.dimension, this.min, this.max, { red: 1, green: 1, blue: 1 });
+        this.max = max;
+        this.staticRenderer = new StaticCuboidRenderer(this.min, this.max, { red: 1, green: 1, blue: 1 });
     }
 
     startDraw() {
-        this.staticRenderer.startDraw();
+        this.staticRenderer.drawCuboid();
     }
 
     stopDraw() {
-        this.staticRenderer.stopDraw();
-        this.movingRenderer?.stopDraw();
+        this.staticRenderer.destroy();
+        this.movingRenderer?.destroy();
     }
 
-    setOutlineLocation(dimension, min, max) {
-        this.dimension = dimension;
+    setOutlineLocation(min, max) {
         this.min = min;
-        this.max = max.add(new Vector(1, 1, 1));
-        this.staticRenderer.setVertices(this.dimension, this.min, this.max);
+        this.max = max;
+        this.staticRenderer.setLocation(this.min, this.max);
     }
 
-    enableMovementMode() {
-        this.movingRenderer = new MovingCuboidRenderer(this.dimension, this.min, this.max, this.staticRenderer);
-        this.movingRenderer.startDraw();
+    enableMovementMode(playerMovement) {
         this.staticRenderer.setColor({ red: 0.5, green: 0.5, blue: 0.5 });
+        this.movingRenderer = new NudgingCuboidRenderer(this.min, this.max, playerMovement);
     }
 
     disableMovementMode() {
-        this.movingRenderer.stopDraw();
+        this.movingRenderer.destroy();
         this.staticRenderer.setColor({ red: 1, green: 1, blue: 1 });
     }
     
     setMovementLocation(minOffset, maxOffset) {
-        this.movingRenderer.setVertices(this.dimension, minOffset.floor(), maxOffset.floor().add(new Vector(1, 1, 1)));
+        this.movingRenderer.setLocation(minOffset.floor(), maxOffset.floor());
     }
 }

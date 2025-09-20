@@ -14,8 +14,7 @@ export class Selection {
         this.from = Vector.from(from);
         this.to = Vector.from(to || from);
         const { min, max } = this.getBounds();
-        this.renderer = new SelectionRenderer(dimension, min, max);
-        this.renderer.startDraw();
+        this.renderer = new SelectionRenderer(min, max);
     }
 
     destroy() {
@@ -53,10 +52,10 @@ export class Selection {
         this.updateRendererLocation();
     }
 
-    startNudge() {
+    startNudge(playerMovement) {
         this.minOffset = new Vector();
         this.maxOffset = new Vector();
-        this.renderer.enableMovementMode();
+        this.renderer.enableMovementMode(playerMovement);
     }
 
     endNudge() {
@@ -93,6 +92,6 @@ export class Selection {
 
     updateRendererLocation() {
         const { min, max } = this.getBounds();
-        this.renderer.setOutlineLocation(this.dimension, min, max);
+        this.renderer.setOutlineLocation(min, max);
     }
 }

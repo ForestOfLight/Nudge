@@ -40,7 +40,11 @@ export class BuildMover {
         this.dimension.fillBlocks(blockVolume, 'minecraft:air');
         const entities = this.dimension.getEntities({ location: min, volume: blockVolume.getSpan() });
         entities.forEach(entity => {
-            entity?.remove();
+            try {
+                entity.remove();
+            } catch {
+                /* pass */
+            }
         });
     }
 }

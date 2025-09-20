@@ -33,6 +33,10 @@
 			"version": "2.1.0-beta"
 		},
 		{
+			"module_name": "@minecraft/debug-utilities",
+			"version": "1.0.0-beta"
+		},
+		{
 			"uuid": "b6345514-8cd9-4dfe-b329-58574f000f3c", // SimpleAxiom RP
 			"version": [1, 0, 0]
 		}
