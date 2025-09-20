@@ -1,11 +1,22 @@
-import { ButtonState, InputButton } from "@minecraft/server";
+import { ButtonState, InputButton, InputPermissionCategory } from "@minecraft/server";
 
 export class PlayerMovement {
+    player;
     inputInfo;
+    inputPermissions;
 
     constructor(player) {
         this.player = player;
         this.inputInfo = player.inputInfo;
+        this.inputPermissions = player.inputPermissions;
+    }
+
+    freeze() {
+        this.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, false);
+    }
+
+    unfreeze() {
+        this.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, true);
     }
 
     isJumping() {

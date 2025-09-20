@@ -1,9 +1,10 @@
 import { EntityComponentTypes, system } from "@minecraft/server";
-import { SELECTION_ITEM } from "../commands/simpleaxiom";
+import { SELECTION_ITEM } from "../commands/select";
 import { Builders } from "./Builders";
 import { Feedback } from "./Feedback";
 import { world } from '@minecraft/server';
 import { playerChangeHotbarSlotEvent } from "../events/PlayerChangeHotbarSlotEvent";
+import { PlayerMovement } from "./PlayerMovement";
 
 export class BuildSelector {
     static onPlayerBreakBlock(event) {
@@ -19,7 +20,7 @@ export class BuildSelector {
         if (!player || event.itemStack.typeId !== SELECTION_ITEM)
             return;
         event.cancel = true;
-        BuildSelector.onUse(player);
+        system.run(() => BuildSelector.onUse(player));
     }
 
     static onHit(player, block) {
@@ -29,16 +30,10 @@ export class BuildSelector {
 
     static onUse(player) {
         const builder = Builders.get(player.id);
-        const blockRaycast = player.getBlockFromViewDirection({ maxDistance: 100, includePassableBlocks: true });
-        if (!blockRaycast) {
-            system.run(() => Feedback.send(player, '§cNo block found in view.'));
-            return;
-        }
-        const block = blockRaycast.block;
-        if (!builder.hasSelection())
-            builder.startSelection(block.dimension, block.location);
+        if (builder.isNudging)
+            BuildSelector.handleUseWhileNudging(player, builder);
         else
-            builder.extendSelect(block.location);
+            BuildSelector.handleUseWhileSelecting(player, builder)
     }
 
     static onPlayerChangeHotbarSlot(event) {
@@ -47,6 +42,36 @@ export class BuildSelector {
             const builder = Builders.get(player.id);
             builder.deselect();
         }
+    }
+
+    static handleUseWhileNudging(player, builder) {
+        const playerMovement = new PlayerMovement(player);
+        if (playerMovement.isSneaking())
+            builder.exitNudgeMode();
+        else {
+            builder.confirmNudge();
+            builder.deselect();
+        }
+    }
+
+    static handleUseWhileSelecting(player, builder) {
+        const playerMovement = new PlayerMovement(player);
+        if (playerMovement.isSneaking() && builder.hasSelection()) {
+            builder.enterNudgeMode();
+            return;
+        }
+        const blockRaycast = player.getBlockFromViewDirection({ maxDistance: 100, includePassableBlocks: true });
+        if (!blockRaycast) {
+            Feedback.send(player, '§cNo block found in view.');
+            return;
+        }
+        const block = blockRaycast.block;
+        if (builder.hasSelection()) {
+            builder.extendSelect(block.location);
+        } else {
+            builder.startSelection(block.dimension, block.location);
+        }
+        Feedback.send(player, '§aUse to extend.\nSneak + Use to begin nudging.');
     }
 
     static selectionItemInSlot(player, slotIndex) {

@@ -1,0 +1,24 @@
+import { system, CommandPermissionLevel, CustomCommandStatus, CustomCommandParamType, Player } from '@minecraft/server';
+import { Builders } from '../classes/Builders';
+
+system.beforeEvents.startup.subscribe((event) => {
+    const command = {
+        name: 'simpleaxiom:undo',
+        description: 'Undo your last edit, or several.',
+        optionalParameters: [{ name: 'number', type: CustomCommandParamType.Integer }],
+        permissionLevel: CommandPermissionLevel.Admin
+    };
+    event.customCommandRegistry.registerCommand(command, undoLastEdit);
+});
+
+function undoLastEdit(origin, number = 1) {
+    const player = origin.sourceEntity;
+    if (player instanceof Player === false)
+        return { status: CustomCommandStatus.Failure, message: 'This command can only be used by players.' };
+    system.run(() => {
+        const builder = Builders.get(player.id);
+        const numUndone = builder.editLog.undoMany(number);
+        player.sendMessage(`§aSuccessfully undid ${numUndone} edits.`);
+    });
+    return { status: CustomCommandStatus.Success };
+}

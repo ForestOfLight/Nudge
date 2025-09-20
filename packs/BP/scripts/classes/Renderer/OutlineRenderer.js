@@ -6,8 +6,9 @@ export class OutlineRenderer {
     min = new Vector();
     max = new Vector();
     drawParticle = "simpleaxiom:outline";
-    drawFrequency;
-    particleLifetime;
+    drawFrequencyTicks;
+    particleLifetimeTicks;
+    color = { red: 1, green: 1, blue: 1, alpha: 1 };
     
     #drawParticles = [];
     #runner = void 0;
@@ -16,13 +17,13 @@ export class OutlineRenderer {
         this.dimension = dimension;
         this.min = Vector.from(min);
         this.max = Vector.from(max);
-        this.drawFrequency = drawFrequency;
-        this.particleLifetime = particleLifetime;
+        this.drawFrequencyTicks = drawFrequency;
+        this.particleLifetimeTicks = particleLifetime;
         this.vertices = this.getVertices(min, max);
     }
 
     startDraw() {
-        this.#runner = system.runInterval(() => this.draw(), this.drawFrequency);
+        this.#runner = system.runInterval(() => this.draw(), this.drawFrequencyTicks);
     }
 
     stopDraw() {
@@ -42,8 +43,8 @@ export class OutlineRenderer {
         this.#drawParticles.push(...particleLocations);
         for (const [particleType, location] of this.#drawParticles) {
             const molang = new MolangVariableMap();
-            molang.setColorRGBA("dot_color", { red: 1, green: 1, blue: 1, alpha: 1 });
-            const lifetimeSeconds = this.particleLifetime / TicksPerSecond;
+            molang.setColorRGBA("dot_color", this.color);
+            const lifetimeSeconds = this.particleLifetimeTicks / TicksPerSecond;
             molang.setFloat("lifetime", lifetimeSeconds);
             try {
                 this.dimension.spawnParticle(particleType, location, molang);
@@ -71,6 +72,10 @@ export class OutlineRenderer {
         this.min = Vector.from(min);
         this.max = Vector.from(max);
         this.vertices = this.getVertices(min, max);
+    }
+
+    setColor(rgb = { red: 1, green: 1, blue: 1}) {
+        this.color = { ...rgb, alpha: 1 };
     }
 
     getVerticeParticles() {

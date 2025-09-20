@@ -5,6 +5,8 @@ export class Selection {
     dimension;
     from;
     to;
+    minOffset;
+    maxOffset;
     renderer;
 
     constructor(dimension, from, to = void 0) {
@@ -30,6 +32,13 @@ export class Selection {
         this.updateRendererLocation();
     }
 
+    move(location) {
+        const size = this.getSize();
+        this.from = Vector.from(location);
+        this.to = Vector.from(location).add(size);
+        this.updateRendererLocation();
+    }
+
     extendTo(location) {
         this.from = Vector.from({
             x: Math.min(this.from.x, location.x),
@@ -42,6 +51,25 @@ export class Selection {
             z: Math.max(this.to.z, location.z)
         });
         this.updateRendererLocation();
+    }
+
+    startNudge() {
+        this.minOffset = new Vector();
+        this.maxOffset = new Vector();
+        this.renderer.enableMovementMode();
+    }
+
+    endNudge() {
+        this.renderer.disableMovementMode();
+    }
+    
+    nudgeOffset(minOffset, maxOffset) {
+        this.minOffset = this.minOffset.add(minOffset);
+        this.maxOffset = this.maxOffset.add(maxOffset);
+        const { min, max } = this.getBounds();
+        const nudgedMin = min.add(this.minOffset).floor();
+        const nudgedMax = max.add(this.maxOffset).floor();
+        this.renderer.setMovementLocation(nudgedMin, nudgedMax);
     }
 
     getBounds() {
@@ -65,6 +93,6 @@ export class Selection {
 
     updateRendererLocation() {
         const { min, max } = this.getBounds();
-        this.renderer.setLocation(this.dimension, min, max);
+        this.renderer.setOutlineLocation(this.dimension, min, max);
     }
 }

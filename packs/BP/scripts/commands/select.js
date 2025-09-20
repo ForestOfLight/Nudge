@@ -1,4 +1,4 @@
-import { world, system, EntityComponentTypes, ItemStack, CommandPermissionLevel, CustomCommandStatus, Player } from '@minecraft/server';
+import { system, EntityComponentTypes, ItemStack, CommandPermissionLevel, CustomCommandStatus, Player } from '@minecraft/server';
 
 export const SELECTION_ITEM = 'simpleaxiom:selector';
 
