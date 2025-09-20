@@ -1,5 +1,6 @@
 import { Vector } from "../../lib/Vector";
-import { OutlineRenderer } from "./OutlineRenderer";
+import { MovingCuboidRenderer } from "./MovingCuboidRenderer";
+import { StaticCuboidRenderer } from "./StaticCuboidRenderer";
 
 export class SelectionRenderer {
     dimension;
@@ -7,44 +8,44 @@ export class SelectionRenderer {
     max;
     drawFrequencyTicks = 5;
     particleLifetimeTicks = 10;
-    outlineRenderer;
-    movementRenderer;
+    staticRenderer;
+    movingRenderer;
 
     constructor(dimension, min, max) {
         this.dimension = dimension;
         this.min = min;
         this.max = max.add(new Vector(1, 1, 1));
-        this.outlineRenderer = new OutlineRenderer(this.dimension, this.min, this.max, this.drawFrequencyTicks, this.particleLifetimeTicks);
+        this.staticRenderer = new StaticCuboidRenderer(this.dimension, this.min, this.max, { red: 1, green: 1, blue: 1 });
     }
 
     startDraw() {
-        this.outlineRenderer.startDraw();
+        this.staticRenderer.startDraw();
     }
 
     stopDraw() {
-        this.outlineRenderer.stopDraw();
-        this.movementRenderer?.stopDraw();
+        this.staticRenderer.stopDraw();
+        this.movingRenderer?.stopDraw();
     }
 
     setOutlineLocation(dimension, min, max) {
         this.dimension = dimension;
         this.min = min;
         this.max = max.add(new Vector(1, 1, 1));
-        this.outlineRenderer.setVertices(this.dimension, this.min, this.max);
+        this.staticRenderer.setVertices(this.dimension, this.min, this.max);
     }
 
     enableMovementMode() {
-        this.movementRenderer = new OutlineRenderer(this.dimension, this.min, this.max, 1, 1);
-        this.movementRenderer.startDraw();
-        this.outlineRenderer.setColor({ red: 0.75, green: 0.75, blue: 0.75 });
+        this.movingRenderer = new MovingCuboidRenderer(this.dimension, this.min, this.max, this.staticRenderer);
+        this.movingRenderer.startDraw();
+        this.staticRenderer.setColor({ red: 0.5, green: 0.5, blue: 0.5 });
     }
 
     disableMovementMode() {
-        this.movementRenderer.stopDraw();
-        this.outlineRenderer.setColor();
+        this.movingRenderer.stopDraw();
+        this.staticRenderer.setColor({ red: 1, green: 1, blue: 1 });
     }
     
     setMovementLocation(minOffset, maxOffset) {
-        this.movementRenderer.setVertices(this.dimension, minOffset.floor(), maxOffset.floor().add(new Vector(1, 1, 1)));
+        this.movingRenderer.setVertices(this.dimension, minOffset.floor(), maxOffset.floor().add(new Vector(1, 1, 1)));
     }
 }

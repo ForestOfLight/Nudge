@@ -1,7 +1,7 @@
 import { MolangVariableMap, system, TicksPerSecond, world } from "@minecraft/server";
 import { Vector } from "../../lib/Vector";
 
-export class OutlineRenderer {
+export class CuboidRenderer {
     dimension;
     min = new Vector();
     max = new Vector();
@@ -10,7 +10,7 @@ export class OutlineRenderer {
     particleLifetimeTicks;
     color = { red: 1, green: 1, blue: 1, alpha: 1 };
     
-    #drawParticles = [];
+    particlesToDraw = [];
     #runner = void 0;
 
     constructor(dimension, min, max, drawFrequency = 10, particleLifetime = 20) {
@@ -34,16 +34,18 @@ export class OutlineRenderer {
     }
 
     draw() {
-        this.drawParticles(this.getVerticeParticles());
-        this.drawParticles(this.getCubiodEdgeParticles());
+        this.particlesToDraw.length = 0;
+        this.particlesToDraw.push(...this.getVerticeParticles());
+        this.particlesToDraw.push(...this.getCubiodEdgeParticles());
+        this.drawParticles();
     }
 
-    drawParticles(particleLocations) {
-        this.#drawParticles.length = 0;
-        this.#drawParticles.push(...particleLocations);
-        for (const [particleType, location] of this.#drawParticles) {
+    drawParticles() {
+        for (let [particleType, location] of this.particlesToDraw) {
+            if (this.shouldIgnoreParticle(location))
+                continue;
             const molang = new MolangVariableMap();
-            molang.setColorRGBA("dot_color", this.color);
+            molang.setColorRGBA("dot_color", this.getColorForParticle(location));
             const lifetimeSeconds = this.particleLifetimeTicks / TicksPerSecond;
             molang.setFloat("lifetime", lifetimeSeconds);
             try {
@@ -52,6 +54,18 @@ export class OutlineRenderer {
                 /* pass */
             }
         }
+    }
+
+    getColorForParticle(location) {
+        throw new Error('getColorForParticle() must be implemented.');
+    }
+
+    shouldIgnoreParticle(location) {
+        return false;
+    }
+
+    getStandaloneParticles() {
+        throw new Error('getStandaloneParticles() must be implemented.');
     }
 
     getVertices(min, max) {
@@ -107,10 +121,5 @@ export class OutlineRenderer {
             }
         }
         return edgePoints.map((v) => [this.drawParticle, v]);
-    }
-
-    addStandaloneParticles(locations) {
-        for (const location of locations)
-            this.vertices.push(Vector.from(location));
     }
 }
