@@ -1,5 +1,5 @@
 import { system } from "@minecraft/server";
-import { PlayerMovement } from "./PlayerMovement";
+import { PlayerMovement } from "../PlayerMovement";
 
 export class BuildNudger {
     player;

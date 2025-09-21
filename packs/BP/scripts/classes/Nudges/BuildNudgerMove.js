@@ -1,4 +1,4 @@
-import { Vector } from "../lib/Vector";
+import { Vector } from "../../lib/Vector";
 import { BuildNudger } from "./BuildNudger";
 
 export class BuildNudgerMove extends BuildNudger {

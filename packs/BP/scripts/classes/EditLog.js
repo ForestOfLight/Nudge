@@ -1,5 +1,5 @@
-import { UndoError } from "./UndoError";
-import { RedoError } from "./RedoError";
+import { UndoError } from "./Errors/UndoError";
+import { RedoError } from "./Errors/RedoError";
 
 export class EditLog {
     recentEdits = [];
@@ -14,8 +14,8 @@ export class EditLog {
         const editToUndo = this.recentEdits.pop();
         if (!editToUndo)
             throw new UndoError('No edits left to undo.');
-        editToUndo.undo();
         this.undoneEdits.push(editToUndo);
+        editToUndo.undo();
     }
 
     undoMany(num) {
@@ -35,8 +35,8 @@ export class EditLog {
         const editToRedo = this.undoneEdits.pop();
         if (!editToRedo)
             throw new RedoError('No edits left to redo.');
-        editToRedo.do();
         this.recentEdits.push(editToRedo);
+        editToRedo.do();
     }
 
     redoMany(num) {

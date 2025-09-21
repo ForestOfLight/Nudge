@@ -6,13 +6,13 @@ import { world } from '@minecraft/server';
 import { playerChangeHotbarSlotEvent } from "../events/PlayerChangeHotbarSlotEvent";
 import { PlayerMovement } from "./PlayerMovement";
 
-export class BuildSelector {
+export class SelectionInteractor {
     static onPlayerBreakBlock(event) {
         const player = event.player;
         if (!player || event.itemStack?.typeId !== SELECTION_ITEM)
             return;
         event.cancel = true;
-        BuildSelector.onHit(player, event.block);
+        SelectionInteractor.onHit(player, event.block);
     }
 
     static onItemUse(event) {
@@ -20,7 +20,7 @@ export class BuildSelector {
         if (!player || event.itemStack.typeId !== SELECTION_ITEM)
             return;
         event.cancel = true;
-        system.run(() => BuildSelector.onUse(player));
+        system.run(() => SelectionInteractor.onUse(player));
     }
 
     static onHit(player, block) {
@@ -31,14 +31,14 @@ export class BuildSelector {
     static onUse(player) {
         const builder = Builders.get(player.id);
         if (builder.isNudging)
-            BuildSelector.handleUseWhileNudging(player, builder);
+            SelectionInteractor.handleUseWhileNudging(player, builder);
         else
-            BuildSelector.handleUseWhileSelecting(player, builder)
+            SelectionInteractor.handleUseWhileSelecting(player, builder)
     }
 
     static onPlayerChangeHotbarSlot(event) {
         const player = event.player;
-        if (!BuildSelector.selectionItemInSlot(player, player.selectedSlotIndex)) {
+        if (!SelectionInteractor.selectionItemInSlot(player, player.selectedSlotIndex)) {
             const builder = Builders.get(player.id);
             builder.deselect();
         }
@@ -46,11 +46,14 @@ export class BuildSelector {
 
     static handleUseWhileNudging(player, builder) {
         const playerMovement = new PlayerMovement(player);
-        if (playerMovement.isSneaking())
+        if (playerMovement.isJumping())
             builder.exitNudgeMode();
-        else {
-            builder.confirmNudge();
-            builder.deselect();
+        else if (playerMovement.isSneaking()) {
+            throw new Error('Flip/Rotate is not yet implemented.');
+        } else {
+            const shouldDeselect = builder.confirmNudge();
+            if (shouldDeselect)
+                builder.deselect();
         }
     }
 
@@ -58,6 +61,7 @@ export class BuildSelector {
         const playerMovement = new PlayerMovement(player);
         if (playerMovement.isSneaking() && builder.hasSelection()) {
             builder.enterNudgeMode();
+            Feedback.send(player, '§aUse to confirm.\nSneak + Use to flip/rotate.\nJump + Use to cancel.');
             return;
         }
         const blockRaycast = player.getBlockFromViewDirection({ maxDistance: 100, includePassableBlocks: true });
@@ -83,6 +87,6 @@ export class BuildSelector {
     }
 }
 
-world.beforeEvents.playerBreakBlock.subscribe(BuildSelector.onPlayerBreakBlock);
-world.beforeEvents.itemUse.subscribe(BuildSelector.onItemUse);
-playerChangeHotbarSlotEvent.subscribe(BuildSelector.onPlayerChangeHotbarSlot);
+world.beforeEvents.playerBreakBlock.subscribe(SelectionInteractor.onPlayerBreakBlock);
+world.beforeEvents.itemUse.subscribe(SelectionInteractor.onItemUse);
+playerChangeHotbarSlotEvent.subscribe(SelectionInteractor.onPlayerChangeHotbarSlot);

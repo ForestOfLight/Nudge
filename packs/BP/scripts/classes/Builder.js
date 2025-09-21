@@ -1,10 +1,11 @@
 import { world } from "@minecraft/server";
 import { Selection } from "./Selection";
 import { PlayerMovement } from "./PlayerMovement";
-import { BuildNudgerMove } from "./BuildNudgerMove";
+import { BuildNudgerMove } from "./Nudges/BuildNudgerMove";
 import { Feedback } from "./Feedback";
-import { BuildMover } from "./BuildMover";
+import { MoveEdit } from "./Edits/MoveEdit";
 import { EditLog } from "./EditLog";
+import { CloneEdit } from "./Edits/CloneEdit";
 
 export class Builder {
     playerId;
@@ -58,8 +59,7 @@ export class Builder {
         const player = this.getPlayer();
         const playerMovement = new PlayerMovement(player);
         playerMovement.freeze();
-        this.buildNudger = new BuildNudgerMove(player,this.selection);
-        Feedback.send(player, '§aUse to confirm.\nSneak + Use to cancel.');
+        this.buildNudger = new BuildNudgerMove(player, this.selection);
     }
 
     exitNudgeMode() {
@@ -70,11 +70,10 @@ export class Builder {
     }
 
     confirmNudge() {
-        const buildMover = new BuildMover(this.selection);
-        buildMover.do(this.selection);
-        this.editLog.save(buildMover);
-        const { min, max } = this.selection.getBounds();
-        const newLocation = min.add(this.selection.minOffset).floor();
-        Feedback.send(this.getPlayer(), `§aMoved selection to ${newLocation}.`);
+        const edit = new MoveEdit(this.selection);
+        edit.do(this.selection);
+        this.editLog.save(edit);
+        Feedback.send(this.getPlayer(), edit.getSuccessFeedback());
+        return edit.shouldExitAfterConfirm;
     }
 }

@@ -4,4 +4,4 @@ import './commands/undo';
 import './commands/redo';
 
 // Setup
-import './classes/BuildSelector';
+import './classes/SelectionInteractor';
