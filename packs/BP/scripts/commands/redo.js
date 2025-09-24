@@ -17,8 +17,7 @@ function redoLastEdit(origin, number = 1) {
         return { status: CustomCommandStatus.Failure, message: 'This command can only be used by players.' };
     system.run(() => {
         const builder = Builders.get(player.id);
-        const numRedone = builder.editLog.redoMany(number);
-        player.sendMessage(`§aSuccessfully redid ${numRedone} edits.`);
+        builder.redo(number);
     });
     return { status: CustomCommandStatus.Success };
 }

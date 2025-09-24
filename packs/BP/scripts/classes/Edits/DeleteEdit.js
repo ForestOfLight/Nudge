@@ -1,4 +1,3 @@
-import { world } from "@minecraft/server";
 import { Edit } from "./Edit";
 
 export class DeleteEdit extends Edit {
@@ -21,10 +20,14 @@ export class DeleteEdit extends Edit {
 
     undo() {
         this.clearArea(this.deleteMin, this.deleteMax);
-        world.structureManager.place(this.replacedStructure.id, this.dimension, this.deleteMin);
+        this.pasteStructure(this.replacedStructure, this.deleteMin);
     }
 
     getSuccessFeedback() {
         return `§aDeleted from ${this.deleteMin} to ${this.deleteMax}.`;
+    }
+
+    static getDuringSelectionFeedback() {
+        return '§aUse to extend.\nSneak + Use to delete.';
     }
 }

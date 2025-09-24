@@ -40,7 +40,7 @@ export class SelectionInteractor {
         const player = event.player;
         if (!SelectionInteractor.selectionItemInSlot(player, player.selectedSlotIndex)) {
             const builder = Builders.get(player.id);
-            builder.deselect();
+            system.run(() => builder.deselect());
         }
     }
 
@@ -51,7 +51,7 @@ export class SelectionInteractor {
         else if (playerMovement.isSneaking()) {
             throw new Error('Flip/Rotate is not yet implemented.');
         } else {
-            const shouldDeselect = builder.confirmNudge();
+            const shouldDeselect = builder.confirmEdit();
             if (shouldDeselect)
                 builder.deselect();
         }
@@ -60,8 +60,10 @@ export class SelectionInteractor {
     static handleUseWhileSelecting(player, builder) {
         const playerMovement = new PlayerMovement(player);
         if (playerMovement.isSneaking() && builder.hasSelection()) {
-            builder.enterNudgeMode();
-            Feedback.send(player, '§aUse to confirm.\nSneak + Use to flip/rotate.\nJump + Use to cancel.');
+            builder.confirmSelection();
+            return;
+        } else if (playerMovement.isSneaking()) {
+            builder.changeEditType();
             return;
         }
         const blockRaycast = player.getBlockFromViewDirection({ maxDistance: 100, includePassableBlocks: true });
@@ -75,7 +77,7 @@ export class SelectionInteractor {
         } else {
             builder.startSelection(block.dimension, block.location);
         }
-        Feedback.send(player, '§aUse to extend.\nSneak + Use to begin nudging.');
+        Feedback.send(player, builder.getDuringSelectionFeedback());
     }
 
     static selectionItemInSlot(player, slotIndex) {

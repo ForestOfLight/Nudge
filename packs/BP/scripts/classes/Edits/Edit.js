@@ -1,6 +1,7 @@
-import { world, StructureSaveMode } from "@minecraft/server";
+import { world, StructureSaveMode, BlockPermutation } from "@minecraft/server";
 import { BlockVolume } from "@minecraft/server";
 import { StructureIDGenerator } from "../StructureIDGenerator";
+import { Vector } from "../../lib/Vector";
 
 export class Edit {
     dimension;
@@ -23,8 +24,16 @@ export class Edit {
     }
 
     createStructure(min, max) {
+        this.replaceBlockInArea(min, max, 'minecraft:air', 'minecraft:structure_void');
         const structureID = StructureIDGenerator.getNext();
-        return world.structureManager.createFromWorld(structureID, this.dimension, min, max, { saveMode: StructureSaveMode.Memory });
+        const structure = world.structureManager.createFromWorld(structureID, this.dimension, min, max, { saveMode: StructureSaveMode.Memory });
+        return structure;
+    }
+
+    pasteStructure(structure, location) {
+        world.structureManager.place(structure.id, this.dimension, location);
+        const max = Vector.from(location).add(structure.size);
+        this.replaceBlockInArea(location, max, 'minecraft:structure_void', 'minecraft:air');
     }
 
     clearArea(min, max) {
@@ -38,5 +47,11 @@ export class Edit {
                 /* pass */
             }
         });
+    }
+
+    replaceBlockInArea(min, max, replaceBlock, newBlock) {
+        const blockVolume = new BlockVolume(min, max);
+        const blockFillOptions = { blockFilter: { includeTypes: [replaceBlock] } };
+        this.dimension.fillBlocks(blockVolume, newBlock, blockFillOptions);
     }
 }

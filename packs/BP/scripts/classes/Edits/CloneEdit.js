@@ -1,4 +1,3 @@
-import { world } from "@minecraft/server";
 import { Edit } from "./Edit";
 
 export class CloneEdit extends Edit {
@@ -20,15 +19,19 @@ export class CloneEdit extends Edit {
     do() {
         this.copyStructure = this.createStructure(this.copyLocation, this.copyLocation.add(this.size));
         this.replacedStructure = this.createStructure(this.pasteLocation, this.pasteLocation.add(this.size));
-        world.structureManager.place(this.copyStructure.id, this.dimension, this.pasteLocation);
+        this.pasteStructure(this.copyStructure, this.pasteLocation);
     }
 
     undo() {
         this.clearArea(this.pasteLocation, this.pasteLocation.add(this.size));
-        world.structureManager.place(this.replacedStructure.id, this.dimension, this.pasteLocation);
+        this.pasteStructure(this.replacedStructure, this.pasteLocation);
     }
 
     getSuccessFeedback() {
         return `§aPasted selection at ${this.pasteLocation.floor()}.`;
+    }
+
+    static getDuringSelectionFeedback() {
+        return '§aUse to extend.\nSneak + Use to clone structure.';
     }
 }

@@ -17,8 +17,7 @@ function undoLastEdit(origin, number = 1) {
         return { status: CustomCommandStatus.Failure, message: 'This command can only be used by players.' };
     system.run(() => {
         const builder = Builders.get(player.id);
-        const numUndone = builder.editLog.undoMany(number);
-        player.sendMessage(`§aSuccessfully undid ${numUndone} edits.`);
+        builder.undo(number);
     });
     return { status: CustomCommandStatus.Success };
 }
