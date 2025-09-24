@@ -1,3 +1,4 @@
+import { Feedback } from "../Feedback";
 import { Edit } from "./Edit";
 
 export class CloneEdit extends Edit {
@@ -31,7 +32,7 @@ export class CloneEdit extends Edit {
         return `§aPasted selection at ${this.pasteLocation.floor()}.`;
     }
 
-    static getDuringSelectionFeedback() {
-        return '§aUse to extend.\nSneak + Use to clone structure.';
+    static getDuringSelectionFeedback(player) {
+        return `§a${Feedback.useIcon(player)} to extend.\n${Feedback.sneakIcon(player)} + ${Feedback.useIcon(player)} to clone structure.`;
     }
 }

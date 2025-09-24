@@ -1,3 +1,4 @@
+import { Feedback } from "../Feedback";
 import { Edit } from "./Edit";
 
 export class MoveEdit extends Edit {
@@ -33,7 +34,7 @@ export class MoveEdit extends Edit {
         return `§aMoved selection to ${this.pasteLocation.floor()}.`;
     }
 
-    static getDuringSelectionFeedback() {
-        return '§aUse to extend.\nSneak + Use to move structure.';
+    static getDuringSelectionFeedback(player) {
+        return `§a${Feedback.useIcon(player)} to extend.\n${Feedback.sneakIcon(player)} + ${Feedback.useIcon(player)} to move structure.`;
     }
 }

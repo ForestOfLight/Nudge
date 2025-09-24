@@ -20,7 +20,11 @@ export class Edit {
     }
 
     getSuccessFeedback() {
-        throw new Error('undo() must be implemented');
+        throw new Error('getSuccessFeedback() must be implemented');
+    }
+
+    static getDuringSelectionFeedback(player) {
+        throw new Error('getDuringSelectionFeedback() must be implemented');
     }
 
     createStructure(min, max) {

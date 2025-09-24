@@ -1,4 +1,4 @@
-import { ButtonState, InputButton, InputPermissionCategory } from "@minecraft/server";
+import { ButtonState, InputButton, InputMode, InputPermissionCategory } from "@minecraft/server";
 import { Vector } from "../lib/Vector";
 
 export class PlayerMovement {
@@ -25,6 +25,8 @@ export class PlayerMovement {
     }
 
     isSneaking() {
+        if (this.inputInfo.lastInputModeUsed === InputMode.Touch)
+            return this.player.isSneaking;
         return this.inputInfo.getButtonState(InputButton.Sneak) === ButtonState.Pressed;
     }
 

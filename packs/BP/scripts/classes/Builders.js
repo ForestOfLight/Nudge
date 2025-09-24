@@ -23,6 +23,7 @@ export class Builders {
     }
 
     static onLeave(playerId) {
+        this.get(playerId).onLeave();
         this.remove(playerId);
     }
 }

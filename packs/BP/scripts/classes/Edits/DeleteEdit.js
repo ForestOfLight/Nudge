@@ -1,3 +1,4 @@
+import { Feedback } from "../Feedback";
 import { Edit } from "./Edit";
 
 export class DeleteEdit extends Edit {
@@ -27,7 +28,7 @@ export class DeleteEdit extends Edit {
         return `§aDeleted from ${this.deleteMin} to ${this.deleteMax}.`;
     }
 
-    static getDuringSelectionFeedback() {
-        return '§aUse to extend.\nSneak + Use to delete.';
+    static getDuringSelectionFeedback(player) {
+        return `§a${Feedback.useIcon(player)} to extend.\n${Feedback.sneakIcon(player)} + ${Feedback.useIcon(player)} to delete.`;
     }
 }

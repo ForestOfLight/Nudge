@@ -1,4 +1,5 @@
 import { system, EntityComponentTypes, ItemStack, CommandPermissionLevel, CustomCommandStatus, Player } from '@minecraft/server';
+import { Feedback } from '../classes/Feedback';
 
 export const SELECTION_ITEM = 'simpleaxiom:selector';
 
@@ -20,7 +21,7 @@ function givePlayerMenuItem(origin) {
         if (givenItemStack)
             player.sendMessage('§cFailed to give you the SimpleAxiom Selector.');
         else
-            player.sendMessage('§aYou recieved the SimpleAxiom Selector! Use it to select your build.');
+            player.sendMessage(`§aYou recieved the SimpleAxiom Selector! ${Feedback.useIcon(player)} to select your build.`);
     });
     return { status: CustomCommandStatus.Success };
 }

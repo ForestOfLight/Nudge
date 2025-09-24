@@ -30,6 +30,10 @@ export class Builder {
         return this.player;
     }
 
+    onLeave() {
+        this.deselect();
+    }
+
     select(dimension, from, to) {
         this.selection?.destroy();
         this.selection = new Selection(dimension, from, to);
@@ -68,7 +72,8 @@ export class Builder {
             this.deselect();
         } else {
             this.enterNudgeMode();
-            Feedback.send(this.getPlayer(), '§aUse to confirm.\nSneak + Use to flip/rotate.\nJump + Use to cancel.');
+            const player = this.getPlayer();
+            Feedback.send(this.getPlayer(), `§a${Feedback.useIcon(player)} to confirm.\n${Feedback.sneakIcon(player)} + ${Feedback.useIcon(player)} to flip/rotate.\n${Feedback.jumpIcon(player)} + ${Feedback.useIcon(player)} to cancel.`);
         }
     }
 
@@ -132,6 +137,6 @@ export class Builder {
     }
 
     getDuringSelectionFeedback() {
-        return this.editType.getDuringSelectionFeedback();
+        return this.editType.getDuringSelectionFeedback(this.getPlayer());
     }
 }

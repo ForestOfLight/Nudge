@@ -60,7 +60,7 @@ export class SelectionInteractor {
     static handleUseWhileSelecting(player, builder) {
         const playerMovement = new PlayerMovement(player);
         if (playerMovement.isSneaking() && builder.hasSelection()) {
-            builder.confirmSelection();
+            builder.confirmSelection();     
             return;
         } else if (playerMovement.isSneaking()) {
             builder.changeEditType();
