@@ -3,20 +3,29 @@ import { PlayerMovement } from "../PlayerMovement";
 
 export class BuildNudger {
     player;
+    playerMovement;
     selection;
     #runner;
 
-    constructor(player, selection) {
+    constructor(player) {
         this.player = player;
-        this.selection = selection;
         this.playerMovement = new PlayerMovement(this.player);
+    }
+    
+    start() {
+        if (!this.selection)
+            throw new Error('No selection to nudge. Please set the selection before starting nudge.');
         this.selection.startNudge(this.playerMovement);
         this.#runner = system.runInterval(this.onNudgeTick.bind(this));
     }
 
-    destroy() {
+    stop() {
         system.clearRun(this.#runner); 
         this.selection.endNudge();
+    }
+
+    setSelection(selection) {
+        this.selection = selection;
     }
 
     onNudgeTick() {

@@ -27,8 +27,4 @@ export class DeleteEdit extends Edit {
     getSuccessFeedback() {
         return `§aDeleted from ${this.deleteMin} to ${this.deleteMax}.`;
     }
-
-    static getDuringSelectionFeedback(player) {
-        return `§a${Feedback.useIcon(player)} to extend.\n${Feedback.sneakIcon(player)} + ${Feedback.useIcon(player)} to delete.`;
-    }
 }

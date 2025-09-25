@@ -1,26 +1,21 @@
 import { world } from "@minecraft/server";
 import { Selection } from "./Selection";
-import { PlayerMovement } from "./PlayerMovement";
-import { BuildNudgerMove } from "./Nudges/BuildNudgerMove";
-import { Feedback } from "./Feedback";
 import { EditLog } from "./EditLog";
-import { EditTypes } from "./Edits/EditTypes";
-import { MoveEdit } from "./Edits/MoveEdit";
-import { CloneEdit } from "./Edits/CloneEdit";
-import { DeleteEdit } from "./Edits/DeleteEdit";
-import { EditTypeSelectionForm } from "./EditTypeSelectionForm";
+import { EditModes } from "./Modes/EditModes";
+import { ModeSelectionForm } from "./Modes/ModeSelectionForm";
+import { MoveMode } from "./Modes/MoveMode";
+import { DeleteMode } from "./Modes/DeleteMode";
 
 export class Builder {
     playerId;
     player = void 0;
     selection = void 0;
-    isNudging = false;
-    editType;
+    editMode;
     editLog;
 
     constructor(playerId) {
         this.playerId = playerId;
-        this.setEditType();
+        this.setEditMode();
         this.editLog = new EditLog();
     }
 
@@ -40,7 +35,7 @@ export class Builder {
     }
 
     deselect() {
-        if (this.isNudging)
+        if (this.editMode.isNudging)
             this.exitNudgeMode();
         this.selection?.destroy();
         this.selection = void 0;
@@ -67,63 +62,40 @@ export class Builder {
     }
 
     confirmSelection() {
-        if (this.editType === DeleteEdit) {
-            this.confirmEdit();
-            this.deselect();
-        } else {
-            this.enterNudgeMode();
-            const player = this.getPlayer();
-            Feedback.send(this.getPlayer(), `§a${Feedback.useIcon(player)} to confirm.\n${Feedback.sneakIcon(player)} + ${Feedback.useIcon(player)} to flip/rotate.\n${Feedback.jumpIcon(player)} + ${Feedback.useIcon(player)} to cancel.`);
-        }
+        this.editMode.confirmSelection();
     }
 
     enterNudgeMode() {
-        this.isNudging = true;
-        const player = this.getPlayer();
-        const playerMovement = new PlayerMovement(player);
-        playerMovement.freeze();
-        this.buildNudger = new BuildNudgerMove(player, this.selection);
+        this.editMode.enterNudgeMode();
     }
 
     exitNudgeMode() {
-        this.isNudging = false;
-        const playerMovement = new PlayerMovement(this.getPlayer());
-        playerMovement.unfreeze();
-        this.buildNudger?.destroy();
+        this.editMode.exitNudgeMode();
     }
 
     confirmEdit() {
-        const edit = new this.editType(this.selection);
-        edit.do(this.selection);
-        this.editLog.save(edit);
-        Feedback.send(this.getPlayer(), edit.getSuccessFeedback());
-        return edit.shouldExitAfterConfirm;
+        this.editMode.confirmEdit();
     }
 
-    changeEditType() {
-        new EditTypeSelectionForm(this.getPlayer());
+    changeEditMode() {
+        new ModeSelectionForm(this.getPlayer());
     }
 
-    getEditType() {
-        return this.editType;
-    }
-
-    setEditType(editType) {
-        switch (editType) {
-            case EditTypes.Move:
-                this.editType = MoveEdit;                
+    setEditMode(editMode) {
+        switch (editMode) {
+            case EditModes.Move:
+                this.editMode = new MoveMode(this);                
                 break;
-            case EditTypes.Clone:
-                this.editType = CloneEdit;
+            case EditModes.Clone:
+                this.editMode = void 0;
                 break;
-            case EditTypes.Delete:
-                this.editType = DeleteEdit;
+            case EditModes.Delete:
+                this.editMode = new DeleteMode(this);
                 break;
             default:
-                this.editType = MoveEdit;
+                this.editMode = new MoveMode(this);
                 break;
         }
-        // If you'd like to change the item texture, do so here.
     }
 
     undo(num = 1) {
@@ -137,6 +109,10 @@ export class Builder {
     }
 
     getDuringSelectionFeedback() {
-        return this.editType.getDuringSelectionFeedback(this.getPlayer());
+        return this.editMode.getDuringSelectionFeedback();
+    }
+
+    isNudging() {
+        return this.editMode.isNudging;
     }
 }

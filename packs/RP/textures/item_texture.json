@@ -1,8 +1,14 @@
 {
   "resource_pack_name": "SimpleAxiom Resource Pack",
   "texture_data": {
-    "simpleaxiom:selector": {
-      "textures": "textures/items/selector"
+    "simpleaxiom:move": {
+      "textures": "textures/items/move"
+    },
+    "simpleaxiom:clone": {
+      "textures": "textures/items/clone"
+    },
+    "simpleaxiom:delete": {
+      "textures": "textures/items/delete"
     }
   }
 }

@@ -1,11 +1,11 @@
 import { ActionFormData } from '@minecraft/server-ui';
-import { forceShow } from '../utils';
-import { EditTypes } from './Edits/EditTypes';
-import { Builders } from './Builders';
+import { forceShow } from '../../utils';
+import { EditModes } from './EditModes';
+import { Builders } from '../Builders';
 
-export class EditTypeSelectionForm {
-    #title = 'Select Edit Type'
-    #buttons = [...Object.keys(EditTypes)];
+export class ModeSelectionForm {
+    #title = 'Select Edit Mode'
+    #buttons = [...Object.keys(EditModes)];
 
     constructor(player) {
         this.player = player;
@@ -37,6 +37,6 @@ export class EditTypeSelectionForm {
             builder.undo();
         if (selection === this.#buttons.length + 1)
             builder.redo();
-        builder.setEditType(selection);
+        builder.setEditMode(selection);
     }
 }

@@ -1,13 +1,12 @@
 import { system, EntityComponentTypes, ItemStack, CommandPermissionLevel, CustomCommandStatus, Player } from '@minecraft/server';
 import { Feedback } from '../classes/Feedback';
-
-export const SELECTION_ITEM = 'simpleaxiom:selector';
+import { Builders } from '../classes/Builders';
 
 system.beforeEvents.startup.subscribe((event) => {
     const command = {
-        name: 'simpleaxiom:select',
-        description: 'Gives you the SimpleAxiom Selector. Use it to select your build.',
-        permissionLevel: CommandPermissionLevel.Admin
+        name: 'simpleaxiom:edit',
+        description: 'Gives you the SimpleAxiom item. Use it to select your build.',
+        permissionLevel: CommandPermissionLevel.Any
     };
     event.customCommandRegistry.registerCommand(command, givePlayerMenuItem);
 });
@@ -17,11 +16,13 @@ function givePlayerMenuItem(origin) {
     if (player instanceof Player === false)
         return { status: CustomCommandStatus.Failure, message: 'This command can only be used by players.' };
     system.run(() => {
-        const givenItemStack = player.getComponent(EntityComponentTypes.Inventory)?.container?.addItem(new ItemStack(SELECTION_ITEM));
+        const builder = Builders.get(player.id);
+        const inventoryContainer = player.getComponent(EntityComponentTypes.Inventory)?.container;
+        const givenItemStack = inventoryContainer?.addItem(new ItemStack(builder.editMode.getItemId()));
         if (givenItemStack)
-            player.sendMessage('§cFailed to give you the SimpleAxiom Selector.');
+            player.sendMessage('§cFailed to give you the SimpleAxiom item.');
         else
-            player.sendMessage(`§aYou recieved the SimpleAxiom Selector! ${Feedback.useIcon(player)} to select your build.`);
+            player.sendMessage(`§aYou recieved the SimpleAxiom item! ${Feedback.useIcon(player)} to select your build.`);
     });
     return { status: CustomCommandStatus.Success };
 }

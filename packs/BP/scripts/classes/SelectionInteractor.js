@@ -1,15 +1,15 @@
 import { EntityComponentTypes, system } from "@minecraft/server";
-import { SELECTION_ITEM } from "../commands/select";
 import { Builders } from "./Builders";
 import { Feedback } from "./Feedback";
 import { world } from '@minecraft/server';
 import { playerChangeHotbarSlotEvent } from "../events/PlayerChangeHotbarSlotEvent";
 import { PlayerMovement } from "./PlayerMovement";
+import { EditModes } from "./Modes/EditModes";
 
 export class SelectionInteractor {
     static onPlayerBreakBlock(event) {
         const player = event.player;
-        if (!player || event.itemStack?.typeId !== SELECTION_ITEM)
+        if (!player || !SelectionInteractor.isHoldingSimpleAxiomItem(player))
             return;
         event.cancel = true;
         SelectionInteractor.onHit(player, event.block);
@@ -17,7 +17,7 @@ export class SelectionInteractor {
 
     static onItemUse(event) {
         const player = event.source;
-        if (!player || event.itemStack.typeId !== SELECTION_ITEM)
+        if (!player || !SelectionInteractor.isHoldingSimpleAxiomItem(player))
             return;
         event.cancel = true;
         system.run(() => SelectionInteractor.onUse(player));
@@ -30,7 +30,7 @@ export class SelectionInteractor {
 
     static onUse(player) {
         const builder = Builders.get(player.id);
-        if (builder.isNudging)
+        if (builder.isNudging())
             SelectionInteractor.handleUseWhileNudging(player, builder);
         else
             SelectionInteractor.handleUseWhileSelecting(player, builder)
@@ -38,10 +38,11 @@ export class SelectionInteractor {
 
     static onPlayerChangeHotbarSlot(event) {
         const player = event.player;
-        if (!SelectionInteractor.selectionItemInSlot(player, player.selectedSlotIndex)) {
-            const builder = Builders.get(player.id);
+        const builder = Builders.get(player.id);
+        if (!SelectionInteractor.isHoldingSimpleAxiomItem(player))
             system.run(() => builder.deselect());
-        }
+        else
+            builder.setEditMode(); // MAKE DYNAMIC TO THE ITEM IN THE SLOT
     }
 
     static handleUseWhileNudging(player, builder) {
@@ -52,7 +53,7 @@ export class SelectionInteractor {
             throw new Error('Flip/Rotate is not yet implemented.');
         } else {
             const shouldDeselect = builder.confirmEdit();
-            if (shouldDeselect)
+            if (shouldDeselect) // REMOVE THIS CHECK AND PUT IT IN CloneMode
                 builder.deselect();
         }
     }
@@ -60,10 +61,10 @@ export class SelectionInteractor {
     static handleUseWhileSelecting(player, builder) {
         const playerMovement = new PlayerMovement(player);
         if (playerMovement.isSneaking() && builder.hasSelection()) {
-            builder.confirmSelection();     
+            builder.confirmSelection();
             return;
         } else if (playerMovement.isSneaking()) {
-            builder.changeEditType();
+            builder.changeEditMode();
             return;
         }
         const blockRaycast = player.getBlockFromViewDirection({ maxDistance: 100, includePassableBlocks: true });
@@ -80,12 +81,17 @@ export class SelectionInteractor {
         Feedback.send(player, builder.getDuringSelectionFeedback());
     }
 
+    static isHoldingSimpleAxiomItem(player) {
+        return SelectionInteractor.selectionItemInSlot(player, player.selectedSlotIndex)
+    }
+
     static selectionItemInSlot(player, slotIndex) {
         const inventoryContainer = player.getComponent(EntityComponentTypes.Inventory)?.container;
         if (!inventoryContainer)
             return false;
         const slotItem = inventoryContainer.getItem(slotIndex);
-        return slotItem?.typeId === SELECTION_ITEM;
+        const validModeItems = Object.keys(EditModes).map((type) => 'simpleaxiom:' + type.toLowerCase());
+        return validModeItems.includes(slotItem?.typeId);
     }
 }
 

@@ -1,0 +1,54 @@
+import { EntityComponentTypes, EquipmentSlot, ItemStack } from "@minecraft/server";
+import { Feedback } from "../Feedback";
+import { PlayerMovement } from "../PlayerMovement";
+import { EditModes } from "../Modes/EditModes";
+import { SelectionInteractor } from "../SelectionInteractor";
+
+export class Mode {
+    builder;
+    player;
+    
+    constructor(builder) {
+        this.builder = builder;
+        this.player = builder.getPlayer();
+        this.replaceModeItemInHand();
+    }
+
+    confirmSelection() {
+        throw new Error('confirmSelection() must be implemented.');
+    }
+
+    confirmEdit() {
+        const edit = this.createNewEdit();
+        edit.do();
+        this.builder.editLog.save(edit);
+        Feedback.send(this.player, edit.getSuccessFeedback());
+    }
+
+    allowPlayerMovement(enable) {
+        const playerMovement = new PlayerMovement(this.player);
+        if (enable)
+            playerMovement.unfreeze();
+        else
+            playerMovement.freeze();
+    }
+
+    createNewEdit() {
+        throw new Error('createNewEdit() must be implemented.');
+    }
+
+    getItemId() {
+        throw new Error('getItemId() must be implemented.');
+    }
+
+    getDuringSelectionFeedback() {
+        throw new Error('getDuringSelectionFeedback() must be implemented.');
+    }
+
+    replaceModeItemInHand() {
+        const equippable = this.player.getComponent(EntityComponentTypes.Equippable);
+        const mainhandSlot = equippable.getEquipmentSlot(EquipmentSlot.Mainhand);
+        if (SelectionInteractor.isHoldingSimpleAxiomItem(this.player))
+            mainhandSlot.setItem(new ItemStack(this.getItemId(), 1));
+    }
+}
