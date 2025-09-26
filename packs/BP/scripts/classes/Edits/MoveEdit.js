@@ -6,7 +6,6 @@ export class MoveEdit extends Edit {
     size;
     cutStructure;
     replacedStructure;
-    shouldExitAfterConfirm = true;
 
     constructor(selection) {
         super(selection);

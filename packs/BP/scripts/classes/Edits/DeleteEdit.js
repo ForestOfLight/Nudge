@@ -5,7 +5,6 @@ export class DeleteEdit extends Edit {
     deleteMin;
     deleteMax;
     replacedStructure;
-    shouldExitAfterConfirm = true;
 
     constructor(selection) {
         super(selection);

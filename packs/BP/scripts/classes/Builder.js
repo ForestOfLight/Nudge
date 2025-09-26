@@ -5,6 +5,7 @@ import { EditModes } from "./Modes/EditModes";
 import { ModeSelectionForm } from "./Modes/ModeSelectionForm";
 import { MoveMode } from "./Modes/MoveMode";
 import { DeleteMode } from "./Modes/DeleteMode";
+import { CloneMode } from "./Modes/CloneMode";
 
 export class Builder {
     playerId;
@@ -98,7 +99,7 @@ export class Builder {
                 this.editMode = new MoveMode(this);
                 break;
             case EditModes.Clone:
-                this.editMode = void 0;
+                this.editMode = new CloneMode(this);
                 break;
             case EditModes.Delete:
                 this.editMode = new DeleteMode(this);

@@ -1,4 +1,3 @@
-import { Feedback } from "../Feedback";
 import { Edit } from "./Edit";
 
 export class CloneEdit extends Edit {
@@ -7,18 +6,19 @@ export class CloneEdit extends Edit {
     size;
     copyStructure;
     replacedStructure;
-    shouldExitAfterConfirm = false;
 
-    constructor(selection) {
+    constructor(selection, copyStructure = void 0) {
         super(selection);
         const { min, max } = selection.getBounds();
         this.copyLocation = min;
         this.pasteLocation = min.add(selection.minOffset);
         this.size = selection.getSize();
+        this.copyStructure = copyStructure;
     }
 
     do() {
-        this.copyStructure = this.createStructure(this.copyLocation, this.copyLocation.add(this.size));
+        if (!this.copyStructure)
+            this.copyStructure = this.createStructure(this.copyLocation, this.copyLocation.add(this.size));
         this.replacedStructure = this.createStructure(this.pasteLocation, this.pasteLocation.add(this.size));
         this.pasteStructure(this.copyStructure, this.pasteLocation);
     }
@@ -30,9 +30,5 @@ export class CloneEdit extends Edit {
 
     getSuccessFeedback() {
         return `§aPasted selection at ${this.pasteLocation.floor()}.`;
-    }
-
-    static getDuringSelectionFeedback(player) {
-        return `§a${Feedback.useIcon(player)} to extend.\n${Feedback.sneakIcon(player)} + ${Feedback.useIcon(player)} to clone structure.`;
     }
 }

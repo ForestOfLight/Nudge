@@ -1,7 +1,6 @@
 import { EntityComponentTypes, EquipmentSlot, ItemStack } from "@minecraft/server";
 import { Feedback } from "../Feedback";
 import { PlayerMovement } from "../PlayerMovement";
-import { EditModes } from "../Modes/EditModes";
 import { SelectionInteractor } from "../SelectionInteractor";
 
 export class Mode {
@@ -23,6 +22,7 @@ export class Mode {
         edit.do();
         this.builder.editLog.save(edit);
         Feedback.send(this.player, edit.getSuccessFeedback());
+        return edit;
     }
 
     allowPlayerMovement(enable) {

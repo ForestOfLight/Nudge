@@ -48,13 +48,10 @@ export class SelectionInteractor {
         const playerMovement = new PlayerMovement(player);
         if (playerMovement.isJumping())
             builder.exitNudgeMode();
-        else if (playerMovement.isSneaking()) {
+        else if (playerMovement.isSneaking())
             throw new Error('Flip/Rotate is not yet implemented.');
-        } else {
-            const shouldDeselect = builder.confirmEdit();
-            if (shouldDeselect) // REMOVE THIS CHECK AND PUT IT IN CloneMode
-                builder.deselect();
-        }
+        else
+            builder.confirmEdit();
     }
 
     static handleUseWhileSelecting(player, builder) {

@@ -1,6 +1,5 @@
 import { system, EntityComponentTypes, ItemStack, CommandPermissionLevel, CustomCommandStatus, Player } from '@minecraft/server';
 import { Feedback } from '../classes/Feedback';
-import { Builders } from '../classes/Builders';
 
 system.beforeEvents.startup.subscribe((event) => {
     const command = {
@@ -16,7 +15,6 @@ function givePlayerMenuItem(origin) {
     if (player instanceof Player === false)
         return { status: CustomCommandStatus.Failure, message: 'This command can only be used by players.' };
     system.run(() => {
-        const builder = Builders.get(player.id);
         const inventoryContainer = player.getComponent(EntityComponentTypes.Inventory)?.container;
         const givenItemStack = inventoryContainer?.addItem(new ItemStack('simpleaxiom:move'));
         if (givenItemStack)
