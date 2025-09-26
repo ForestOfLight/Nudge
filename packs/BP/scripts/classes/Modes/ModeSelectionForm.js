@@ -14,7 +14,7 @@ export class ModeSelectionForm {
 
     show() {
         forceShow(this.player, this.buildForm()).then((response) => {
-            if (response.cancelled)
+            if (response.canceled)
                 return;
             this.handleSelection(response.selection);
         });
@@ -37,6 +37,7 @@ export class ModeSelectionForm {
             builder.undo();
         if (selection === this.#buttons.length + 1)
             builder.redo();
-        builder.setEditMode(selection);
+        if (selection < this.#buttons.length)
+            builder.setEditMode(selection);
     }
 }

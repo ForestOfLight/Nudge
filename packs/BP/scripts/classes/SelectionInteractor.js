@@ -39,10 +39,9 @@ export class SelectionInteractor {
     static onPlayerChangeHotbarSlot(event) {
         const player = event.player;
         const builder = Builders.get(player.id);
-        if (!SelectionInteractor.isHoldingSimpleAxiomItem(player))
-            system.run(() => builder.deselect());
-        else
-            builder.setEditMode(); // MAKE DYNAMIC TO THE ITEM IN THE SLOT
+        if (SelectionInteractor.isHoldingSimpleAxiomItem(player))
+            builder.detectHeldItemForEditMode();
+        system.run(() => builder.deselect());
     }
 
     static handleUseWhileNudging(player, builder) {

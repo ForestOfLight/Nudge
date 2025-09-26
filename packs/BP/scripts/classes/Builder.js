@@ -1,4 +1,4 @@
-import { world } from "@minecraft/server";
+import { EntityComponentTypes, world } from "@minecraft/server";
 import { Selection } from "./Selection";
 import { EditLog } from "./EditLog";
 import { EditModes } from "./Modes/EditModes";
@@ -81,10 +81,21 @@ export class Builder {
         new ModeSelectionForm(this.getPlayer());
     }
 
+    detectHeldItemForEditMode() {
+        const player = this.getPlayer();
+        const inventoryContainer = player.getComponent(EntityComponentTypes.Inventory)?.container;
+        if (!inventoryContainer)
+            return false;
+        const slotItem = inventoryContainer.getItem(player.selectedSlotIndex);
+        const validModes = Object.keys(EditModes);
+        const newMode = validModes.find((mode) => ('simpleaxiom:' + mode.toLowerCase()) === slotItem?.typeId);
+        this.setEditMode(EditModes[newMode]);
+    }
+
     setEditMode(editMode) {
         switch (editMode) {
             case EditModes.Move:
-                this.editMode = new MoveMode(this);                
+                this.editMode = new MoveMode(this);
                 break;
             case EditModes.Clone:
                 this.editMode = void 0;

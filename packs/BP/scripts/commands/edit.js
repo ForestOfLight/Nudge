@@ -18,7 +18,7 @@ function givePlayerMenuItem(origin) {
     system.run(() => {
         const builder = Builders.get(player.id);
         const inventoryContainer = player.getComponent(EntityComponentTypes.Inventory)?.container;
-        const givenItemStack = inventoryContainer?.addItem(new ItemStack(builder.editMode.getItemId()));
+        const givenItemStack = inventoryContainer?.addItem(new ItemStack('simpleaxiom:move'));
         if (givenItemStack)
             player.sendMessage('§cFailed to give you the SimpleAxiom item.');
         else
