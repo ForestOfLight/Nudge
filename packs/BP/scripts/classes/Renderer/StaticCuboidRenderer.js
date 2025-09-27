@@ -3,7 +3,7 @@ import { CuboidRenderer } from "./CuboidRenderer";
 
 export class StaticCuboidRenderer extends CuboidRenderer {
     shape;
-    color = { red: 1, green: 1, blue: 1 };
+    color;
 
     constructor(min, max, rgbColor) {
         super(min, max);

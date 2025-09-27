@@ -1,4 +1,4 @@
-export const EditTypes = Object.freeze({
+export const EditModes = Object.freeze({
     Move: 0,
     Clone: 1,
     Delete: 2

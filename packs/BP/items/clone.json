@@ -1,0 +1,18 @@
+{
+  "format_version": "1.20.30",
+  "minecraft:item": {
+    "description": {
+      "identifier": "simpleaxiom:clone",
+      "category": "Items"
+    },
+    "components": {
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": {
+        "texture": "simpleaxiom:clone"
+      },
+      "minecraft:display_name": {
+        "value": "SimpleAxiom"
+      }
+    }
+  }
+}

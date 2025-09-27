@@ -5,7 +5,6 @@ import { Vector } from "../../lib/Vector";
 
 export class Edit {
     dimension;
-    shouldExitAfterConfirm = true;
 
     constructor(selection) {
         this.dimension = selection.dimension;
@@ -30,12 +29,15 @@ export class Edit {
     createStructure(min, max) {
         this.replaceBlockInArea(min, max, 'minecraft:air', 'minecraft:structure_void');
         const structureID = StructureIDGenerator.getNext();
-        const structure = world.structureManager.createFromWorld(structureID, this.dimension, min, max, { saveMode: StructureSaveMode.Memory });
+        const structureSaveOptions = { saveMode: StructureSaveMode.Memory, includeEntities: false };
+        const structure = world.structureManager.createFromWorld(structureID, this.dimension, min, max, structureSaveOptions);
+        this.replaceBlockInArea(min, max, 'minecraft:structure_void', 'minecraft:air');
         return structure;
     }
 
-    pasteStructure(structure, location) {
-        world.structureManager.place(structure.id, this.dimension, location);
+    pasteStructure(structure, location, mirrorAxis = void 0, rotation = void 0) {
+        const structurePlaceOptions = { mirror: mirrorAxis, rotation: rotation };
+        world.structureManager.place(structure.id, this.dimension, location, structurePlaceOptions);
         const max = Vector.from(location).add(structure.size);
         this.replaceBlockInArea(location, max, 'minecraft:structure_void', 'minecraft:air');
     }
