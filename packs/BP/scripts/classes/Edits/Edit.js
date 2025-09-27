@@ -35,8 +35,9 @@ export class Edit {
         return structure;
     }
 
-    pasteStructure(structure, location) {
-        world.structureManager.place(structure.id, this.dimension, location);
+    pasteStructure(structure, location, mirrorAxis = void 0, rotation = void 0) {
+        const structurePlaceOptions = { mirror: mirrorAxis, rotation: rotation };
+        world.structureManager.place(structure.id, this.dimension, location, structurePlaceOptions);
         const max = Vector.from(location).add(structure.size);
         this.replaceBlockInArea(location, max, 'minecraft:structure_void', 'minecraft:air');
     }

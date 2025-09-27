@@ -1,182 +1,79 @@
-import { DebugBox, debugDrawer, DebugLine, DebugArrow } from "@minecraft/debug-utilities";
+import { debugDrawer, DebugLine, DebugArrow } from "@minecraft/debug-utilities";
 import { Vector } from "../../lib/Vector";
-import { system } from "@minecraft/server";
 import { CuboidRenderer } from "./CuboidRenderer";
+import { BlockVolume } from "@minecraft/server";
+import { MirrorRotateRenderer } from "./MirrorRotateRenderer";
+import { RGBColor } from "./RGBColor";
 
 export class NudgingCuboidRenderer extends CuboidRenderer {
+    initialVolume;
     playerMovement;
-    blockLocations = {};
-    shouldStop = false;
-    drawBuildRunner = null;
-    shapes = [];
-    movementDirectionArrowShape;
+    mirrorRotateRenderer;
+    shouldRedraw = false;
+    
+    edgeShapes = [];
+    directionArrowShape;
 
     constructor(min, max, playerMovement) {
         super(min, max);
+        this.initialVolume = new BlockVolume(min, max);
         this.playerMovement = playerMovement;
-        this.drawCuboid();
+        this.mirrorRotateRenderer = new MirrorRotateRenderer(this.getCenterpoint());
     }
 
-    destroy() {
-        this.shouldStop = true;
-        // system.clearJob(this.drawBuildRunner);
-        this.shapes.forEach(shape => debugDrawer.removeShape(shape));
-        debugDrawer.removeShape(this.movementDirectionArrowShape);
-        this.shapes = [];
+    destroy() {        
+        this.edgeShapes.forEach(shape => debugDrawer.removeShape(shape));
+        if (this.directionArrowShape)
+            debugDrawer.removeShape(this.directionArrowShape);
+        this.mirrorRotateRenderer?.destroy();
+        this.edgeShapes = [];
+        this.directionArrowShape = void 0;
+        this.mirrorRotateRenderer = void 0;
     }
 
     setLocation(min, max) {
-        if (this.arrowShouldMove(min, max))
-            this.drawMovementDirectionArrow();
         const oldMin = this.blockVolume.getMin();
         const oldMax = this.blockVolume.getMax();
-        if (min.distance(oldMin) === 0 && max.distance(oldMax) === 0)
-            return;
-        super.setLocation(min, max);
+        if (min.distance(oldMin) !== 0 || max.distance(oldMax) !== 0 || this.shouldRedraw) {
+            super.setLocation(min, max);
+            this.mirrorRotateRenderer.setLocation(this.getCenterpoint());
+            this.shouldRedraw = false;
+        }
+        if (this.shouldDirectionArrowMove(min, max))
+            this.drawDirectionArrow();
+    }
+
+    setMirrorAxis(mirrorAxis) {
+        this.mirrorRotateRenderer.setMirrorAxis(mirrorAxis);
+        this.shouldRedraw = true;
+    }
+
+    setRotation(rotation) {
+        this.mirrorRotateRenderer.setRotation(rotation);
+        this.shouldRedraw = true;
+    }
+
+    getCenterpoint() {
+        const min = Vector.from(this.blockVolume.getMin());
+        const max = Vector.from(this.blockVolume.getMax());
+        const relativeCenterpoint = max.subtract(min).add(new Vector(1, 1, 1)).multiply(0.5);
+        return min.add(relativeCenterpoint);
     }
 
     drawCuboid() {
-        this.shapes.forEach(shape => {
-            debugDrawer.removeShape(shape);
-        });
-        this.getMovingCuboidEdgeShapes().forEach(shape => {
-            this.drawShape(shape);
-        });
-    }
-
-    drawBuild(blockLocations) {
-        this.blockLocations = blockLocations;
-        // this.drawRunner = system.runJob(this.greedyMeshBiomeEdgeLocations());
+        this.edgeShapes.forEach(shape => debugDrawer.removeShape(shape));
+        this.edgeShapes.length = 0;
+        this.getMovingCuboidEdgeShapes().forEach(shape => this.drawEdgeShape(shape) );
     }
     
-    drawShape(shape) {
-        this.shapes.push(shape);
+    drawEdgeShape(shape) {
+        this.edgeShapes.push(shape);
         debugDrawer.addShape(shape);
-    }
-
-    *greedyMeshBiomeEdgeLocations() {
-        for (let axis = 0; axis < 3; axis++)
-            this.drawOriginalCuboid();
-            yield* this.drawAxisEdges(axis);
-    }
-    
-    *drawAxisEdges(axis) {
-        const span = [this.blockVolume.getSpan().x, this.blockVolume.getSpan().y, this.blockVolume.getSpan().z];
-        const middleAxis = (axis + 1) % 3;
-        const finalAxis = (axis + 2) % 3;
-        const localLocation = [0, 0, 0];
-        const searchDirection = [0, 0, 0];
-        searchDirection[axis] = 1;
-
-        localLocation[axis] = -1;
-        while (localLocation[axis] < span[axis]) {
-            const mask = this.buildMask(localLocation, middleAxis, finalAxis, span, searchDirection);
-            yield void 0;
-            localLocation[axis]++;
-            yield* this.generateMeshFromMask(mask, middleAxis, finalAxis, span, localLocation);
-        }
-    }
-
-    buildMask(localLocation, middleAxis, finalAxis, span, searchDirection) {
-        const mask = [];
-        let maskIndex = 0;
-        const volumeLocation = this.blockVolume.getMin();
-        for (localLocation[finalAxis] = 0; localLocation[finalAxis] < span[finalAxis]; ++localLocation[finalAxis]) {
-            for (localLocation[middleAxis] = 0; localLocation[middleAxis] < span[middleAxis]; ++localLocation[middleAxis]) {
-                const currentBiome = this.isBlockAt({
-                    x: localLocation[0] + volumeLocation.x,
-                    y: localLocation[1] + volumeLocation.y,
-                    z: localLocation[2] + volumeLocation.z
-                });
-                const nextBlockBiome = this.isBlockAt({
-                    x: localLocation[0] + searchDirection[0] + volumeLocation.x,
-                    y: localLocation[1] + searchDirection[1] + volumeLocation.y,
-                    z: localLocation[2] + searchDirection[2] + volumeLocation.z
-                });
-                if (currentBiome === void 0 || nextBlockBiome === void 0) {
-                    mask[maskIndex++] = false;
-                    continue;
-                }
-                mask[maskIndex++] = currentBiome !== nextBlockBiome;
-            }
-        }
-        return mask;
-    }
-
-    *generateMeshFromMask(mask, middleAxis, finalAxis, span, localLocation) {
-        let maskIndex = 0;
-        for (let finalAxisIndex = 0; finalAxisIndex < span[finalAxis]; ++finalAxisIndex) {
-            let middleAxisIndex = 0;
-            while (middleAxisIndex < span[middleAxis]) {
-                if (this.shouldStop)
-                    return;
-                if (mask[maskIndex]) {
-                    const { quadWidth, quadHeight } = this.findQuad(mask, maskIndex, middleAxisIndex, finalAxisIndex, span, middleAxis, finalAxis);
-                    localLocation[middleAxis] = middleAxisIndex;
-                    localLocation[finalAxis] = finalAxisIndex;
-                    this.drawQuad(localLocation, middleAxis, finalAxis, quadWidth, quadHeight);
-
-                    this.clearMaskOfQuad(mask, maskIndex, quadWidth, quadHeight, span[middleAxis]);
-                    middleAxisIndex += quadWidth;
-                    maskIndex += quadWidth;
-                } else {
-                    middleAxisIndex++;
-                    maskIndex++;
-                }
-                yield void 0;
-            }
-        }
-    }
-
-    findQuad(mask, maskIndex, middleAxisIndex, finalAxisIndex, span, middleAxis, finalAxis) {
-        let quadWidth = 1;
-        while (middleAxisIndex + quadWidth < span[middleAxis] && mask[maskIndex + quadWidth])
-            quadWidth++;
-
-        let quadHeight = 1;
-        let done = false;
-        while (finalAxisIndex + quadHeight < span[finalAxis]) {
-            for (let k = 0; k < quadWidth; k++) {
-                if (!mask[maskIndex + k + quadHeight * span[middleAxis]]) {
-                    done = true;
-                    break;
-                }
-            }
-            if (done)
-                break;
-            quadHeight++;
-        }
-        return { quadWidth, quadHeight };
-    }
-
-    clearMaskOfQuad(mask, maskIndex, quadWidth, quadHeight, stride) {
-        for (let i = 0; i < quadHeight; i++) {
-            for (let j = 0; j < quadWidth; j++)
-                mask[maskIndex + j + i * stride] = false;
-        }
-    }
-
-    drawQuad(localLocation, middleAxis, finalAxis, quadWidth, quadHeight) {
-        const changeInMiddleAxis = [0, 0, 0];
-        changeInMiddleAxis[middleAxis] = quadWidth;
-        const changeInFinalAxis = [0, 0, 0];
-        changeInFinalAxis[finalAxis] = quadHeight;
-        const bound = new Vector(...changeInMiddleAxis).add(new Vector(...changeInFinalAxis));
-        
-        const worldLocation = Vector.from(this.blockVolume.getMin()).add(new Vector(...localLocation));
-        const sidedBox = new DebugBox(worldLocation);
-        sidedBox.bound = bound;
-        sidedBox.color = { red: 1, green: 1, blue: 1 };
-        this.drawShape(sidedBox);
-    }
-
-    isBlockAt(location) {
-        return this.blockLocations[Vector.from(location)];
     }
     
     getMovingCuboidEdgeShapes() {
         const min = this.blockVolume.getMin();
-        const max = Vector.from(this.blockVolume.getMax()).add({ x: 1, y: 1, z: 1 });
+        const max = Vector.from(this.blockVolume.getMax()).add(new Vector(1, 1, 1));
         const vertices = this.getVertices(min, max);
         const edges = this.getEdges();
         const debugLines = [];
@@ -195,19 +92,19 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
         if (isTouchingMin)
             line.color = this.getColorByAxis(startVertex, endVertex);
         else
-            line.color = { red: 1, green: 1, blue: 1 };
+            line.color = RGBColor.White;
         return line;
     }
 
     getColorByAxis(startLocation, endLocation) {
         const span = endLocation.subtract(startLocation);
         if (span.x !== 0)
-            return { red: 1, green: 0, blue: 0 };
+            return RGBColor.Red;
         if (span.y !== 0)
-            return { red: 0, green: 1, blue: 0 };
+            return RGBColor.Green;
         if (span.z !== 0)
-            return { red: 0/255, green: 162/255, blue: 255/255 };
-        return { red: 1, green: 1, blue: 1};
+            return RGBColor.Blue;
+        return RGBColor.White;
     }
 
     getVertices(min, max) {
@@ -232,31 +129,30 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
         ];
     }
 
-    drawMovementDirectionArrow() {
-        if (this.movementDirectionArrowShape)
-            debugDrawer.removeShape(this.movementDirectionArrowShape);
-        const arrowLocation = this.getArrowLocation(this.blockVolume.getMin(), this.blockVolume.getMax());
+    drawDirectionArrow() {
+        if (this.directionArrowShape)
+            debugDrawer.removeShape(this.directionArrowShape);
+        const arrowLocation = this.getArrowLocation();
         const arrow = new DebugArrow(arrowLocation.base, arrowLocation.head);
         arrow.color = this.getColorByAxis(arrowLocation.base, arrowLocation.head);
         arrow.headLength = 0.3;
         arrow.headRadius = 0.15;
         arrow.headSegments = 8;
-        this.movementDirectionArrowShape = arrow;
+        this.directionArrowShape = arrow;
         debugDrawer.addShape(arrow);
     }
 
-    getArrowLocation(min, max) {
-        const relativeCenterpoint = Vector.from(max).subtract(min).add(new Vector(1, 1, 1)).multiply(0.5);
-        const centerpoint = Vector.from(min).add(relativeCenterpoint);
-        const end = centerpoint.add(this.playerMovement.getMajorDirectionFacing().multiply(3));
-        return { base: centerpoint, head: end };
+    shouldDirectionArrowMove() {
+        if (!this.directionArrowShape)
+            return true;
+        const oldHead = Vector.from(this.directionArrowShape.endLocation);
+        const arrowLocation = this.getArrowLocation();
+        return oldHead.distance(arrowLocation.head) !== 0;
     }
 
-    arrowShouldMove(min, max) {
-        if (!this.movementDirectionArrowShape)
-            return true;
-        const oldHead = Vector.from(this.movementDirectionArrowShape.endLocation);
-        const arrowLocation = this.getArrowLocation(min, max);
-        return oldHead.distance(arrowLocation.head) !== 0;
+    getArrowLocation() {
+        const centerpoint = this.getCenterpoint();
+        const end = centerpoint.add(this.playerMovement.getMajorDirectionFacing().multiply(3));
+        return { base: centerpoint, head: end };
     }
 }

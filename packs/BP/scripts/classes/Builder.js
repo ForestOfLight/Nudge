@@ -82,6 +82,10 @@ export class Builder {
         new ModeSelectionForm(this.getPlayer());
     }
 
+    mirrorOrRotate() {
+        this.selection.mirrorOrRotate();
+    }
+
     detectHeldItemForEditMode() {
         const player = this.getPlayer();
         const inventoryContainer = player.getComponent(EntityComponentTypes.Inventory)?.container;

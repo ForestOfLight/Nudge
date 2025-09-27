@@ -46,10 +46,10 @@ export class SelectionInteractor {
 
     static handleUseWhileNudging(player, builder) {
         const playerMovement = new PlayerMovement(player);
-        if (playerMovement.isJumping())
+        if (playerMovement.isSneaking())
+            builder.mirrorOrRotate();
+        else if (playerMovement.isJumping())
             builder.exitNudgeMode();
-        else if (playerMovement.isSneaking())
-            throw new Error('Flip/Rotate is not yet implemented.');
         else
             builder.confirmEdit();
     }

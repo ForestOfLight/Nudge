@@ -1,3 +1,4 @@
+import { StructureMirrorAxis, StructureRotation } from "@minecraft/server";
 import { Vector } from "../lib/Vector";
 import { SelectionRenderer } from "./Renderer/SelectionRenderer";
 
@@ -7,6 +8,8 @@ export class Selection {
     to;
     minOffset;
     maxOffset;
+    mirrorAxis = StructureMirrorAxis.None;
+    rotation = StructureRotation.None;
     renderer;
 
     constructor(dimension, from, to = void 0) {
@@ -61,23 +64,27 @@ export class Selection {
     endNudge() {
         this.renderer.disableMovementMode();
     }
+
+    getNudgeOffset() {
+        return this.minOffset.floor();
+    }
     
     nudgeOffset(minOffset, maxOffset) {
         this.minOffset = this.minOffset.add(minOffset);
         this.maxOffset = this.maxOffset.add(maxOffset);
         const { min, max } = this.getBounds();
-        const nudgedMin = min.add(this.minOffset).floor();
-        const nudgedMax = max.add(this.maxOffset).floor();
+        let nudgedMin = min.add(this.minOffset).floor();
+        let nudgedMax = max.add(this.maxOffset).floor();
         this.renderer.setMovementLocation(nudgedMin, nudgedMax);
     }
 
     getBounds() {
-        const min = Vector.from({
+        let min = Vector.from({
             x: Math.min(this.to.x, this.from.x),
             y: Math.min(this.to.y, this.from.y),
             z: Math.min(this.to.z, this.from.z)
         });
-        const max = Vector.from({
+        let max = Vector.from({
             x: Math.max(this.to.x, this.from.x),
             y: Math.max(this.to.y, this.from.y),
             z: Math.max(this.to.z, this.from.z)
@@ -88,6 +95,43 @@ export class Selection {
     getSize() {
         const { min, max } = this.getBounds();
         return max.subtract(min);
+    }
+
+    mirrorOrRotate() {
+        const mirrorOrRotation = this.getNextMirrorOrRotation();
+        if (Object.values(StructureMirrorAxis).includes(mirrorOrRotation))
+            this.mirrorAxis = mirrorOrRotation;
+        else
+            this.mirrorAxis = StructureMirrorAxis.None;
+        if (Object.values(StructureRotation).includes(mirrorOrRotation))
+            this.rotation = mirrorOrRotation;
+        else
+            this.rotation = StructureRotation.None;
+        this.renderer.setMirrorAxis(this.mirrorAxis);
+        this.renderer.setRotation(this.rotation);
+
+        if (Object.values(StructureRotation).includes(mirrorOrRotation)) {
+            const { min, max } = this.getBounds();
+            const nudgedMin = min.add(this.minOffset);
+            const nudgedMax = max.add(this.maxOffset);
+            const size = Vector.from(nudgedMax).subtract(nudgedMin);
+            this.nudgeOffset(new Vector(0, 0, 0), new Vector(size.z - size.x, 0, size.x - size.z));
+        }
+    }
+
+    getNextMirrorOrRotation() {
+        const queue = [
+            StructureRotation.Rotate90,
+            StructureRotation.Rotate180,
+            StructureRotation.Rotate270,
+            StructureMirrorAxis.X,
+            StructureMirrorAxis.Z,
+            StructureMirrorAxis.XZ
+        ];
+        const currMirrorOrRotation = queue.findIndex(mirrorOrRotation => 
+            mirrorOrRotation === this.mirrorAxis || mirrorOrRotation === this.rotation
+        );
+        return queue[currMirrorOrRotation + 1];
     }
 
     updateRendererLocation() {

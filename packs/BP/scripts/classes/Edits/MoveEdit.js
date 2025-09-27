@@ -1,34 +1,43 @@
+import { Vector } from "../../lib/Vector";
 import { Edit } from "./Edit";
 
 export class MoveEdit extends Edit {
-    cutLocation;
-    pasteLocation;
-    size;
+    cutBounds;
+    pasteBounds;
     cutStructure;
     replacedStructure;
+    mirrorAxis;
+    rotation;
 
     constructor(selection) {
         super(selection);
         const { min, max } = selection.getBounds();
-        this.cutLocation = min;
-        this.pasteLocation = min.add(selection.minOffset);
-        this.size = selection.getSize();
+        this.cutBounds = {
+            min: Vector.from(min),
+            max: Vector.from(max)
+        };
+        this.pasteBounds = {
+            min: Vector.from(min).add(selection.minOffset),
+            max: Vector.from(max).add(selection.maxOffset)
+        };
+        this.mirrorAxis = selection.mirrorAxis;
+        this.rotation = selection.rotation;
     }
 
     do() {
-        this.cutStructure = this.createStructure(this.cutLocation, this.cutLocation.add(this.size));
-        this.replacedStructure = this.createStructure(this.pasteLocation, this.pasteLocation.add(this.size));
-        this.clearArea(this.cutLocation, this.cutLocation.add(this.size));
-        this.pasteStructure(this.cutStructure, this.pasteLocation);
+        this.cutStructure = this.createStructure(this.cutBounds.min, this.cutBounds.max);
+        this.replacedStructure = this.createStructure(this.pasteBounds.min, this.pasteBounds.max);
+        this.clearArea(this.cutBounds.min, this.cutBounds.max);
+        this.pasteStructure(this.cutStructure, this.pasteBounds.min, this.mirrorAxis, this.rotation);
     }
 
     undo() {
-        this.clearArea(this.pasteLocation, this.pasteLocation.add(this.size));
-        this.pasteStructure(this.replacedStructure, this.pasteLocation);
-        this.pasteStructure(this.cutStructure, this.cutLocation);
+        this.clearArea(this.pasteBounds.min, this.pasteBounds.max);
+        this.pasteStructure(this.replacedStructure, this.pasteBounds.min);
+        this.pasteStructure(this.cutStructure, this.cutBounds.min);
     }
 
     getSuccessFeedback() {
-        return `§aMoved selection to ${this.pasteLocation.floor()}.`;
+        return `§aMoved selection to ${this.pasteBounds.min.floor()}.`;
     }
 }
