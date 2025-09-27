@@ -110,7 +110,7 @@ export class Selection {
         this.renderer.setMirrorAxis(this.mirrorAxis);
         this.renderer.setRotation(this.rotation);
 
-        if (Object.values(StructureRotation).includes(mirrorOrRotation)) {
+        if (Object.values(StructureRotation).includes(mirrorOrRotation) || mirrorOrRotation === StructureMirrorAxis.X) {
             const { min, max } = this.getBounds();
             const nudgedMin = min.add(this.minOffset);
             const nudgedMax = max.add(this.maxOffset);

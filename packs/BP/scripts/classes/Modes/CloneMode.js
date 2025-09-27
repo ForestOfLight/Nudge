@@ -31,7 +31,7 @@ export class CloneMode extends Mode {
         this.enterNudgeMode();
         Feedback.send(this.player, 
             `§a${Feedback.useIcon(this.player)} to confirm.\n`
-            + `${Feedback.sneakIcon(this.player)} + ${Feedback.useIcon(this.player)} to flip/rotate.\n`
+            + `${Feedback.sneakIcon(this.player)} + ${Feedback.useIcon(this.player)} to mirror/rotate.\n`
             + `${Feedback.jumpIcon(this.player)} + ${Feedback.useIcon(this.player)} to cancel.`
         );
     }
