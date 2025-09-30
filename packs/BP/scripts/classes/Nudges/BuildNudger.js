@@ -26,6 +26,7 @@ export class BuildNudger {
 
     setSelection(selection) {
         this.selection = selection;
+        this.selection = selection;
     }
 
     onNudgeTick() {

@@ -74,7 +74,7 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
     getMovingCuboidEdgeShapes() {
         const min = this.blockVolume.getMin();
         const max = Vector.from(this.blockVolume.getMax()).add(new Vector(1, 1, 1));
-        const vertices = this.getVertices(min, max);
+        const vertices = this.getVertexIndexes(min, max);
         const edges = this.getEdges();
         const debugLines = [];
         for (const [startIdx, endIdx] of edges) {
@@ -105,28 +105,6 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
         if (span.z !== 0)
             return RGBColor.Blue;
         return RGBColor.White;
-    }
-
-    getVertices(min, max) {
-        return [
-            new Vector(min.x, min.y, min.z),
-            new Vector(max.x, min.y, min.z),
-            new Vector(max.x, max.y, min.z),
-            new Vector(min.x, max.y, min.z),
-            new Vector(min.x, min.y, max.z),
-            new Vector(max.x, min.y, max.z),
-            new Vector(max.x, max.y, max.z),
-            new Vector(min.x, max.y, max.z)
-        ];
-    }
-
-    getEdges() {
-        return [ // Arranged in pairs of smaller (closer to min) and larger (closer to max) vertices
-            [0, 1], [0, 3], [0, 4],
-            [1, 2], [3, 2], [4, 5],
-            [5, 6], [7, 6], [4, 7],
-            [1, 5], [2, 6], [3, 7]
-        ];
     }
 
     drawDirectionArrow() {

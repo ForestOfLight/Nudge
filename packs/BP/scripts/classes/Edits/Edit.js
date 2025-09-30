@@ -1,4 +1,4 @@
-import { world, StructureSaveMode, BlockPermutation } from "@minecraft/server";
+import { world, StructureSaveMode } from "@minecraft/server";
 import { BlockVolume } from "@minecraft/server";
 import { StructureIDGenerator } from "../StructureIDGenerator";
 import { Vector } from "../../lib/Vector";
@@ -20,10 +20,6 @@ export class Edit {
 
     getSuccessFeedback() {
         throw new Error('getSuccessFeedback() must be implemented');
-    }
-
-    static getDuringSelectionFeedback(player) {
-        throw new Error('getDuringSelectionFeedback() must be implemented');
     }
 
     createStructure(min, max) {

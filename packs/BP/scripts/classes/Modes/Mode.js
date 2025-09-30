@@ -37,6 +37,10 @@ export class Mode {
         throw new Error('createNewEdit() must be implemented.');
     }
 
+    mirrorOrRotate() {
+        throw new Error('mirrorOrRotate() must be implemented.');
+    }
+
     getItemId() {
         throw new Error('getItemId() must be implemented.');
     }

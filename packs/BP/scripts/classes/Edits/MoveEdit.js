@@ -9,7 +9,7 @@ export class MoveEdit extends Edit {
     mirrorAxis;
     rotation;
 
-    constructor(selection) {
+    constructor(selection, mirrorRotateOptions) {
         super(selection);
         const { min, max } = selection.getBounds();
         this.cutBounds = {
@@ -20,8 +20,8 @@ export class MoveEdit extends Edit {
             min: Vector.from(min).add(selection.minOffset),
             max: Vector.from(max).add(selection.maxOffset)
         };
-        this.mirrorAxis = selection.mirrorAxis;
-        this.rotation = selection.rotation;
+        this.mirrorAxis = mirrorRotateOptions.mirrorAxis;
+        this.rotation = mirrorRotateOptions.rotation;
     }
 
     do() {

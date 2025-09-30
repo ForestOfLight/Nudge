@@ -9,7 +9,7 @@ export class CloneEdit extends Edit {
     mirrorAxis;
     rotation;
 
-    constructor(selection, copyStructure = void 0) {
+    constructor(selection, mirrorRotateOptions, copyStructure = void 0) {
         super(selection);
         const { min, max } = selection.getBounds();
         this.copyBounds = {
@@ -20,8 +20,8 @@ export class CloneEdit extends Edit {
             min: Vector.from(min).add(selection.minOffset),
             max: Vector.from(max).add(selection.maxOffset)
         };
-        this.mirrorAxis = selection.mirrorAxis;
-        this.rotation = selection.rotation;
+        this.mirrorAxis = mirrorRotateOptions.mirrorAxis;
+        this.rotation = mirrorRotateOptions.rotation;
         this.copyStructure = copyStructure;
     }
 

@@ -9,6 +9,9 @@
     },
     "simpleaxiom:delete": {
       "textures": "textures/items/delete"
+    },
+    "simpleaxiom:stack": {
+      "textures": "textures/items/stack"
     }
   }
 }

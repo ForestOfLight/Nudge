@@ -6,6 +6,7 @@ import { ModeSelectionForm } from "./Modes/ModeSelectionForm";
 import { MoveMode } from "./Modes/MoveMode";
 import { DeleteMode } from "./Modes/DeleteMode";
 import { CloneMode } from "./Modes/CloneMode";
+import { StackMode } from "./Modes/StackMode";
 
 export class Builder {
     playerId;
@@ -83,7 +84,7 @@ export class Builder {
     }
 
     mirrorOrRotate() {
-        this.selection.mirrorOrRotate();
+        this.editMode.mirrorOrRotate();
     }
 
     detectHeldItemForEditMode() {
@@ -107,6 +108,9 @@ export class Builder {
                 break;
             case EditModes.Delete:
                 this.editMode = new DeleteMode(this);
+                break;
+            case EditModes.Stack:
+                this.editMode = new StackMode(this);
                 break;
             default:
                 this.editMode = new MoveMode(this);
