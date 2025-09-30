@@ -14,8 +14,13 @@ export class EditLog {
         const editToUndo = this.recentEdits.pop();
         if (!editToUndo)
             throw new UndoError('No edits left to undo.');
+        try {
+            editToUndo.undo();
+        } catch(error) {
+            this.recentEdits.push(editToUndo);
+            throw error;
+        }
         this.undoneEdits.push(editToUndo);
-        editToUndo.undo();
     }
 
     undoMany(num) {
@@ -35,8 +40,13 @@ export class EditLog {
         const editToRedo = this.undoneEdits.pop();
         if (!editToRedo)
             throw new RedoError('No edits left to redo.');
+        try {
+            editToRedo.do();
+        } catch(error) {
+            this.undoneEdits.push(editToRedo);
+            throw error;
+        }
         this.recentEdits.push(editToRedo);
-        editToRedo.do();
     }
 
     redoMany(num) {

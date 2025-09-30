@@ -10,7 +10,7 @@ export class StackEdit extends Edit {
     copyStructure;
     replacedStructure;
 
-    constructor(selection, copyStructure = void 0) {
+    constructor(selection) {
         super(selection);
         const { min, max } = selection.getBounds();
         this.copyBounds = { min, max };
@@ -23,12 +23,10 @@ export class StackEdit extends Edit {
         const [pasteMin, pasteMax] = Vector.sort(min, maxPasteLocation);
         this.pasteBounds = { min: pasteMin, max: pasteMax };
         this.stackableSize = selection.getSize().add(new Vector(1, 1, 1));
-        this.copyStructure = copyStructure;
     }
 
     do() {
-        if (!this.copyStructure)
-            this.copyStructure = this.createStructure(this.copyBounds.min, this.copyBounds.max);
+        this.copyStructure = this.createStructure(this.copyBounds.min, this.copyBounds.max);
         this.replacedStructure = this.createStructure(this.completeBounds.min, this.completeBounds.max);
         for (let y = this.pasteBounds.min.y; y <= this.pasteBounds.max.y; y += this.stackableSize.y) {
             for (let x = this.pasteBounds.min.x; x <= this.pasteBounds.max.x; x += this.stackableSize.x) {
