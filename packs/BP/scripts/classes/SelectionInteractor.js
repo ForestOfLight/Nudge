@@ -22,6 +22,14 @@ export class SelectionInteractor {
         event.cancel = true;
         system.run(() => SelectionInteractor.onUse(player));
     }
+    
+    static onPlayerChangeHotbarSlot(event) {
+        const player = event.player;
+        const builder = Builders.get(player.id);
+        if (SelectionInteractor.isHoldingSimpleAxiomItem(player))
+            builder.detectHeldItemForEditMode();
+        system.run(() => builder.deselect());
+    }
 
     static onHit(player, block) {
         const builder = Builders.get(player.id);
@@ -35,15 +43,7 @@ export class SelectionInteractor {
         else
             SelectionInteractor.handleUseWhileSelecting(player, builder)
     }
-
-    static onPlayerChangeHotbarSlot(event) {
-        const player = event.player;
-        const builder = Builders.get(player.id);
-        if (SelectionInteractor.isHoldingSimpleAxiomItem(player))
-            builder.detectHeldItemForEditMode();
-        system.run(() => builder.deselect());
-    }
-
+    
     static handleUseWhileNudging(player, builder) {
         const playerMovement = new PlayerMovement(player);
         if (playerMovement.isSneaking())

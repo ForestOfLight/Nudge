@@ -1,4 +1,4 @@
-import { world } from "@minecraft/server";
+import { system, world } from "@minecraft/server";
 import { Builder } from "./Builder";
 
 export class Builders {
@@ -19,7 +19,10 @@ export class Builders {
     }
 
     static onJoin(playerId) {
-        this.add(playerId);
+        system.run(() => {
+            if (world.getEntity(playerId))
+                this.add(playerId);
+        });
     }
 
     static onLeave(playerId) {

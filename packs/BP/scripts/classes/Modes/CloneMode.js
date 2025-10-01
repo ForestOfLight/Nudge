@@ -48,7 +48,7 @@ export class CloneMode extends Mode {
     }
 
     createNewEdit() {
-        return new CloneEdit(this.builder.selection, { mirror: this.mirrorAxis, rotation: this.rotation }, this.copyStructure);
+        return new CloneEdit(this.builder.selection, { mirrorAxis: this.mirrorAxis, rotation: this.rotation }, this.copyStructure);
     }
 
     mirrorOrRotate() {
