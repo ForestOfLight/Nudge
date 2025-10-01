@@ -65,7 +65,7 @@ export class CloneMode extends Mode {
         selection.renderer.setMirrorAxis(this.mirrorAxis);
         selection.renderer.setRotation(this.rotation);
 
-        if (Object.values(StructureRotation).includes(mirrorOrRotation) || mirrorOrRotation === StructureMirrorAxis.X) {
+        if (Object.values(StructureRotation).includes(mirrorOrRotation) || mirrorOrRotation === void 0) {
             const { min, max } = selection.getBounds();
             const nudgedMin = min.add(selection.minOffset);
             const nudgedMax = max.add(selection.maxOffset);
@@ -76,12 +76,12 @@ export class CloneMode extends Mode {
 
     getNextMirrorOrRotation() {
         const queue = [
-            StructureRotation.Rotate90,
-            StructureRotation.Rotate180,
-            StructureRotation.Rotate270,
             StructureMirrorAxis.X,
             StructureMirrorAxis.Z,
-            StructureMirrorAxis.XZ
+            StructureMirrorAxis.XZ,
+            StructureRotation.Rotate90,
+            StructureRotation.Rotate180,
+            StructureRotation.Rotate270
         ];
         const currMirrorOrRotation = queue.findIndex(mirrorOrRotation => 
             mirrorOrRotation === this.mirrorAxis || mirrorOrRotation === this.rotation
