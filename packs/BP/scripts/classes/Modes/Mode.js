@@ -41,6 +41,10 @@ export class Mode {
         throw new Error('mirrorOrRotate() must be implemented.');
     }
 
+    setNudgeLocation(min) {
+        this.builder.selection.setNudgeLocation(min);
+    }
+
     getItemId() {
         throw new Error('getItemId() must be implemented.');
     }

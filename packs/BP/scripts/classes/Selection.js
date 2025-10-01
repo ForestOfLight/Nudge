@@ -75,6 +75,16 @@ export class Selection {
         this.renderer.setMovementLocation(nudgedMin, nudgedMax);
     }
 
+    setNudgeLocation(min) {
+        const size = this.getSize();
+        const bounds = this.getBounds();
+        const newMin = Vector.from(min);
+        const newMax = newMin.add(size);
+        this.minOffset = newMin.subtract(bounds.min);
+        this.maxOffset = newMax.subtract(bounds.max);
+        this.renderer.setMovementLocation(newMin, newMax);
+    }
+
     getBounds() {
         let min = Vector.from({
             x: Math.min(this.to.x, this.from.x),

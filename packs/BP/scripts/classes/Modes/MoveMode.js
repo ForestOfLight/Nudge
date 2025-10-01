@@ -68,7 +68,7 @@ export class MoveMode extends Mode {
             const nudgedMin = min.add(selection.minOffset);
             const nudgedMax = max.add(selection.maxOffset);
             const size = Vector.from(nudgedMax).subtract(nudgedMin);
-            selection.nudgeOffset(new Vector(0, 0, 0), new Vector(size.z - size.x, 0, size.x - size.z));
+            selection.nudgeOffset(new Vector(), new Vector(size.z - size.x, 0, size.x - size.z));
         }
     }
 

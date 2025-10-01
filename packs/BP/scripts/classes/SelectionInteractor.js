@@ -5,6 +5,7 @@ import { world } from '@minecraft/server';
 import { playerChangeHotbarSlotEvent } from "../events/PlayerChangeHotbarSlotEvent";
 import { PlayerMovement } from "./PlayerMovement";
 import { EditModes } from "./Modes/EditModes";
+import { Vector } from "../lib/Vector";
 
 export class SelectionInteractor {
     static onPlayerBreakBlock(event) {
@@ -31,9 +32,29 @@ export class SelectionInteractor {
         system.run(() => builder.deselect());
     }
 
+    static onHereCommand(player) {
+        const builder = Builders.get(player.id);
+        if (!SelectionInteractor.isHoldingSimpleAxiomItem(player)) {
+            player.sendMessage('§cPlease hold the SimpleAxiom item to use this command.');
+            return;
+        }
+        const location = new Vector.from(player.location).floor();
+        if (builder.isNudging()) {
+            builder.setNudgeLocation(location);
+            return;
+        }
+        if (builder.hasSelection())
+            builder.extendSelect(location);
+        else
+            builder.startSelection(player.dimension, location);
+    }
+
     static onHit(player, block) {
         const builder = Builders.get(player.id);
-        builder.startSelection(block.dimension, block.location);
+        if (builder.isNudging())
+            builder.setNudgeLocation(block.location);
+        else
+            builder.startSelection(block.dimension, block.location);
     }
 
     static onUse(player) {

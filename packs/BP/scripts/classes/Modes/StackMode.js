@@ -42,6 +42,10 @@ export class StackMode extends Mode {
         return new StackEdit(this.builder.selection);
     }
 
+    setNudgeLocation(min) {
+        return;
+    }
+
     getItemId() {
         return 'simpleaxiom:stack';
     }

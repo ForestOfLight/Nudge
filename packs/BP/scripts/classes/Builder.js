@@ -75,6 +75,10 @@ export class Builder {
         this.editMode.exitNudgeMode();
     }
 
+    setNudgeLocation(min) {
+        this.editMode.setNudgeLocation(min);
+    }
+
     confirmEdit() {
         this.editMode.confirmEdit();
     }
