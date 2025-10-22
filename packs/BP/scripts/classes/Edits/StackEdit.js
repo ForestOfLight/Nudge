@@ -25,7 +25,8 @@ export class StackEdit extends Edit {
         this.stackableSize = selection.getSize().add(new Vector(1, 1, 1));
     }
 
-    do() {
+    async do() {
+        await this.loadArea(this.completeBounds.min, this.completeBounds.max);
         this.copyStructure = this.createStructure(this.copyBounds.min, this.copyBounds.max);
         this.replacedStructure = this.createStructure(this.completeBounds.min, this.completeBounds.max);
         for (let y = this.pasteBounds.min.y; y <= this.pasteBounds.max.y; y += this.stackableSize.y) {
@@ -40,7 +41,8 @@ export class StackEdit extends Edit {
         }
     }
 
-    undo() {
+    async undo() {
+        await this.loadArea(this.completeBounds.min, this.completeBounds.max);
         this.clearArea(this.completeBounds.min, this.completeBounds.max);
         this.pasteStructure(this.replacedStructure, this.completeBounds.min);
     }

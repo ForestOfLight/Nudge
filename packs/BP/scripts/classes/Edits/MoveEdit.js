@@ -1,3 +1,4 @@
+import { system } from "@minecraft/server";
 import { Vector } from "../../lib/Vector";
 import { Edit } from "./Edit";
 
@@ -24,14 +25,18 @@ export class MoveEdit extends Edit {
         this.rotation = mirrorRotateOptions.rotation;
     }
 
-    do() {
+    async do() {
+        this.loadArea(this.cutBounds.min, this.cutBounds.max);
+        await this.loadArea(this.pasteBounds.min, this.pasteBounds.max);
         this.cutStructure = this.createStructure(this.cutBounds.min, this.cutBounds.max);
         this.replacedStructure = this.createStructure(this.pasteBounds.min, this.pasteBounds.max);
         this.clearArea(this.cutBounds.min, this.cutBounds.max);
         this.pasteStructure(this.cutStructure, this.pasteBounds.min, this.mirrorAxis, this.rotation);
     }
 
-    undo() {
+    async undo() {
+        this.loadArea(this.cutBounds.min, this.cutBounds.max);
+        await this.loadArea(this.pasteBounds.min, this.pasteBounds.max);
         this.clearArea(this.pasteBounds.min, this.pasteBounds.max);
         this.pasteStructure(this.replacedStructure, this.pasteBounds.min);
         this.pasteStructure(this.cutStructure, this.cutBounds.min);

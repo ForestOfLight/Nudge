@@ -62,7 +62,7 @@ export class SelectionInteractor {
         if (builder.isNudging())
             SelectionInteractor.handleUseWhileNudging(player, builder);
         else
-            SelectionInteractor.handleUseWhileSelecting(player, builder)
+            SelectionInteractor.handleUseWhileSelecting(player, builder);
     }
     
     static handleUseWhileNudging(player, builder) {
@@ -84,7 +84,7 @@ export class SelectionInteractor {
             builder.changeEditMode();
             return;
         }
-        const blockRaycast = player.getBlockFromViewDirection({ maxDistance: 100, includePassableBlocks: true });
+        const blockRaycast = player.getBlockFromViewDirection({ maxDistance: 1000, includePassableBlocks: true });
         if (!blockRaycast) {
             Feedback.send(player, '§cNo block found in view.');
             return;

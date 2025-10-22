@@ -25,14 +25,18 @@ export class CloneEdit extends Edit {
         this.copyStructure = copyStructure;
     }
 
-    do() {
+    async do() {
+        this.loadArea(this.copyBounds.min, this.copyBounds.max);
+        await this.loadArea(this.pasteBounds.min, this.pasteBounds.max);
         if (!this.copyStructure)
             this.copyStructure = this.createStructure(this.copyBounds.min, this.copyBounds.max);
         this.replacedStructure = this.createStructure(this.pasteBounds.min, this.pasteBounds.max);
         this.pasteStructure(this.copyStructure, this.pasteBounds.min, this.mirrorAxis, this.rotation);
     }
 
-    undo() {
+    async undo() {
+        this.loadArea(this.copyBounds.min, this.copyBounds.max);
+        await this.loadArea(this.pasteBounds.min, this.pasteBounds.max);
         this.clearArea(this.pasteBounds.min, this.pasteBounds.max);
         this.pasteStructure(this.replacedStructure, this.pasteBounds.min);
     }

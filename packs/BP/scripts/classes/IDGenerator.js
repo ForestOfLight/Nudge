@@ -1,6 +1,6 @@
 import { world } from "@minecraft/server";
 
-export class StructureIDGenerator {
+export class IDGenerator {
     static nextId = 0;
     static base = 'simpleaxiom:';
 
