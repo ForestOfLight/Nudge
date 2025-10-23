@@ -22,6 +22,7 @@ export class TickingArea {
     async load() {
         const entityLocations = this.getEntityLocations();
 
+        // Remove the tickingarea once https://report.bugs.mojang.com/servicedesk/customer/portal/6/MCPE-229817 is fixed.
         const firstEntityLocation = entityLocations[0];
         this.tickingAreaID = IDGenerator.getNext().replace(':', '-');
         this.dimension.runCommand(`/tickingarea add circle ${firstEntityLocation.x} ${firstEntityLocation.y} ${firstEntityLocation.z} 1 ${this.tickingAreaID} true`);

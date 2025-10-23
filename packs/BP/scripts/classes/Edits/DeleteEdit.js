@@ -15,14 +15,14 @@ export class DeleteEdit extends Edit {
 
     async do() {
         await this.loadArea(this.deleteMin, this.deleteMax);
-        this.replacedStructure = this.createStructure(this.deleteMin, this.deleteMax);
+        this.replacedStructure = this.createPartitionedStructure(this.deleteMin, this.deleteMax);
         this.clearArea(this.deleteMin, this.deleteMax);
     }
 
     async undo() {
         await this.loadArea(this.deleteMin, this.deleteMax);
         this.clearArea(this.deleteMin, this.deleteMax);
-        this.pasteStructure(this.replacedStructure, this.deleteMin);
+        this.pastePartitionedStructure(this.replacedStructure, this.deleteMin);
     }
 
     getSuccessFeedback() {

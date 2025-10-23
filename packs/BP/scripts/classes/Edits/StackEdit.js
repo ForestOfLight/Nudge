@@ -27,15 +27,15 @@ export class StackEdit extends Edit {
 
     async do() {
         await this.loadArea(this.completeBounds.min, this.completeBounds.max);
-        this.copyStructure = this.createStructure(this.copyBounds.min, this.copyBounds.max);
-        this.replacedStructure = this.createStructure(this.completeBounds.min, this.completeBounds.max);
+        this.copyStructure = this.createPartitionedStructure(this.copyBounds.min, this.copyBounds.max);
+        this.replacedStructure = this.createPartitionedStructure(this.completeBounds.min, this.completeBounds.max);
         for (let y = this.pasteBounds.min.y; y <= this.pasteBounds.max.y; y += this.stackableSize.y) {
             for (let x = this.pasteBounds.min.x; x <= this.pasteBounds.max.x; x += this.stackableSize.x) {
                 for (let z = this.pasteBounds.min.z; z <= this.pasteBounds.max.z; z += this.stackableSize.z) {
                     const pasteLocation = new Vector(x, y, z);
                     if (pasteLocation.distance(this.copyBounds.min) === 0)
                         continue;
-                    this.pasteStructure(this.copyStructure, pasteLocation);
+                    this.pastePartitionedStructure(this.copyStructure, pasteLocation);
                 }
             }
         }
@@ -44,7 +44,7 @@ export class StackEdit extends Edit {
     async undo() {
         await this.loadArea(this.completeBounds.min, this.completeBounds.max);
         this.clearArea(this.completeBounds.min, this.completeBounds.max);
-        this.pasteStructure(this.replacedStructure, this.completeBounds.min);
+        this.pastePartitionedStructure(this.replacedStructure, this.completeBounds.min);
     }
 
     getSuccessFeedback() {
