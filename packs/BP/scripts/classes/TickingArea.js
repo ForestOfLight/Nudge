@@ -1,6 +1,7 @@
-import { BlockVolume, Entity, system, world } from "@minecraft/server";
+import { BlockVolume, system, world } from "@minecraft/server";
 import { Vector } from "../lib/Vector";
 import { debugDrawer, DebugBox } from "@minecraft/debug-utilities";
+import { toChunkCoords } from "../utils";
 import { IDGenerator } from "./IDGenerator";
 
 const LOADER_RADIUS = 2;
@@ -40,11 +41,11 @@ export class TickingArea {
 
     async entitiesAreLoaded(resolve) {
         system.runTimeout(() => {
-            this.isLoadedChecker = system.runInterval(() => this.isLoaded(resolve), 1);
+            this.isLoadedChecker = system.runInterval(() => this.hasLoaded(resolve), 1);
         }, 5); // This Timeout is a hack solution to the problem of the tickingarea succeeding the isLoaded() check too early for the entities to actually load the area.
     }
 
-    async isLoaded(resolve) {
+    async hasLoaded(resolve) {
         const firstLoaderEntity = this.loaderEntities[0];
         if (firstLoaderEntity?.dimension.isChunkLoaded(firstLoaderEntity.location) || this.shouldStopChecking) {
             system.clearRun(this.isLoadedChecker);
@@ -56,8 +57,8 @@ export class TickingArea {
     
     getEntityLocations() {
         const entityLocations = [];
-        const minChunk = this.toChunkCoords(this.cuboid.getMin());
-        const maxChunk = this.toChunkCoords(this.cuboid.getMax());
+        const minChunk = toChunkCoords(this.cuboid.getMin());
+        const maxChunk = toChunkCoords(this.cuboid.getMax());
         const startX = minChunk.x + LOADER_RADIUS < maxChunk.x ? minChunk.x + LOADER_RADIUS : minChunk.x;
         const startZ = minChunk.z + LOADER_RADIUS < maxChunk.z ? minChunk.z + LOADER_RADIUS : minChunk.z;
         for (let x = startX; x <= maxChunk.x; x += LOADER_RADIUS) {
@@ -78,10 +79,6 @@ export class TickingArea {
         return chunkLocation;
     }
 
-    toChunkCoords(location) {
-        return Vector.from(location).multiply(1/16).floor();
-    }
-
     spawnLoaderEntities(entityLocations) {
         for(const location of entityLocations)
             this.spawnLoaderEntity(location);
@@ -97,5 +94,17 @@ export class TickingArea {
             debugDrawer.addShape(display);
             this.loaderEntities.push(display);
         }, 1);
+    }
+
+    static isVolumeLoaded(dimension, blockVolume) {
+        const minChunk = toChunkCoords(blockVolume.getMin());
+        const maxChunk = toChunkCoords(blockVolume.getMax());
+        for (let x = minChunk.x; x <= maxChunk.x; x++) {
+            for (let z = minChunk.z; z <= maxChunk.z; z++) {
+                if (!dimension.isChunkLoaded({ x: x*16, y: 0, z: z*16}))
+                    return false;
+            }
+        }
+        return true;
     }
 }
