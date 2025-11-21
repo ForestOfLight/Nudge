@@ -39,12 +39,14 @@ export class StackEdit extends Edit {
                 }
             }
         }
+        this.unloadArea();
     }
 
     async undo() {
         await this.loadArea(this.completeBounds.min, this.completeBounds.max);
         this.clearArea(this.completeBounds.min, this.completeBounds.max);
         this.pastePartitionedStructure(this.replacedStructure, this.completeBounds.min);
+        this.unloadArea();
     }
 
     getSuccessFeedback() {

@@ -3,6 +3,7 @@ import { Vector } from "../lib/Vector";
 import { debugDrawer, DebugBox } from "@minecraft/debug-utilities";
 import { toChunkCoords } from "../utils";
 import { IDGenerator } from "./IDGenerator";
+import { UnloadedVolumeError } from "./Errors/UnloadedVolumeError";
 
 const LOADER_RADIUS = 2;
 const LOADER_DIAMETER = LOADER_RADIUS * 2 + 1;
@@ -13,7 +14,7 @@ export class TickingArea {
     loaderEntities = [];
     isLoadedChecker = void 0;
     shouldStopChecking = false;
-    tickingAreaID = void 0;
+    tickingArea = void 0;
 
     constructor(dimension, from, to) {
         this.dimension = dimension;
@@ -25,8 +26,11 @@ export class TickingArea {
 
         // Remove the tickingarea once https://report.bugs.mojang.com/servicedesk/customer/portal/6/MCPE-229817 is fixed.
         const firstEntityLocation = entityLocations[0];
-        this.tickingAreaID = IDGenerator.getNext().replace(':', '-');
-        this.dimension.runCommand(`/tickingarea add circle ${firstEntityLocation.x} ${firstEntityLocation.y} ${firstEntityLocation.z} 1 ${this.tickingAreaID} true`);
+        const tickingAreaID = IDGenerator.getNext().replace(':', '-');
+        const tickingAreaOptions = { dimension: this.dimension, from: firstEntityLocation, to: firstEntityLocation };
+        if (!world.tickingAreaManager.hasCapacity(tickingAreaOptions))
+            throw new UnloadedVolumeError("TickingArea could not be added because there are already too many ticking chunks.");
+        this.tickingArea = await world.tickingAreaManager.createTickingArea(tickingAreaID, tickingAreaOptions);
 
         this.spawnLoaderEntities(entityLocations);
         return new Promise(async (resolve) => this.entitiesAreLoaded(resolve));
@@ -50,7 +54,7 @@ export class TickingArea {
         if (firstLoaderEntity?.dimension.isChunkLoaded(firstLoaderEntity.location) || this.shouldStopChecking) {
             system.clearRun(this.isLoadedChecker);
             this.shouldStopChecking = false;
-            this.dimension.runCommand(`/tickingarea remove ${this.tickingAreaID}`);
+            world.tickingAreaManager.removeTickingArea(this.tickingArea);
             resolve();
         }
     }

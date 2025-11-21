@@ -31,6 +31,7 @@ export class MoveEdit extends Edit {
         this.replacedStructure = this.createPartitionedStructure(this.pasteBounds.min, this.pasteBounds.max);
         this.clearArea(this.cutBounds.min, this.cutBounds.max);
         this.pastePartitionedStructure(this.cutStructure, this.pasteBounds.min, this.mirrorAxis, this.rotation);
+        this.unloadArea();
     }
 
     async undo() {
@@ -39,6 +40,7 @@ export class MoveEdit extends Edit {
         this.clearArea(this.pasteBounds.min, this.pasteBounds.max);
         this.pastePartitionedStructure(this.replacedStructure, this.pasteBounds.min);
         this.pastePartitionedStructure(this.cutStructure, this.cutBounds.min);
+        this.unloadArea();
     }
 
     getSuccessFeedback() {

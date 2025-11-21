@@ -11,6 +11,7 @@ const MAX_STRUCTURE_SIZE = 63;
 
 export class Edit {
     dimension;
+    tickingAreas = [];
 
     constructor(selection) {
         this.dimension = selection.dimension;
@@ -61,13 +62,12 @@ export class Edit {
             const partition = partitions[i];
             this.pasteSingleStructure(structure, partition.getMin(), mirrorAxis, rotation);
         }
+        this.replaceBlockInArea(location, max, 'minecraft:structure_void', 'minecraft:air');
     }
     
     pasteSingleStructure(structure, location, mirrorAxis = void 0, rotation = void 0) {
-        const max = Vector.from(location).add(this.getRotatedSize(structure.size, rotation));
         const structurePlaceOptions = { mirror: mirrorAxis, rotation: rotation };
         world.structureManager.place(structure.id, this.dimension, location, structurePlaceOptions);
-        this.replaceBlockInArea(location, max, 'minecraft:structure_void', 'minecraft:air');
     }
 
     clearArea(min, max) {
@@ -96,8 +96,17 @@ export class Edit {
     }
 
     async loadArea(min, max) {
-        const tickingArea = new TickingArea(this.dimension, min, max);
-        system.runTimeout(() => tickingArea.unload(), 10);
-        await tickingArea.load();
+        const tickingAreaID = IDGenerator.getNext().replace(':', '-');
+        const tickingAreaOptions = { dimension: this.dimension, from: min, to: max };
+        if (!world.tickingAreaManager.hasCapacity(tickingAreaOptions))
+            throw new UnloadedVolumeError("TickingArea could not be added. The area is too large or there are already too many ticking chunks.");
+        this.tickingAreas.push(await world.tickingAreaManager.createTickingArea(tickingAreaID, tickingAreaOptions));
+    }
+
+    unloadArea() {
+        system.run(() => {
+            this.tickingAreas.forEach(tickingArea => world.tickingAreaManager.removeTickingArea(tickingArea));
+            this.tickingAreas.length = 0;
+        });
     }
 }

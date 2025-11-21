@@ -32,6 +32,7 @@ export class CloneEdit extends Edit {
             this.copyStructure = this.createPartitionedStructure(this.copyBounds.min, this.copyBounds.max);
         this.replacedStructure = this.createPartitionedStructure(this.pasteBounds.min, this.pasteBounds.max);
         this.pastePartitionedStructure(this.copyStructure, this.pasteBounds.min, this.mirrorAxis, this.rotation);
+        this.unloadArea();
     }
 
     async undo() {
@@ -39,6 +40,7 @@ export class CloneEdit extends Edit {
         await this.loadArea(this.pasteBounds.min, this.pasteBounds.max);
         this.clearArea(this.pasteBounds.min, this.pasteBounds.max);
         this.pastePartitionedStructure(this.replacedStructure, this.pasteBounds.min);
+        this.unloadArea();
     }
 
     getSuccessFeedback() {
