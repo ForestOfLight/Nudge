@@ -19,12 +19,13 @@ export class Mode {
 
     async confirmEdit() {
         const edit = this.createNewEdit();
+        Feedback.send(this.player, edit.getDoingFeedback());
         try {
             await edit.do();
         } catch (error) {
             if (error.name === 'UnloadedVolumeError') {
                 Feedback.send(this.player, `§cThe selected area spans too many chunks.`);
-                return void 0;
+                return false;
             }
             throw error;
         }

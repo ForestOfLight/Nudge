@@ -25,6 +25,10 @@ export class Edit {
         throw new Error('undo() must be implemented');
     }
 
+    getDoingFeedback() {
+        throw new Error('getDoingFeedback() must be implemented');
+    }
+
     getSuccessFeedback() {
         throw new Error('getSuccessFeedback() must be implemented');
     }

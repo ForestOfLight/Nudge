@@ -50,7 +50,10 @@ export class CloneMode extends Mode {
 
     async confirmEdit() {
         const edit = await super.confirmEdit();
-        this.copyStructure = edit.copyStructure;
+        if (edit)
+            this.copyStructure = edit.copyStructure;
+        else
+            this.builder.deselect();
     }
 
     createNewEdit() {

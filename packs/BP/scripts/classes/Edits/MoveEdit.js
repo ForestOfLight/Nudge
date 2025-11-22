@@ -43,6 +43,10 @@ export class MoveEdit extends Edit {
         this.unloadArea();
     }
 
+    getDoingFeedback() {
+        return `§7Moving selection to ${this.pasteBounds.min.floor()}...`;
+    }
+
     getSuccessFeedback() {
         return `§aMoved selection to ${this.pasteBounds.min.floor()}.`;
     }

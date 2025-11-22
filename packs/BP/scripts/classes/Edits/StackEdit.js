@@ -49,6 +49,10 @@ export class StackEdit extends Edit {
         this.unloadArea();
     }
 
+    getDoingFeedback() {
+        return `§7Stacking selection from ${this.pasteBounds.min.floor()} to ${this.pasteBounds.max.floor()}...`;
+    }
+
     getSuccessFeedback() {
         return `§aStacked selection from ${this.pasteBounds.min.floor()} to ${this.pasteBounds.max.floor()}.`;
     }

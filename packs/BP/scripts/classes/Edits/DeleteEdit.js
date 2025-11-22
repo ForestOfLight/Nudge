@@ -26,6 +26,10 @@ export class DeleteEdit extends Edit {
         this.unloadArea();
     }
 
+    getDoingFeedback() {
+        return `§7Deleting from ${this.deleteMin} to ${this.deleteMax}...`;
+    }
+
     getSuccessFeedback() {
         return `§aDeleted from ${this.deleteMin} to ${this.deleteMax}.`;
     }

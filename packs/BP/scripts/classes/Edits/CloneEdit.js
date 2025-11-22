@@ -43,6 +43,10 @@ export class CloneEdit extends Edit {
         this.unloadArea();
     }
 
+    getDoingFeedback() {
+        return `§7Pasting selection at ${this.pasteBounds.min.floor()}...`;
+    }
+
     getSuccessFeedback() {
         return `§aPasted selection at ${this.pasteBounds.min.floor()}.`;
     }
