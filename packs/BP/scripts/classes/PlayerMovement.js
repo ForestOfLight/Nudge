@@ -45,4 +45,8 @@ export class PlayerMovement {
             return new Vector(-1, 0, 0);
         return new Vector(0, 0, -1);
     }
+
+    distance(vector) {
+        return Vector.distance(this.player.location, vector);
+    }
 }

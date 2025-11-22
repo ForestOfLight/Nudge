@@ -1,4 +1,4 @@
-import { debugDrawer, DebugLine, DebugArrow } from "@minecraft/debug-utilities";
+import { debugDrawer, DebugLine, DebugArrow, DebugText } from "@minecraft/debug-utilities";
 import { Vector } from "../../lib/Vector";
 import { CuboidRenderer } from "./CuboidRenderer";
 import { BlockVolume } from "@minecraft/server";
@@ -13,6 +13,7 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
     
     edgeShapes = [];
     directionArrowShape;
+    offsetTextShape;
 
     constructor(dimension, min, max, playerMovement) {
         super(dimension, min, max);
@@ -21,13 +22,16 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
         this.mirrorRotateRenderer = new MirrorRotateRenderer(this.dimension, this.getCenterpoint());
     }
 
-    destroy() {        
+    destroy() {
         this.edgeShapes.forEach(shape => debugDrawer.removeShape(shape));
         if (this.directionArrowShape)
             debugDrawer.removeShape(this.directionArrowShape);
+        if (this.offsetTextShape)
+            debugDrawer.removeShape(this.offsetTextShape);
         this.mirrorRotateRenderer?.destroy();
         this.edgeShapes = [];
         this.directionArrowShape = void 0;
+        this.offsetTextShape = void 0;
         this.mirrorRotateRenderer = void 0;
     }
 
@@ -37,6 +41,7 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
         if (min.distance(oldMin) !== 0 || max.distance(oldMax) !== 0 || this.shouldRedraw) {
             super.setLocation(min, max);
             this.mirrorRotateRenderer.setLocation(this.getCenterpoint());
+            this.drawOffsetText();
             this.shouldRedraw = false;
         }
         if (this.shouldDirectionArrowMove(min, max))
@@ -134,5 +139,21 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
         const centerpoint = this.getCenterpoint();
         const end = centerpoint.add(this.playerMovement.getMajorDirectionFacing().multiply(3));
         return { base: centerpoint, head: end };
+    }
+
+    drawOffsetText() {
+        if (this.offsetTextShape)
+            debugDrawer.removeShape(this.offsetTextShape);
+        const textLocation = this.getCenterpoint();
+        textLocation.dimension = this.dimension;
+        const textShape = new DebugText(textLocation, this.getOffsetText());
+        textShape.scale = Math.max(0.85, this.playerMovement.distance(textLocation) / 20);
+        this.offsetTextShape = textShape;
+        debugDrawer.addShape(textShape);
+    }
+
+    getOffsetText() {
+        const totalOffset = Vector.from(this.initialVolume.getMin()).subtract(this.blockVolume.getMin());
+        return `<§c${totalOffset.x}, §a${totalOffset.y}, §b${totalOffset.z}§f>`;
     }
 }
