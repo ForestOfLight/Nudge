@@ -4,12 +4,14 @@ import { Vector } from "../../lib/Vector";
 import { RGBColor } from "./RGBColor";
 
 export class MirrorRotateRenderer {
+    dimension;
     location;
     mirrorAxis = StructureMirrorAxis.None;
     rotation = StructureRotation.None;
     shapes = [];
 
-    constructor(location) {
+    constructor(dimension, location) {
+        this.dimension = dimension;
         this.setLocation(location);
     }
 
@@ -58,16 +60,16 @@ export class MirrorRotateRenderer {
 
     getXMirrorShapes() {
         const shapes = [
-            new DebugLine(this.location.add(new Vector(0, 0, 0.25)), this.location.add(new Vector(0, 2, 0.25))),
-            new DebugLine(this.location.add(new Vector(0, 0, 1)), this.location.add(new Vector(0, 2, 0.25))),
-            new DebugLine(this.location.add(new Vector(0, 0, 1)), this.location.add(new Vector(0, 0, 0.25))),
-            new DebugLine(this.location.add(new Vector(0, 0, -0.25)), this.location.add(new Vector(0, 2, -0.25))),
-            new DebugLine(this.location.add(new Vector(0, 0, -1)), this.location.add(new Vector(0, 2, -0.25))),
-            new DebugLine(this.location.add(new Vector(0, 0, -1)), this.location.add(new Vector(0, 0, -0.25)))
+            new DebugLine({ ...this.location.add(new Vector(0, 0, 0.25)), dimension: this.dimension }, this.location.add(new Vector(0, 2, 0.25))),
+            new DebugLine({ ...this.location.add(new Vector(0, 0, 1)), dimension: this.dimension }, this.location.add(new Vector(0, 2, 0.25))),
+            new DebugLine({ ...this.location.add(new Vector(0, 0, 1)), dimension: this.dimension }, this.location.add(new Vector(0, 0, 0.25))),
+            new DebugLine({ ...this.location.add(new Vector(0, 0, -0.25)), dimension: this.dimension }, this.location.add(new Vector(0, 2, -0.25))),
+            new DebugLine({ ...this.location.add(new Vector(0, 0, -1)), dimension: this.dimension }, this.location.add(new Vector(0, 2, -0.25))),
+            new DebugLine({ ...this.location.add(new Vector(0, 0, -1)), dimension: this.dimension }, this.location.add(new Vector(0, 0, -0.25)))
         ]
         shapes.forEach(shape => {
             const shift = new Vector(0, -1, 0);
-            shape.location = shift.add(shape.location);
+            shape.setLocation(shift.add(shape.location));
             shape.endLocation = shift.add(shape.endLocation);
             shape.color = RGBColor.Blue;
         });
@@ -76,16 +78,16 @@ export class MirrorRotateRenderer {
 
     getZMirrorShapes() {
         const shapes = [
-            new DebugLine(this.location.add(new Vector(0.25, 0, 0)), this.location.add(new Vector(0.25, 2, 0))),
-            new DebugLine(this.location.add(new Vector(1, 0, 0)), this.location.add(new Vector(0.25, 2, 0))),
-            new DebugLine(this.location.add(new Vector(1, 0, 0)), this.location.add(new Vector(0.25, 0, 0))),
-            new DebugLine(this.location.add(new Vector(-0.25, 0, 0)), this.location.add(new Vector(-0.25, 2, 0))),
-            new DebugLine(this.location.add(new Vector(-1, 0, 0)), this.location.add(new Vector(-0.25, 2, 0))),
-            new DebugLine(this.location.add(new Vector(-1, 0, 0)), this.location.add(new Vector(-0.25, 0, 0)))
+            new DebugLine({ ...this.location.add(new Vector(0.25, 0, 0)), dimension: this.dimension }, this.location.add(new Vector(0.25, 2, 0))),
+            new DebugLine({ ...this.location.add(new Vector(1, 0, 0)), dimension: this.dimension }, this.location.add(new Vector(0.25, 2, 0))),
+            new DebugLine({ ...this.location.add(new Vector(1, 0, 0)), dimension: this.dimension }, this.location.add(new Vector(0.25, 0, 0))),
+            new DebugLine({ ...this.location.add(new Vector(-0.25, 0, 0)), dimension: this.dimension }, this.location.add(new Vector(-0.25, 2, 0))),
+            new DebugLine({ ...this.location.add(new Vector(-1, 0, 0)), dimension: this.dimension }, this.location.add(new Vector(-0.25, 2, 0))),
+            new DebugLine({ ...this.location.add(new Vector(-1, 0, 0)), dimension: this.dimension }, this.location.add(new Vector(-0.25, 0, 0)))
         ]
         shapes.forEach(shape => {
             const shift = new Vector(0, -1, 0);
-            shape.location = shift.add(shape.location);
+            shape.setLocation(shift.add(shape.location));
             shape.endLocation = shift.add(shape.endLocation);
             shape.color = RGBColor.Red;
         });
@@ -116,7 +118,7 @@ export class MirrorRotateRenderer {
         }
         shapes.forEach(shape => {
             const shift = new Vector(0, -1, 0);
-            shape.location = shift.add(shape.location);
+            shape.setLocation(shift.add(shape.location));
             shape.endLocation = shift.add(shape.endLocation);
             shape.headLength = 0.3;
             shape.headRadius = 0.15;
@@ -142,6 +144,7 @@ export class MirrorRotateRenderer {
             const p2 = start.multiply((1 - t2) * (1 - t2))
                 .add(control.multiply(2 * (1 - t2) * t2))
                 .add(end.multiply(t2 * t2));
+            p1.dimension = this.dimension;
             if (i === segments - 1)
                 lines.push(new DebugArrow(p1, p2));
             else

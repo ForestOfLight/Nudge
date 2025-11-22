@@ -3,15 +3,17 @@ import { RGBColor } from "./RGBColor";
 import { StaticCuboidRenderer } from "./StaticCuboidRenderer";
 
 export class SelectionRenderer {
+    dimension;
     min;
     max;
     staticRenderer;
     movingRenderer;
 
-    constructor(min, max) {
+    constructor(dimension, min, max) {
+        this.dimension = dimension;
         this.min = min;
         this.max = max;
-        this.staticRenderer = new StaticCuboidRenderer(this.min, this.max, RGBColor.White);
+        this.staticRenderer = new StaticCuboidRenderer(this.dimension, this.min, this.max, RGBColor.White);
     }
 
     startDraw() {
@@ -31,7 +33,7 @@ export class SelectionRenderer {
 
     enableMovementMode(playerMovement) {
         this.staticRenderer.setColor(RGBColor.Grey);
-        this.movingRenderer = new NudgingCuboidRenderer(this.min, this.max, playerMovement);
+        this.movingRenderer = new NudgingCuboidRenderer(this.dimension, this.min, this.max, playerMovement);
     }
 
     disableMovementMode() {

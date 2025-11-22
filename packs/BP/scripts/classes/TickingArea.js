@@ -94,7 +94,9 @@ export class TickingArea {
         system.runTimeout(() => {
             loaderEntity.teleport(location, { dimension: this.dimension });
             this.loaderEntities.push(loaderEntity);
-            const display = new DebugBox(loaderEntity.location);
+            const loaderLocation = loaderEntity.location;
+            loaderLocation.dimension = this.dimension;
+            const display = new DebugBox(loaderLocation);
             debugDrawer.addShape(display);
             this.loaderEntities.push(display);
         }, 1);

@@ -14,7 +14,7 @@ export class Selection {
         this.from = Vector.from(from);
         this.to = Vector.from(to || from);
         const { min, max } = this.getBounds();
-        this.renderer = new SelectionRenderer(min, max);
+        this.renderer = new SelectionRenderer(this.dimension, min, max);
     }
 
     destroy() {

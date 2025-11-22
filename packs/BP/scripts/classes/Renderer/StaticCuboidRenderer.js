@@ -5,8 +5,8 @@ export class StaticCuboidRenderer extends CuboidRenderer {
     shape;
     color;
 
-    constructor(min, max, rgbColor) {
-        super(min, max);
+    constructor(dimension, min, max, rgbColor) {
+        super(dimension, min, max);
         this.color = rgbColor;
         this.drawCuboid();
     }
@@ -18,7 +18,9 @@ export class StaticCuboidRenderer extends CuboidRenderer {
     drawCuboid() {
         if (this.shape)
             this.shape.remove();
-        const boundingBox = new DebugBox(this.blockVolume.getMin());
+        const min = this.blockVolume.getMin();
+        min.dimension = this.dimension;
+        const boundingBox = new DebugBox(min);
         boundingBox.bound = this.blockVolume.getSpan();
         boundingBox.color = this.color;
         this.shape = boundingBox;

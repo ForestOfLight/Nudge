@@ -2,9 +2,11 @@ import { BlockVolume } from "@minecraft/server";
 import { Vector } from "../../lib/Vector";
 
 export class CuboidRenderer {
+    dimension;
     blockVolume;
 
-    constructor(min, max) {
+    constructor(dimension, min, max) {
+        this.dimension = dimension;
         this.blockVolume = new BlockVolume(min, max);
     }
 

@@ -14,11 +14,11 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
     edgeShapes = [];
     directionArrowShape;
 
-    constructor(min, max, playerMovement) {
-        super(min, max);
+    constructor(dimension, min, max, playerMovement) {
+        super(dimension, min, max);
         this.initialVolume = new BlockVolume(min, max);
         this.playerMovement = playerMovement;
-        this.mirrorRotateRenderer = new MirrorRotateRenderer(this.getCenterpoint());
+        this.mirrorRotateRenderer = new MirrorRotateRenderer(this.dimension, this.getCenterpoint());
     }
 
     destroy() {        
@@ -86,6 +86,7 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
     }
 
     getEdgeShape(startVertex, endVertex) {
+        startVertex.dimension = this.dimension;
         const line = new DebugLine(startVertex, endVertex);
         const min = this.blockVolume.getMin();
         const isTouchingMin = startVertex.distance(min) === 0;
@@ -111,6 +112,7 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
         if (this.directionArrowShape)
             debugDrawer.removeShape(this.directionArrowShape);
         const arrowLocation = this.getArrowLocation();
+        arrowLocation.base.dimension = this.dimension;
         const arrow = new DebugArrow(arrowLocation.base, arrowLocation.head);
         arrow.color = this.getColorByAxis(arrowLocation.base, arrowLocation.head);
         arrow.headLength = 0.3;

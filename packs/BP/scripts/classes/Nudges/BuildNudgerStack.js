@@ -80,6 +80,6 @@ export class BuildNudgerStack extends BuildNudger {
         const nudgedMax = max.add(selection.maxOffset.add(maxOffset));
         const minVolume = new BlockVolume(min, nudgedMin);
         const maxVolume = new BlockVolume(max, nudgedMax);
-        this.stackingRenderer = new StackingRenderer(minVolume.getMin(), maxVolume.getMax(), selection.getSize());
+        this.stackingRenderer = new StackingRenderer(selection.dimension, minVolume.getMin(), maxVolume.getMax(), selection.getSize());
     }
 }

@@ -9,8 +9,8 @@ export class StackingRenderer extends CuboidRenderer {
     shapesOnFaces = [];
     color = RGBColor.White;
 
-    constructor(min, max, selectionSize) {
-        super(min, max);
+    constructor(dimension, min, max, selectionSize) {
+        super(dimension, min, max);
         this.selectionSize = selectionSize.add(new Vector(1, 1, 1));
         this.drawCuboid();
         this.drawGridOnFaces();
@@ -30,7 +30,9 @@ export class StackingRenderer extends CuboidRenderer {
     drawCuboid() {
         if (this.cuboidShape)
             this.cuboidShape.remove();
-        const boundingBox = new DebugBox(this.blockVolume.getMin());
+        const min = this.blockVolume.getMin();
+        min.dimension = this.dimension;
+        const boundingBox = new DebugBox(min);
         boundingBox.bound = this.blockVolume.getSpan();
         boundingBox.color = this.color;
         this.cuboidShape = boundingBox;
@@ -52,6 +54,7 @@ export class StackingRenderer extends CuboidRenderer {
         const linesOnThisFace = this.getLinesForFace(startVertex, endVertex);
         for (const { start, end } of linesOnThisFace) {
             if (start.distance(end) === 0) continue;
+            start.dimension = this.dimension;
             const line = new DebugLine(start, end);
             line.color = RGBColor.LightGrey;
             this.shapesOnFaces.push(line);
