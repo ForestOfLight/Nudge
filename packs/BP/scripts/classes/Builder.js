@@ -7,6 +7,7 @@ import { MoveMode } from "./Modes/MoveMode";
 import { DeleteMode } from "./Modes/DeleteMode";
 import { CloneMode } from "./Modes/CloneMode";
 import { StackMode } from "./Modes/StackMode";
+import { Feedback } from "./Feedback";
 
 export class Builder {
     playerId;
@@ -79,6 +80,16 @@ export class Builder {
         this.editMode.setNudgeLocation(min);
     }
 
+    suspendNudge() {
+        this.editMode.suspendNudge();
+        Feedback.send(this.player, `§a${Feedback.jumpIcon(this.player)} + ${Feedback.useIcon(this.player)} or ${Feedback.sneakIcon(this.player)} + ${Feedback.useIcon(this.player)} to start nudging.`);
+    }
+
+    unsuspendNudge() {
+        this.editMode.unsuspendNudge();
+        Feedback.send(this.player, this.editMode.getStartNudgingFeedback());
+    }
+
     confirmEdit() {
         this.editMode.confirmEdit();
     }
@@ -138,5 +149,9 @@ export class Builder {
 
     isNudging() {
         return this.editMode.isNudging;
+    }
+
+    isNudgingSuspended() {
+        return this.editMode.isNudgingSuspended();
     }
 }

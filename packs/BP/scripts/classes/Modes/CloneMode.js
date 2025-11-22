@@ -33,13 +33,19 @@ export class CloneMode extends Mode {
         this.copyStructure = void 0;
     }
 
+    suspendNudge() {
+        this.allowPlayerMovement(true);
+        this.nudger?.suspend();
+    }
+
+    unsuspendNudge() {
+        this.allowPlayerMovement(false);
+        this.nudger?.unsuspend();
+    }
+
     confirmSelection() {
         this.enterNudgeMode();
-        Feedback.send(this.player, 
-            `§a${Feedback.useIcon(this.player)} to confirm.\n`
-            + `${Feedback.sneakIcon(this.player)} + ${Feedback.useIcon(this.player)} to mirror/rotate.\n`
-            + `${Feedback.jumpIcon(this.player)} + ${Feedback.useIcon(this.player)} to cancel.`
-        );
+        Feedback.send(this.player, this.getStartNudgingFeedback());
     }
 
     confirmEdit() {
@@ -96,5 +102,15 @@ export class CloneMode extends Mode {
     getDuringSelectionFeedback() {
         return `§a${Feedback.useIcon(this.player)} to extend.\n`
             + `${Feedback.sneakIcon(this.player)} + ${Feedback.useIcon(this.player)} to move structure.`;
+    }
+
+    getStartNudgingFeedback() {
+        return `§a${Feedback.useIcon(this.player)} to confirm.\n`
+            + `${Feedback.sneakIcon(this.player)} + ${Feedback.useIcon(this.player)} to mirror/rotate.\n`
+            + `${Feedback.jumpIcon(this.player)} + ${Feedback.useIcon(this.player)} to move freely.`;
+    }
+    
+    isNudgingSuspended() {
+        return this.nudger?.isSuspended;
     }
 }

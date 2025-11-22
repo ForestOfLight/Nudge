@@ -67,12 +67,17 @@ export class SelectionInteractor {
     
     static handleUseWhileNudging(player, builder) {
         const playerMovement = new PlayerMovement(player);
-        if (playerMovement.isSneaking())
-            builder.mirrorOrRotate();
-        else if (playerMovement.isJumping())
-            builder.exitNudgeMode();
-        else
-            builder.confirmEdit();
+        if (builder.isNudgingSuspended()) {
+            if (playerMovement.isSneaking() || playerMovement.isJumping())
+                builder.unsuspendNudge();
+        } else {
+            if (playerMovement.isSneaking())
+                builder.mirrorOrRotate();
+            else if (playerMovement.isJumping())
+                builder.suspendNudge();
+            else
+                builder.confirmEdit();
+        }
     }
 
     static handleUseWhileSelecting(player, builder) {
