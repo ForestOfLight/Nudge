@@ -1,5 +1,6 @@
-import { Vector } from "../../lib/Vector";
 import { BuildNudger } from "./BuildNudger";
+import { Vector } from "../../lib/Vector";
+import { TicksPerSecond } from "@minecraft/server";
 
 export class BuildNudgerMove extends BuildNudger {
     movementSpeed = 0.5;
@@ -19,6 +20,12 @@ export class BuildNudgerMove extends BuildNudger {
             velocity.y += 1;
         if (this.playerMovement.isSneaking())
             velocity.y -= 1;
-        return velocity.multiply(this.movementSpeed);
+        return this.scaleByButtonHold(velocity).multiply(this.movementSpeed);
+    }
+
+    scaleByButtonHold(velocity) {
+        const elapsedTicks = this.playerMovement.getElapsedMovementTicks();
+        const scale = Math.min(Math.max(elapsedTicks / (2 * TicksPerSecond), 1), 4);
+        return velocity.multiply(scale);
     }
 }
