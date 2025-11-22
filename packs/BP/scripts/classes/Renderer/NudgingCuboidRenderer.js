@@ -153,7 +153,7 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
     }
 
     getOffsetText() {
-        const totalOffset = Vector.from(this.initialVolume.getMin()).subtract(this.blockVolume.getMin());
+        const totalOffset = Vector.from(this.blockVolume.getMin()).subtract(this.initialVolume.getMin());
         return `<§c${totalOffset.x}, §a${totalOffset.y}, §b${totalOffset.z}§f>`;
     }
 }
