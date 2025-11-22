@@ -1,5 +1,6 @@
 import { UndoError } from "./Errors/UndoError";
 import { RedoError } from "./Errors/RedoError";
+import { system } from "@minecraft/server";
 
 export class EditLog {
     recentEdits = [];
@@ -24,14 +25,13 @@ export class EditLog {
     }
 
     undoMany(num) {
+        num = Math.min(num, this.recentEdits.length)
+        const runners = [];
         for (let numUndone = 0; numUndone < num; numUndone++) {
-            try {
+            const runner = system.runTimeout(() => {
                 this.undo();
-            } catch(error) {
-                if (error instanceof UndoError)
-                    return numUndone;
-                throw error;
-            }
+            }, numUndone);
+            runners.push(runner);
         }
         return num;
     }
@@ -50,14 +50,13 @@ export class EditLog {
     }
 
     redoMany(num) {
+        num = Math.min(num, this.undoneEdits.length);
+        const runners = [];
         for (let numRedone = 0; numRedone < num; numRedone++) {
-            try {
+            const runner = system.runTimeout(() => {
                 this.redo();
-            } catch(error) {
-                if (error instanceof RedoError)
-                    return numRedone;
-                throw error;
-            }
+            }, numRedone);
+            runners.push(runner);
         }
         return num;
     }

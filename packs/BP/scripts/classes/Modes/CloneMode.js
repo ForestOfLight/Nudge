@@ -48,8 +48,8 @@ export class CloneMode extends Mode {
         Feedback.send(this.player, this.getStartNudgingFeedback());
     }
 
-    confirmEdit() {
-        const edit = super.confirmEdit();
+    async confirmEdit() {
+        const edit = await super.confirmEdit();
         this.copyStructure = edit.copyStructure;
     }
 

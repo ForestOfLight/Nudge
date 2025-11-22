@@ -17,9 +17,17 @@ export class Mode {
         throw new Error('confirmSelection() must be implemented.');
     }
 
-    confirmEdit() {
+    async confirmEdit() {
         const edit = this.createNewEdit();
-        edit.do();
+        try {
+            await edit.do();
+        } catch (error) {
+            if (error.name === 'UnloadedVolumeError') {
+                Feedback.send(this.player, `§cThe selected area spans too many chunks.`);
+                return void 0;
+            }
+            throw error;
+        }
         this.builder.editLog.save(edit);
         Feedback.send(this.player, edit.getSuccessFeedback());
         return edit;
