@@ -46,9 +46,10 @@ export class MoveMode extends Mode {
         Feedback.send(this.player, this.getStartNudgingFeedback());
     }
 
-    confirmEdit() {
-        super.confirmEdit();
-        this.builder.deselect();
+    async confirmEdit() {
+        const success = await super.confirmEdit();
+        if (success)
+            this.builder.deselect();
     }
 
     createNewEdit() {
