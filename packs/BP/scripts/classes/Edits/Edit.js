@@ -2,7 +2,6 @@ import { world, StructureSaveMode, StructureRotation, system, UnloadedChunksErro
 import { BlockVolume } from "@minecraft/server";
 import { IDGenerator } from "../IDGenerator";
 import { Vector } from "../../lib/Vector";
-import { TickingArea } from "../TickingArea";
 import { VolumePartitioner } from "../VolumePartitioner";
 import { UnloadedVolumeError } from "../Errors/UnloadedVolumeError";
 
@@ -34,9 +33,8 @@ export class Edit {
     }
 
     createPartitionedStructure(min, max) {
+        this.assertFullyLoaded();
         const blockVolume = new BlockVolume(min, max);
-        if (!TickingArea.isVolumeLoaded(this.dimension, blockVolume))
-            throw new UnloadedVolumeError(`The area ${Vector.from(min)} to ${Vector.from(max)} is not completely loaded.`);
         this.replaceBlockInArea(min, max, 'minecraft:air', 'minecraft:structure_void');
         const structureSaveOptions = { saveMode: StructureSaveMode.Memory, includeEntities: false };
         const structurePartitioner = new VolumePartitioner(blockVolume, MAX_STRUCTURE_SIZE);
@@ -51,11 +49,10 @@ export class Edit {
     }
 
     pastePartitionedStructure(partitionedStructure, location, mirrorAxis = void 0, rotation = void 0) {
+        this.assertFullyLoaded();
         const size = Vector.from(partitionedStructure.blockVolume.getSpan()).subtract(new Vector(1, 1, 1));
         const max = Vector.from(location).add(this.getRotatedSize(size, rotation));
         const blockVolume = new BlockVolume(location, max);
-        if (!TickingArea.isVolumeLoaded(this.dimension, blockVolume))
-            throw new UnloadedVolumeError(`The area ${Vector.from(location)} to ${Vector.from(max)} is not completely loaded.`);
         const structures = partitionedStructure.structures;
         const structurePartitioner = new VolumePartitioner(blockVolume, MAX_STRUCTURE_SIZE);
         const partitions = structurePartitioner.getPartitions();
@@ -75,18 +72,16 @@ export class Edit {
     }
 
     clearArea(min, max) {
+        this.assertFullyLoaded();
         const blockVolume = new BlockVolume(min, max);
-        if (!TickingArea.isVolumeLoaded(this.dimension, blockVolume))
-            throw new UnloadedVolumeError(`The area ${Vector.from(min)} to ${Vector.from(max)} is not completely loaded.`);
         const fillPartitioner = new VolumePartitioner(blockVolume, MAX_FILL_VOLUME);
         for (const partition of fillPartitioner.getPartitions())
             this.dimension.fillBlocks(partition, 'minecraft:air');
     }
 
     replaceBlockInArea(min, max, replaceBlock, newBlock) {
+        this.assertFullyLoaded();
         const blockVolume = new BlockVolume(min, max);
-        if (!TickingArea.isVolumeLoaded(this.dimension, blockVolume))
-            throw new UnloadedVolumeError(`The area ${Vector.from(min)} to ${Vector.from(max)} is not completely loaded.`);
         const fillPartitioner = new VolumePartitioner(blockVolume, MAX_FILL_VOLUME);
         const blockFillOptions = { blockFilter: { includeTypes: [replaceBlock] } };
         for (const partition of fillPartitioner.getPartitions())
@@ -112,5 +107,13 @@ export class Edit {
             this.tickingAreas.forEach(tickingArea => world.tickingAreaManager.removeTickingArea(tickingArea));
             this.tickingAreas.length = 0;
         });
+    }
+
+    assertFullyLoaded() {
+        for (const tickingArea of this.tickingAreas) {
+            if (!tickingArea.isFullyLoaded)
+                throw new UnloadedVolumeError('The area is not completely loaded.');
+        }
+        return true;
     }
 }
