@@ -3,8 +3,8 @@ import { Feedback } from '../classes/Feedback';
 
 system.beforeEvents.startup.subscribe((event) => {
     const command = {
-        name: 'simpleaxiom:edit',
-        description: 'Gives you the SimpleAxiom item. Use it to select your build.',
+        name: 'nudge:edit',
+        description: 'Gives you the Nudge item. Use it to select your build.',
         permissionLevel: CommandPermissionLevel.Any
     };
     event.customCommandRegistry.registerCommand(command, givePlayerMenuItem);
@@ -16,11 +16,11 @@ function givePlayerMenuItem(origin) {
         return { status: CustomCommandStatus.Failure, message: 'This command can only be used by players.' };
     system.run(() => {
         const inventoryContainer = player.getComponent(EntityComponentTypes.Inventory)?.container;
-        const givenItemStack = inventoryContainer?.addItem(new ItemStack('simpleaxiom:move'));
+        const givenItemStack = inventoryContainer?.addItem(new ItemStack('nudge:move'));
         if (givenItemStack)
-            player.sendMessage('§cFailed to give you the SimpleAxiom item.');
+            player.sendMessage('§cFailed to give you the Nudge item.');
         else
-            player.sendMessage(`§aYou recieved the SimpleAxiom item! ${Feedback.useIcon(player)} to select your build.`);
+            player.sendMessage(`§aYou recieved the Nudge item! ${Feedback.useIcon(player)} to select your build.`);
     });
     return { status: CustomCommandStatus.Success };
 }

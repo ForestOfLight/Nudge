@@ -65,7 +65,7 @@ export class Mode {
     replaceModeItemInHand() {
         const equippable = this.player.getComponent(EntityComponentTypes.Equippable);
         const mainhandSlot = equippable.getEquipmentSlot(EquipmentSlot.Mainhand);
-        if (SelectionInteractor.isHoldingSimpleAxiomItem(this.player))
+        if (SelectionInteractor.isHoldingNudgeItem(this.player))
             mainhandSlot.setItem(new ItemStack(this.getItemId(), 1));
     }
 }

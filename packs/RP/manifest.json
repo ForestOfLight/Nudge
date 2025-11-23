@@ -1,7 +1,7 @@
 {
     "format_version": 2,
     "header": {
-        "name": "SimpleAxiom [RP] v1.0.0",
+        "name": "Nudge [RP] v1.0.0",
         "description": "Creative building addon by §aForestOfLight§r.",
         "uuid": "b6345514-8cd9-4dfe-b329-58574f000f3c",
         "version": [1, 0, 0],
@@ -16,7 +16,7 @@
     ],
     "dependencies": [
         {
-            "uuid": "f4114104-0e90-4211-a724-1bc9f274647f", // SimpleAxiom BP
+            "uuid": "f4114104-0e90-4211-a724-1bc9f274647f", // Nudge BP
             "version": [1, 0, 0]
         }
     ],

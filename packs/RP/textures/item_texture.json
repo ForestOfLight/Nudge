@@ -1,16 +1,16 @@
 {
-  "resource_pack_name": "SimpleAxiom Resource Pack",
+  "resource_pack_name": "Nudge Resource Pack",
   "texture_data": {
-    "simpleaxiom:move": {
+    "nudge:move": {
       "textures": "textures/items/move"
     },
-    "simpleaxiom:clone": {
+    "nudge:clone": {
       "textures": "textures/items/clone"
     },
-    "simpleaxiom:delete": {
+    "nudge:delete": {
       "textures": "textures/items/delete"
     },
-    "simpleaxiom:stack": {
+    "nudge:stack": {
       "textures": "textures/items/stack"
     }
   }

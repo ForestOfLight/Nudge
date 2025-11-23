@@ -2,7 +2,7 @@ import { world } from "@minecraft/server";
 
 export class IDGenerator {
     static nextId = 0;
-    static base = 'simpleaxiom:';
+    static base = 'nudge:';
 
     static getNext() {
         if (this.nextId === 0)

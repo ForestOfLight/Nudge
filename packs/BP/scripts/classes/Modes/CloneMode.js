@@ -99,7 +99,7 @@ export class CloneMode extends Mode {
     }
 
     getItemId() {
-        return 'simpleaxiom:clone';
+        return 'nudge:clone';
     }
 
     getDuringSelectionFeedback() {

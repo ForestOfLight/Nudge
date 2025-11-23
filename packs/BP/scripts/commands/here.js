@@ -3,7 +3,7 @@ import { SelectionInteractor } from '../classes/SelectionInteractor';
 
 system.beforeEvents.startup.subscribe((event) => {
     const command = {
-        name: 'simpleaxiom:here',
+        name: 'nudge:here',
         description: 'Starts, extends, or moves your selection to your current location.',
         permissionLevel: CommandPermissionLevel.Any
     };

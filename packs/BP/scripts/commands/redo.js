@@ -3,7 +3,7 @@ import { Builders } from '../classes/Builders';
 
 system.beforeEvents.startup.subscribe((event) => {
     const command = {
-        name: 'simpleaxiom:redo',
+        name: 'nudge:redo',
         description: 'Redo your last edit, or several.',
         optionalParameters: [{ name: 'number', type: CustomCommandParamType.Integer }],
         permissionLevel: CommandPermissionLevel.Admin

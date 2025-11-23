@@ -95,7 +95,7 @@ export class MoveMode extends Mode {
     }
 
     getItemId() {
-        return 'simpleaxiom:move';
+        return 'nudge:move';
     }
 
     getDuringSelectionFeedback() {

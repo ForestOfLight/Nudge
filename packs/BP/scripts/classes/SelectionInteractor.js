@@ -10,7 +10,7 @@ import { Vector } from "../lib/Vector";
 export class SelectionInteractor {
     static onPlayerBreakBlock(event) {
         const player = event.player;
-        if (!player || !SelectionInteractor.isHoldingSimpleAxiomItem(player))
+        if (!player || !SelectionInteractor.isHoldingNudgeItem(player))
             return;
         event.cancel = true;
         SelectionInteractor.onHit(player, event.block);
@@ -18,7 +18,7 @@ export class SelectionInteractor {
 
     static onItemUse(event) {
         const player = event.source;
-        if (!player || !SelectionInteractor.isHoldingSimpleAxiomItem(player))
+        if (!player || !SelectionInteractor.isHoldingNudgeItem(player))
             return;
         event.cancel = true;
         system.run(() => SelectionInteractor.onUse(player));
@@ -27,15 +27,15 @@ export class SelectionInteractor {
     static onPlayerChangeHotbarSlot(event) {
         const player = event.player;
         const builder = Builders.get(player.id);
-        if (SelectionInteractor.isHoldingSimpleAxiomItem(player))
+        if (SelectionInteractor.isHoldingNudgeItem(player))
             builder.detectHeldItemForEditMode();
         system.run(() => builder.deselect());
     }
 
     static onHereCommand(player) {
         const builder = Builders.get(player.id);
-        if (!SelectionInteractor.isHoldingSimpleAxiomItem(player)) {
-            player.sendMessage('§cPlease hold the SimpleAxiom item to use this command.');
+        if (!SelectionInteractor.isHoldingNudgeItem(player)) {
+            player.sendMessage('§cPlease hold the Nudge item to use this command.');
             return;
         }
         const location = new Vector.from(player.location).floor();
@@ -103,7 +103,7 @@ export class SelectionInteractor {
         Feedback.send(player, builder.getDuringSelectionFeedback());
     }
 
-    static isHoldingSimpleAxiomItem(player) {
+    static isHoldingNudgeItem(player) {
         return SelectionInteractor.selectionItemInSlot(player, player.selectedSlotIndex)
     }
 
@@ -112,7 +112,7 @@ export class SelectionInteractor {
         if (!inventoryContainer)
             return false;
         const slotItem = inventoryContainer.getItem(slotIndex);
-        const validModeItems = Object.keys(EditModes).map((type) => 'simpleaxiom:' + type.toLowerCase());
+        const validModeItems = Object.keys(EditModes).map((type) => 'nudge:' + type.toLowerCase());
         return validModeItems.includes(slotItem?.typeId);
     }
 }

@@ -17,7 +17,7 @@ export class DeleteMode extends Mode {
     }
 
     getItemId() {
-        return 'simpleaxiom:delete';
+        return 'nudge:delete';
     }
 
     getSuccessFeedback() {

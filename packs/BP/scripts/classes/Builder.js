@@ -109,7 +109,7 @@ export class Builder {
             return false;
         const slotItem = inventoryContainer.getItem(player.selectedSlotIndex);
         const validModes = Object.keys(EditModes);
-        const newMode = validModes.find((mode) => ('simpleaxiom:' + mode.toLowerCase()) === slotItem?.typeId);
+        const newMode = validModes.find((mode) => ('nudge:' + mode.toLowerCase()) === slotItem?.typeId);
         this.setEditMode(EditModes[newMode]);
     }
 

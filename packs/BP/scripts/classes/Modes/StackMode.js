@@ -55,7 +55,7 @@ export class StackMode extends Mode {
     }
 
     getItemId() {
-        return 'simpleaxiom:stack';
+        return 'nudge:stack';
     }
 
     mirrorOrRotate() {

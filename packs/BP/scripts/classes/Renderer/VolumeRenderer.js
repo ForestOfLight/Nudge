@@ -5,7 +5,7 @@ export class VolumeRenderer {
     dimension;
     min = new Vector();
     max = new Vector();
-    drawParticleBase = "simpleaxiom:blockoverlay_";
+    drawParticleBase = "nudge:blockoverlay_";
     drawFrequency;
     particleLifetime;
     
