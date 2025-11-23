@@ -3,7 +3,9 @@
   "minecraft:item": {
     "description": {
       "identifier": "nudge:move",
-      "category": "Items"
+      "menu_category": {
+        "category": "construction"
+      }
     },
     "components": {
       "minecraft:max_stack_size": 1,
