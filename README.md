@@ -69,6 +69,7 @@ Need help, want to discuss technical Minecraft, or follow future updates?
 * [x] Stack edit
 * [x] Arbitrarily sized edits
 * [x] Ticking areas for edits
+* [x] Entities affected by edits
 * [ ] Translation support
 * [ ] Preview visualizations
 
