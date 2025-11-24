@@ -36,16 +36,20 @@ export class Edit {
         this.assertFullyLoaded();
         const blockVolume = new BlockVolume(min, max);
         this.replaceBlockInArea(min, max, 'minecraft:air', 'minecraft:structure_void');
-        const structureSaveOptions = { saveMode: StructureSaveMode.Memory, includeEntities: false };
         const structurePartitioner = new VolumePartitioner(blockVolume, MAX_STRUCTURE_SIZE);
         const structures = [];
         for (const partition of structurePartitioner.getPartitions()) {
-            const structureID = IDGenerator.getNext();
-            const structure = world.structureManager.createFromWorld(structureID, this.dimension, partition.getMin(), partition.getMax(), structureSaveOptions);
+            const structure = this.createSingleStructure(partition.getMin(), partition.getMax());
             structures.push(structure);
         }
         this.replaceBlockInArea(min, max, 'minecraft:structure_void', 'minecraft:air');
         return { structures, blockVolume };
+    }
+
+    createSingleStructure(min, max) {
+        const structureID = IDGenerator.getNext();
+        const structureSaveOptions = { saveMode: StructureSaveMode.Memory, includeEntities: true };
+        return world.structureManager.createFromWorld(structureID, this.dimension, min, max, structureSaveOptions);
     }
 
     pastePartitionedStructure(partitionedStructure, location, mirrorAxis = void 0, rotation = void 0) {
@@ -74,9 +78,22 @@ export class Edit {
     clearArea(min, max) {
         this.assertFullyLoaded();
         const blockVolume = new BlockVolume(min, max);
+        this.clearEntities(blockVolume.getMin(), blockVolume.getSpan());
         const fillPartitioner = new VolumePartitioner(blockVolume, MAX_FILL_VOLUME);
         for (const partition of fillPartitioner.getPartitions())
             this.dimension.fillBlocks(partition, 'minecraft:air');
+    }
+
+    clearEntities(min, span) {
+        const entities = this.dimension.getEntities({ location: min, volume: span });
+        for (const entity of entities) {
+            try {
+                if (entity?.typeId !== 'minecraft:player')
+                    entity?.remove();
+            } catch {
+                /* pass */
+            }
+        }
     }
 
     replaceBlockInArea(min, max, replaceBlock, newBlock) {
