@@ -136,17 +136,17 @@ export class Builder {
     undo(num = 1) {
         const numUndone = this.editLog.undoMany(num);
         if (numUndone === 0)
-            this.getPlayer().sendMessage(`§7No edits to undo.`);
+            Feedback.send(this.getPlayer(), `§7No edits to undo.`);
         else
-            this.getPlayer().sendMessage(`§aUndoing ${numUndone} edits...`);
+            Feedback.send(this.getPlayer(), `§aUndoing ${numUndone} edits...`);
     }
     
     redo(num = 1) {
         const numRedone = this.editLog.redoMany(num);
         if (numRedone === 0)
-            this.getPlayer().sendMessage(`§7No edits to redo.`);
+            Feedback.send(this.getPlayer(), `§7No edits to redo.`);
         else
-            this.getPlayer().sendMessage(`§aRedoing ${numRedone} edits...`);
+            Feedback.send(this.getPlayer(), `§aRedoing ${numRedone} edits...`);
     }
 
     getDuringSelectionFeedback() {

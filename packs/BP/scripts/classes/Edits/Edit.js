@@ -4,6 +4,7 @@ import { IDGenerator } from "../IDGenerator";
 import { Vector } from "../../lib/Vector";
 import { VolumePartitioner } from "../VolumePartitioner";
 import { UnloadedVolumeError } from "../Errors/UnloadedVolumeError";
+import { OutOfBoundsVolumeError } from "../Errors/OutOfBoundsVolumeError";
 
 const MAX_FILL_VOLUME = 31;
 const MAX_STRUCTURE_SIZE = 63;
@@ -34,6 +35,7 @@ export class Edit {
 
     createPartitionedStructure(min, max) {
         this.assertFullyLoaded();
+        this.assertInDimensionBounds(min, max);
         const blockVolume = new BlockVolume(min, max);
         this.replaceBlockInArea(min, max, 'minecraft:air', 'minecraft:structure_void');
         const structurePartitioner = new VolumePartitioner(blockVolume, MAX_STRUCTURE_SIZE);
@@ -47,6 +49,7 @@ export class Edit {
     }
 
     createSingleStructure(min, max) {
+        this.assertInDimensionBounds(min, max);
         const structureID = IDGenerator.getNext();
         const structureSaveOptions = { saveMode: StructureSaveMode.Memory, includeEntities: true };
         return world.structureManager.createFromWorld(structureID, this.dimension, min, max, structureSaveOptions);
@@ -57,6 +60,7 @@ export class Edit {
         const size = Vector.from(partitionedStructure.blockVolume.getSpan()).subtract(new Vector(1, 1, 1));
         const max = Vector.from(location).add(this.getRotatedSize(size, rotation));
         const blockVolume = new BlockVolume(location, max);
+        this.assertInDimensionBounds(blockVolume.getMin(), blockVolume.getMax());
         const structures = partitionedStructure.structures;
         const structurePartitioner = new VolumePartitioner(blockVolume, MAX_STRUCTURE_SIZE);
         const partitions = structurePartitioner.getPartitions();
@@ -77,6 +81,7 @@ export class Edit {
 
     clearArea(min, max) {
         this.assertFullyLoaded();
+        this.assertInDimensionBounds(min, max);
         const blockVolume = new BlockVolume(min, max);
         this.clearEntities(blockVolume.getMin(), blockVolume.getSpan());
         const fillPartitioner = new VolumePartitioner(blockVolume, MAX_FILL_VOLUME);
@@ -98,6 +103,7 @@ export class Edit {
 
     replaceBlockInArea(min, max, replaceBlock, newBlock) {
         this.assertFullyLoaded();
+        this.assertInDimensionBounds(min, max);
         const blockVolume = new BlockVolume(min, max);
         const fillPartitioner = new VolumePartitioner(blockVolume, MAX_FILL_VOLUME);
         const blockFillOptions = { blockFilter: { includeTypes: [replaceBlock] } };
@@ -131,6 +137,13 @@ export class Edit {
             if (!tickingArea.isFullyLoaded)
                 throw new UnloadedVolumeError('The area is not completely loaded.');
         }
+        return true;
+    }
+
+    assertInDimensionBounds(min, max) {
+        const bounds = this.dimension.heightRange;
+        if (min.y < bounds.min || max.y > bounds.max)
+            throw new OutOfBoundsVolumeError('The area is partially outside of the dimension\'s height boundaries.');
         return true;
     }
 }

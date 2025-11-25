@@ -26,6 +26,9 @@ export class Mode {
             if (error.name === 'UnloadedVolumeError') {
                 Feedback.send(this.player, `§cThe selected area spans too many chunks.`);
                 return false;
+            } else if (error.name === 'OutOfBoundsVolumeError') {
+                Feedback.send(this.player, `§cCannot edit blocks outside of the dimenson's height range.`)
+                return false;
             }
             throw error;
         }
