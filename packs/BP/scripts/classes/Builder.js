@@ -82,7 +82,7 @@ export class Builder {
 
     suspendNudge() {
         this.editMode.suspendNudge();
-        Feedback.send(this.player, `§a${Feedback.jumpIcon(this.player)} + ${Feedback.useIcon(this.player)} or ${Feedback.sneakIcon(this.player)} + ${Feedback.useIcon(this.player)} to start nudging.`);
+        Feedback.send(this.player, this.editMode.getFreeMovementFeedback());
     }
 
     unsuspendNudge() {

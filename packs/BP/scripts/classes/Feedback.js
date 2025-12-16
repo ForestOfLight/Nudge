@@ -37,4 +37,15 @@ export class Feedback {
                 return 'Use';
         }
     }
+
+    static hitIcon(player) {
+        const inputMode = player.inputInfo.lastInputModeUsed;
+        switch (inputMode) {
+            case InputMode.KeyboardAndMouse:
+                return ':light_mouse_left_button:';
+            case InputMode.Touch:
+            default:
+                return 'Attack';
+        }
+    }
 }

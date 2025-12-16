@@ -64,12 +64,16 @@ export class StackMode extends Mode {
 
     getDuringSelectionFeedback() {
         return `§a${Feedback.useIcon(this.player)} to extend.\n`
-            + `${Feedback.sneakIcon(this.player)} + ${Feedback.useIcon(this.player)} to start stacking structure.`;
+            + `${Feedback.sneakIcon(this.player)} + ${Feedback.useIcon(this.player)} to stack.`;
     }
 
     getStartNudgingFeedback() {
-        return `§a${Feedback.useIcon(this.player)} to confirm.\n`
+        return `§a${Feedback.useIcon(this.player)} to confirm stack.\n`
             + `${Feedback.jumpIcon(this.player)} + ${Feedback.useIcon(this.player)} to move freely.`;
+    }
+
+    getFreeMovementFeedback() {
+        return `§a${Feedback.useIcon(this.player)} to resume nudge.`;
     }
     
     isNudgingSuspended() {

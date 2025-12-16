@@ -99,14 +99,20 @@ export class MoveMode extends Mode {
     }
 
     getDuringSelectionFeedback() {
-        return `§a${Feedback.useIcon(this.player)} to extend.\n`
-            + `${Feedback.sneakIcon(this.player)} + ${Feedback.useIcon(this.player)} to move structure.`;
+        return `§a${Feedback.hitIcon(this.player)} to extend.\n`
+            + `${Feedback.useIcon(this.player)} to nudge.`;
     }
 
     getStartNudgingFeedback() {
-        return `§a${Feedback.useIcon(this.player)} to confirm.\n`
-            + `${Feedback.sneakIcon(this.player)} + ${Feedback.useIcon(this.player)} to mirror/rotate.\n`
-            + `${Feedback.jumpIcon(this.player)} + ${Feedback.useIcon(this.player)} to move freely.`;
+        return `§a${Feedback.useIcon(this.player)} to confirm move.\n`
+        + `${Feedback.hitIcon(this.player)} to nudge to cursor.\n`
+        + `${Feedback.jumpIcon(this.player)} + ${Feedback.useIcon(this.player)} to move freely.\n`
+        + `${Feedback.sneakIcon(this.player)} + ${Feedback.jumpIcon(this.player)} + ${Feedback.useIcon(this.player)} to mirror/rotate.\n`;
+    }
+
+    getFreeMovementFeedback() {
+        return `§a${Feedback.useIcon(this.player)} to resume nudge.\n`
+            + `${Feedback.hitIcon(this.player)} to nudge to cursor.`;
     }
 
     isNudgingSuspended() {

@@ -1,4 +1,4 @@
-import { EntityComponentTypes, system } from "@minecraft/server";
+import { EntityComponentTypes, system, HeldItemOption, EntitySwingSource } from "@minecraft/server";
 import { Builders } from "./Builders";
 import { Feedback } from "./Feedback";
 import { world } from '@minecraft/server';
@@ -10,15 +10,27 @@ import { Vector } from "../lib/Vector";
 export class SelectionInteractor {
     static onPlayerBreakBlock(event) {
         const player = event.player;
-        if (!player || !SelectionInteractor.isHoldingNudgeItem(player))
+        if (!SelectionInteractor.isHoldingNudgeItem(player))
             return;
         event.cancel = true;
         SelectionInteractor.onHit(player, event.block);
     }
 
+    static onPlayerAttack(event) {
+        const player = event.player;
+        if (!SelectionInteractor.isHoldingNudgeItem(player))
+            return;
+        const blockRaycast = player.getBlockFromViewDirection({ maxDistance: 1000, includePassableBlocks: true });
+        if (!blockRaycast) {
+            Feedback.send(player, '§cNo block found in view.');
+            return;
+        }
+        SelectionInteractor.onHit(player, blockRaycast.block);
+    }
+
     static onItemUse(event) {
         const player = event.source;
-        if (!player || !SelectionInteractor.isHoldingNudgeItem(player))
+        if (!SelectionInteractor.isHoldingNudgeItem(player))
             return;
         event.cancel = true;
         system.run(() => SelectionInteractor.onUse(player));
@@ -50,26 +62,36 @@ export class SelectionInteractor {
     }
 
     static onHit(player, block) {
+        if (!block) {
+            Feedback.send(player, '§cNo block found in view.');
+            return;
+        }
         const builder = Builders.get(player.id);
-        if (builder.isNudging())
+        if (builder.isNudging()) {
             builder.setNudgeLocation(block.location);
-        else
+        } else if (builder.hasSelection()) {
+            builder.extendSelect(block.location);
+            Feedback.send(player, builder.getDuringSelectionFeedback());
+        } else {
             builder.startSelection(block.dimension, block.location);
+            Feedback.send(player, builder.getDuringSelectionFeedback());
+        }
     }
 
     static onUse(player) {
         const builder = Builders.get(player.id);
         if (builder.isNudging())
             SelectionInteractor.handleUseWhileNudging(player, builder);
+        else if (builder.hasSelection())
+            builder.confirmSelection();
         else
-            SelectionInteractor.handleUseWhileSelecting(player, builder);
+            builder.changeEditMode();
     }
     
     static handleUseWhileNudging(player, builder) {
         const playerMovement = new PlayerMovement(player);
         if (builder.isNudgingSuspended()) {
-            if (playerMovement.isSneaking() || playerMovement.isJumping())
-                builder.unsuspendNudge();
+            builder.unsuspendNudge();
         } else {
             if (playerMovement.isSneaking())
                 builder.mirrorOrRotate();
@@ -80,30 +102,9 @@ export class SelectionInteractor {
         }
     }
 
-    static handleUseWhileSelecting(player, builder) {
-        const playerMovement = new PlayerMovement(player);
-        if (playerMovement.isSneaking() && builder.hasSelection()) {
-            builder.confirmSelection();
-            return;
-        } else if (playerMovement.isSneaking()) {
-            builder.changeEditMode();
-            return;
-        }
-        const blockRaycast = player.getBlockFromViewDirection({ maxDistance: 1000, includePassableBlocks: true });
-        if (!blockRaycast) {
-            Feedback.send(player, '§cNo block found in view.');
-            return;
-        }
-        const block = blockRaycast.block;
-        if (builder.hasSelection()) {
-            builder.extendSelect(block.location);
-        } else {
-            builder.startSelection(block.dimension, block.location);
-        }
-        Feedback.send(player, builder.getDuringSelectionFeedback());
-    }
-
     static isHoldingNudgeItem(player) {
+        if (!player)
+            return false;
         return SelectionInteractor.selectionItemInSlot(player, player.selectedSlotIndex)
     }
 
@@ -118,5 +119,6 @@ export class SelectionInteractor {
 }
 
 world.beforeEvents.playerBreakBlock.subscribe(SelectionInteractor.onPlayerBreakBlock);
+world.afterEvents.playerSwingStart.subscribe(SelectionInteractor.onPlayerAttack, { heldItemOption: HeldItemOption.AnyItem, swingSource: EntitySwingSource.Attack })
 world.beforeEvents.itemUse.subscribe(SelectionInteractor.onItemUse);
 playerChangeHotbarSlotEvent.subscribe(SelectionInteractor.onPlayerChangeHotbarSlot);

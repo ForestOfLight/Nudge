@@ -65,6 +65,10 @@ export class Mode {
         throw new Error('getDuringSelectionFeedback() must be implemented.');
     }
 
+    getFreeMovementFeedback() {
+        throw new Error('getFreeMovementFeedback() must be implemented.');
+    }
+
     replaceModeItemInHand() {
         const equippable = this.player.getComponent(EntityComponentTypes.Equippable);
         const mainhandSlot = equippable.getEquipmentSlot(EquipmentSlot.Mainhand);

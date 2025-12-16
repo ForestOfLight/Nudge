@@ -26,6 +26,7 @@ export class DeleteMode extends Mode {
     }
     
     getDuringSelectionFeedback() {
-        return `§a${Feedback.useIcon(this.player)} to extend.\n${Feedback.sneakIcon(this.player)} + ${Feedback.useIcon(this.player)} to delete.`;
+        return `§a${Feedback.hitIcon(this.player)} to extend.`
+            + `\n${Feedback.useIcon(this.player)} to delete.`;
     }
 }

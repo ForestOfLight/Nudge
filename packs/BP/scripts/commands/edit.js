@@ -20,7 +20,7 @@ function givePlayerMenuItem(origin) {
         if (givenItemStack)
             player.sendMessage('§cFailed to give you the Nudge item.');
         else
-            player.sendMessage(`§aYou recieved the Nudge item! ${Feedback.useIcon(player)} to select your build.`);
+            player.sendMessage(`§aYou recieved the Nudge item! ${Feedback.hitIcon(player)} to select your build or ${Feedback.useIcon(player)} to change your editing mode.`);
     });
     return { status: CustomCommandStatus.Success };
 }
