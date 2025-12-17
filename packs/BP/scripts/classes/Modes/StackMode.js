@@ -63,17 +63,21 @@ export class StackMode extends Mode {
     }
 
     getDuringSelectionFeedback() {
-        return `§a${Feedback.useIcon(this.player)} to extend.\n`
-            + `${Feedback.sneakIcon(this.player)} + ${Feedback.useIcon(this.player)} to stack.`;
+        return { rawtext: [
+            { translate: 'nudge.tip.extend', with: { rawtext: [Feedback.hitIcon(this.player)] } }, { text: '\n' },
+            { translate: 'nudge.tip.stack.start', with: { rawtext: [Feedback.useIcon(this.player)] } }
+        ]};
     }
 
     getStartNudgingFeedback() {
-        return `§a${Feedback.useIcon(this.player)} to confirm stack.\n`
-            + `${Feedback.jumpIcon(this.player)} + ${Feedback.useIcon(this.player)} to move freely.`;
+        return { rawtext: [
+            { translate: 'nudge.tip.stack.confirm', with: { rawtext: [Feedback.useIcon(this.player)] } }, { text: '\n' },
+            { translate: 'nudge.tip.freemove', with: { rawtext: [Feedback.jumpIcon(this.player), Feedback.useIcon(this.player)] } }
+        ]};
     }
 
     getFreeMovementFeedback() {
-        return `§a${Feedback.useIcon(this.player)} to resume nudge.`;
+        return { translate: 'nudge.tip.stack.resume', with: { rawtext: [Feedback.useIcon(this.player)] } };
     }
     
     isNudgingSuspended() {

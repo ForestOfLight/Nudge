@@ -4,7 +4,7 @@ import { Builders } from '../classes/Builders';
 system.beforeEvents.startup.subscribe((event) => {
     const command = {
         name: 'nudge:undo',
-        description: 'Undo your last edit, or several.',
+        description: 'nudge.command.undo',
         optionalParameters: [{ name: 'number', type: CustomCommandParamType.Integer }],
         permissionLevel: CommandPermissionLevel.Admin
     };
@@ -14,7 +14,7 @@ system.beforeEvents.startup.subscribe((event) => {
 function undoLastEdit(origin, number = 1) {
     const player = origin.sourceEntity;
     if (player instanceof Player === false)
-        return { status: CustomCommandStatus.Failure, message: 'This command can only be used by players.' };
+        return { status: CustomCommandStatus.Failure, message: 'nudge.command.generic.invalidsource' };
     system.run(() => {
         const builder = Builders.get(player.id);
         builder.undo(number);

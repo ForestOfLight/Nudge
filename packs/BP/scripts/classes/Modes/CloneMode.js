@@ -103,20 +103,26 @@ export class CloneMode extends Mode {
     }
 
     getDuringSelectionFeedback() {
-        return `§a${Feedback.hitIcon(this.player)} to extend.\n`
-            + `${Feedback.useIcon(this.player)} to nudge.`;
+        return { rawtext: [
+            { translate: 'nudge.tip.extend', with: { rawtext: [Feedback.hitIcon(this.player)] } }, { text: '\n' },
+            { translate: 'nudge.tip.nudge.start', with: { rawtext: [Feedback.useIcon(this.player)] } }
+        ]};
     }
 
     getStartNudgingFeedback() {
-        return `§a${Feedback.useIcon(this.player)} to confirm paste.\n`
-        + `${Feedback.hitIcon(this.player)} to nudge to cursor.\n`
-        + `${Feedback.jumpIcon(this.player)} + ${Feedback.useIcon(this.player)} to move freely.\n`
-        + `${Feedback.sneakIcon(this.player)} + ${Feedback.jumpIcon(this.player)} + ${Feedback.useIcon(this.player)} to mirror/rotate.`;
+        return { rawtext: [
+            { translate: 'nudge.tip.clone.confirm', with: { rawtext: [Feedback.useIcon(this.player)] } }, { text: '\n' },
+            { translate: 'nudge.tip.nudge.cursor', with: { rawtext: [Feedback.hitIcon(this.player)] } }, { text: '\n' },
+            { translate: 'nudge.tip.freemove', with: { rawtext: [Feedback.jumpIcon(this.player), Feedback.useIcon(this.player)] } }, { text: '\n' },
+            { translate: 'nudge.tip.nudge.mirrororrotate', with: { rawtext: [Feedback.sneakIcon(this.player), Feedback.jumpIcon(this.player), Feedback.useIcon(this.player)] } }
+        ]};
     }
 
     getFreeMovementFeedback() {
-        return `§a${Feedback.useIcon(this.player)} to resume nudge.\n`
-            + `${Feedback.hitIcon(this.player)} to nudge to cursor.`;
+        return { rawtext: [
+            { translate: 'nudge.tip.nudge.resume', with: { rawtext: [Feedback.useIcon(this.player)] } }, { text: '\n' },
+            { translate: 'nudge.tip.nudge.cursor', with: { rawtext: [Feedback.hitIcon(this.player)] } }
+        ]};
     }
     
     isNudgingSuspended() {

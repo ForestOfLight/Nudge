@@ -19,14 +19,11 @@ export class DeleteMode extends Mode {
     getItemId() {
         return 'nudge:delete';
     }
-
-    getSuccessFeedback() {
-        const bounds = this.selection.getBounds();
-        return `§aDeleted from ${bounds.min} to ${bounds.max}.`;
-    }
     
     getDuringSelectionFeedback() {
-        return `§a${Feedback.hitIcon(this.player)} to extend.`
-            + `\n${Feedback.useIcon(this.player)} to delete.`;
+        return { rawtext: [
+            { translate: 'nudge.tip.extend', with: { rawtext: [Feedback.hitIcon(this.player)] } }, { text: '\n' },
+            { translate: 'nudge.tip.delete', with: { rawtext: [Feedback.useIcon(this.player)] } }
+        ]};
     }
 }

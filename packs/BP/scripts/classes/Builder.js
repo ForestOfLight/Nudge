@@ -136,17 +136,17 @@ export class Builder {
     undo(num = 1) {
         const numUndone = this.editLog.undoMany(num);
         if (numUndone === 0)
-            Feedback.send(this.getPlayer(), `§7No edits to undo.`);
+            Feedback.send(this.getPlayer(), { translate: 'nudge.tip.undo.none' });
         else
-            Feedback.send(this.getPlayer(), `§aUndoing ${numUndone} edits...`);
+            Feedback.send(this.getPlayer(), { translate: 'nudge.tip.undo', with: [String(numUndone)] });
     }
     
     redo(num = 1) {
         const numRedone = this.editLog.redoMany(num);
         if (numRedone === 0)
-            Feedback.send(this.getPlayer(), `§7No edits to redo.`);
+            Feedback.send(this.getPlayer(), { translate: 'nudge.tip.redo.none' });
         else
-            Feedback.send(this.getPlayer(), `§aRedoing ${numRedone} edits...`);
+            Feedback.send(this.getPlayer(), { translate: 'nudge.tip.redo', with: [String(numRedone)] });
     }
 
     getDuringSelectionFeedback() {

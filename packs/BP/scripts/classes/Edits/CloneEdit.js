@@ -44,10 +44,10 @@ export class CloneEdit extends Edit {
     }
 
     getDoingFeedback() {
-        return `§7Pasting selection at ${this.pasteBounds.min.floor()}...`;
+        return { translate: 'nudge.tip.clone.doing', with: [String(this.pasteBounds.min.floor())] };
     }
 
     getSuccessFeedback() {
-        return `§aPasted selection at ${this.pasteBounds.min.floor()}.`;
+        return { translate: 'nudge.tip.clone.success', with: [String(this.pasteBounds.min.floor())] };
     }
 }

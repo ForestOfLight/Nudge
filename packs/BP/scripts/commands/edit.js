@@ -4,7 +4,7 @@ import { Feedback } from '../classes/Feedback';
 system.beforeEvents.startup.subscribe((event) => {
     const command = {
         name: 'nudge:edit',
-        description: 'Gives you the Nudge item. Use it to select your build.',
+        description: 'nudge.command.edit',
         permissionLevel: CommandPermissionLevel.Any
     };
     event.customCommandRegistry.registerCommand(command, givePlayerMenuItem);
@@ -13,14 +13,14 @@ system.beforeEvents.startup.subscribe((event) => {
 function givePlayerMenuItem(origin) {
     const player = origin.sourceEntity;
     if (player instanceof Player === false)
-        return { status: CustomCommandStatus.Failure, message: 'This command can only be used by players.' };
+        return { status: CustomCommandStatus.Failure, message: 'nudge.command.generic.invalidsource' };
     system.run(() => {
         const inventoryContainer = player.getComponent(EntityComponentTypes.Inventory)?.container;
         const givenItemStack = inventoryContainer?.addItem(new ItemStack('nudge:move'));
         if (givenItemStack)
-            player.sendMessage('§cFailed to give you the Nudge item.');
+            player.sendMessage({ translate: 'nudge.command.edit.fail' });
         else
-            player.sendMessage(`§aYou recieved the Nudge item! ${Feedback.hitIcon(player)} to select your build or ${Feedback.useIcon(player)} to change your editing mode.`);
+            player.sendMessage({ translate: 'nudge.command.edit.given', with: { rawtext: [Feedback.hitIcon(player), Feedback.useIcon(player)] } });
     });
     return { status: CustomCommandStatus.Success };
 }

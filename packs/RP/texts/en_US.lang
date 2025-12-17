@@ -1,0 +1,60 @@
+## Items
+nudge.move.name=Nudge
+nudge.clone.name=Nudge
+nudge.stack.name=Nudge
+nudge.delete.name=Nudge
+
+## Menu
+nudge.menu.closechat=§8Close your chat window to access the menu.
+nudge.menu.title=Select Edit Mode
+nudge.menu.undo=Undo
+nudge.menu.redo=Redo
+nudge.menu.move=Move
+nudge.menu.clone=Clone
+nudge.menu.stack=Stack
+nudge.menu.delete=Delete
+
+## Actionbar Tips
+nudge.tip.extend=§a%s to extend.	## Insert string: hit icon
+nudge.tip.freemove=§a%1 + %2 to move freely.	## Insert string: jump icon, use icon
+nudge.tip.nudge.start=§a%s to nudge.	## Insert string: use icon
+nudge.tip.nudge.resume=§a%s to resume nudge.	## Insert string: use icon
+nudge.tip.nudge.cursor=§a%s to nudge to cursor.	## Insert string: hit icon
+nudge.tip.nudge.mirrororrotate=§a%1 + %2 + %3 to mirror/rotate.	## Insert string: sneak icon, jump icon, use icon
+nudge.tip.move.confirm=§a%s to confirm move.	## Insert string: use icon
+nudge.tip.move.doing=§7Moving selection to %s...	## Insert string: structure location
+nudge.tip.move.success=§aMoved selection to %s.	## Insert string: structure location
+nudge.tip.clone.confirm=§a%s to confirm paste.	## Insert string: use icon
+nudge.tip.clone.doing=§7Pasting selection at %s...	## Insert string: structure location
+nudge.tip.clone.success=§aPasted selection at %s.	## Insert string: structure location
+nudge.tip.stack.start=§a%s to stack.	## Insert string: use icon
+nudge.tip.stack.confirm=§a%s to confirm stack.	## Insert string: use icon
+nudge.tip.stack.resume=§a%s to resume stack.	## Insert string: use icon
+nudge.tip.stack.doing=§7Stacking selection from %1 to %2...	## Insert string: stacked structure minimum location, stacked structure maximum location
+nudge.tip.stack.success=§aStacked selection from %1 to %2.	## Insert string: stacked structure minimum location, stacked structure maximum location
+nudge.tip.delete=§a%s to delete.	## Insert string: use icon
+nudge.tip.delete.doing=§7Deleting from %1 to %2...	## Insert string: selection minimum location, selection maximum location
+nudge.tip.delete.success=§aDeleted selection from %1 to %2.	## Insert string: selection minimum location, selection maximum location
+nudge.tip.undo=§aUndoing %s edits...	## Insert string: number of edits undone
+nudge.tip.undo.none=§7No edits to undo.
+nudge.tip.redo=§aRedoing %s edits...	## Insert string: number of edits redone
+nudge.tip.redo.none=§7No edits to redo.
+nudge.tip.noblock=§cNo block found in view.
+nudge.tip.unloadedvolume=§cThe selected area spans too many chunks.
+nudge.tip.outofbounds=§cCannot edit blocks outside of the dimenson's height range.
+
+## Commands
+nudge.command.generic.invalidsource=This command can only be used by players.
+nudge.command.edit=Gives you the Nudge item.
+nudge.command.edit.fail=§cFailed to give you the Nudge item.
+nudge.command.edit.given=§aYou recieved the Nudge item! %1 to select your build or %2 to change your editing mode.	## Insert strings: hit icon, use icon.
+nudge.command.here=Starts, extends, or moves your selection to your current location.
+nudge.command.here.holditem=§cPlease hold the Nudge item to use this command.
+nudge.command.redo=Redo your last edit, or several.
+nudge.command.undo=Undo your last edit, or several.
+
+## Other
+nudge.missingicon.jump=Jump
+nudge.missingicon.sneak=Sneak
+nudge.missingicon.use=Use
+nudge.missingicon.hit=Hit

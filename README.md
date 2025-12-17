@@ -70,7 +70,7 @@ Need help, want to discuss technical Minecraft, or follow future updates?
 * [x] Arbitrarily sized edits
 * [x] Ticking areas for edits
 * [x] Entities affected by edits
-* [ ] Translation support
+* [x] Translation support
 * [ ] Preview visualizations
 
 ## Issues & Suggestions

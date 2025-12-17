@@ -27,10 +27,10 @@ export class DeleteEdit extends Edit {
     }
 
     getDoingFeedback() {
-        return `§7Deleting from ${this.deleteMin} to ${this.deleteMax}...`;
+        return { translate: 'nudge.tip.delete.doing', with: [String(this.deleteMin), String(this.deleteMax)] };
     }
 
     getSuccessFeedback() {
-        return `§aDeleted from ${this.deleteMin} to ${this.deleteMax}.`;
+        return { translate: 'nudge.tip.delete.success', with: [String(this.deleteMin), String(this.deleteMax)] };
     }
 }

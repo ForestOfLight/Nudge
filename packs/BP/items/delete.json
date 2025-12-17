@@ -14,7 +14,7 @@
         "texture": "nudge:delete"
       },
       "minecraft:display_name": {
-        "value": "Nudge"
+        "value": "nudge.delete.name"
       }
     }
   }

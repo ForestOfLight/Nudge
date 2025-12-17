@@ -5,7 +5,6 @@ import { world } from '@minecraft/server';
 import { playerChangeHotbarSlotEvent } from "../events/PlayerChangeHotbarSlotEvent";
 import { PlayerMovement } from "./PlayerMovement";
 import { EditModes } from "./Modes/EditModes";
-import { Vector } from "../lib/Vector";
 
 export class SelectionInteractor {
     static onPlayerBreakBlock(event) {
@@ -22,7 +21,7 @@ export class SelectionInteractor {
             return;
         const blockRaycast = player.getBlockFromViewDirection({ maxDistance: 1000, includePassableBlocks: true });
         if (!blockRaycast) {
-            Feedback.send(player, '§cNo block found in view.');
+            Feedback.send(player, { translate: 'nudge.tip.noblock' });
             return;
         }
         SelectionInteractor.onHit(player, blockRaycast.block);
@@ -44,26 +43,9 @@ export class SelectionInteractor {
         system.run(() => builder.deselect());
     }
 
-    static onHereCommand(player) {
-        const builder = Builders.get(player.id);
-        if (!SelectionInteractor.isHoldingNudgeItem(player)) {
-            player.sendMessage('§cPlease hold the Nudge item to use this command.');
-            return;
-        }
-        const location = new Vector.from(player.location).floor();
-        if (builder.isNudging()) {
-            builder.setNudgeLocation(location);
-            return;
-        }
-        if (builder.hasSelection())
-            builder.extendSelect(location);
-        else
-            builder.startSelection(player.dimension, location);
-    }
-
     static onHit(player, block) {
         if (!block) {
-            Feedback.send(player, '§cNo block found in view.');
+            Feedback.send(player, { translate: 'nudge.tip.noblock' });
             return;
         }
         const builder = Builders.get(player.id);

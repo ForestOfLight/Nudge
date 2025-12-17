@@ -50,10 +50,10 @@ export class StackEdit extends Edit {
     }
 
     getDoingFeedback() {
-        return `§7Stacking selection from ${this.pasteBounds.min.floor()} to ${this.pasteBounds.max.floor()}...`;
+        return { translate: 'nudge.tip.stack.doing', with: [String(this.pasteBounds.min.floor()), String(this.pasteBounds.max.floor())] };
     }
 
     getSuccessFeedback() {
-        return `§aStacked selection from ${this.pasteBounds.min.floor()} to ${this.pasteBounds.max.floor()}.`;
+        return { translate: 'nudge.tip.stack.success', with: [String(this.pasteBounds.min.floor()), String(this.pasteBounds.max.floor())] };
     }
 }

@@ -9,10 +9,10 @@ export class Feedback {
         const inputMode = player.inputInfo.lastInputModeUsed;
         switch (inputMode) {
             case InputMode.KeyboardAndMouse:
-                return 'Jump';
+                return { translate: 'nudge.missingicon.jump' };
             case InputMode.Touch:
             default:
-                return ':touch_jump:';
+                return { text: ':touch_jump:' };
         }
     }
     
@@ -20,10 +20,10 @@ export class Feedback {
         const inputMode = player.inputInfo.lastInputModeUsed;
         switch (inputMode) {
             case InputMode.KeyboardAndMouse:
-                return 'Sneak';
+                return { translate: 'nudge.missingicon.sneak' };
             case InputMode.Touch:
             default:
-                return ':touch_sneak:';
+                return { text: ':touch_sneak:' };
         }
     }
 
@@ -31,10 +31,10 @@ export class Feedback {
         const inputMode = player.inputInfo.lastInputModeUsed;
         switch (inputMode) {
             case InputMode.KeyboardAndMouse:
-                return ':light_mouse_right_button:';
+                return { text: ':light_mouse_right_button:' };
             case InputMode.Touch:
             default:
-                return 'Use';
+                return { translate: 'nudge.missingicon.use' };
         }
     }
 
@@ -42,10 +42,10 @@ export class Feedback {
         const inputMode = player.inputInfo.lastInputModeUsed;
         switch (inputMode) {
             case InputMode.KeyboardAndMouse:
-                return ':light_mouse_left_button:';
+                return { text: ':light_mouse_left_button:' };
             case InputMode.Touch:
             default:
-                return 'Attack';
+                return { translate: 'nudge.missingicon.hit' };
         }
     }
 }

@@ -24,10 +24,10 @@ export class Mode {
             await edit.do();
         } catch (error) {
             if (error.name === 'UnloadedVolumeError') {
-                Feedback.send(this.player, `§cThe selected area spans too many chunks.`);
+                Feedback.send(this.player, { translate: 'nudge.tip.unloadedvolume' });
                 return false;
             } else if (error.name === 'OutOfBoundsVolumeError') {
-                Feedback.send(this.player, `§cCannot edit blocks outside of the dimenson's height range.`)
+                Feedback.send(this.player, { translate: 'nudge.tip.outofbounds' });
                 return false;
             }
             throw error;

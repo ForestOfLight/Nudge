@@ -4,7 +4,7 @@ import { Builders } from '../classes/Builders';
 system.beforeEvents.startup.subscribe((event) => {
     const command = {
         name: 'nudge:redo',
-        description: 'Redo your last edit, or several.',
+        description: 'nudge.command.redo',
         optionalParameters: [{ name: 'number', type: CustomCommandParamType.Integer }],
         permissionLevel: CommandPermissionLevel.Admin
     };
@@ -14,7 +14,7 @@ system.beforeEvents.startup.subscribe((event) => {
 function redoLastEdit(origin, number = 1) {
     const player = origin.sourceEntity;
     if (player instanceof Player === false)
-        return { status: CustomCommandStatus.Failure, message: 'This command can only be used by players.' };
+        return { status: CustomCommandStatus.Failure, message: 'nudge.command.generic.invalidsource' };
     system.run(() => {
         const builder = Builders.get(player.id);
         builder.redo(number);

@@ -14,7 +14,7 @@
         "texture": "nudge:stack"
       },
       "minecraft:display_name": {
-        "value": "Nudge"
+        "value": "nudge.stack.name"
       }
     }
   }

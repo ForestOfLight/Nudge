@@ -13,7 +13,7 @@
         "texture": "nudge:move"
       },
       "minecraft:display_name": {
-        "value": "Nudge"
+        "value": "nudge.move.name"
       }
     }
   }

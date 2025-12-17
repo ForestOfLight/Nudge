@@ -14,7 +14,7 @@
         "texture": "nudge:clone"
       },
       "minecraft:display_name": {
-        "value": "Nudge"
+        "value": "nudge.clone.name"
       }
     }
   }

@@ -44,10 +44,10 @@ export class MoveEdit extends Edit {
     }
 
     getDoingFeedback() {
-        return `§7Moving selection to ${this.pasteBounds.min.floor()}...`;
+        return { translate: 'nudge.tip.move.doing', with: [String(this.pasteBounds.min.floor())] };
     }
 
     getSuccessFeedback() {
-        return `§aMoved selection to ${this.pasteBounds.min.floor()}.`;
+        return { translate: 'nudge.tip.move.success', with: [String(this.pasteBounds.min.floor())] };
     }
 }
