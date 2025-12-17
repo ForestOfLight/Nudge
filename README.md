@@ -12,15 +12,17 @@
 
 ---
 
-Nudge is a powerful world editing addon for Minecraft Bedrock Edition. Inspired the simple tools from moulberry's Axiom, it is designed to give creators quick, intuitive control over their builds. 
+Nudge is a powerful world editing addon for Minecraft Bedrock Edition. Inspired by the simple tools from moulberry's Axiom, it is designed to give creators quick, intuitive control over their builds.
 
-* **Quick Selections**: Quickly define areas by clicking on blocks from any distance.
+* **Selections**: Speedily define areas by clicking on blocks from any distance.
 
 * **Nudge Controls**: Nudge areas of blocks one step at a time using the vanilla movement controls.
 
 * **Large-Area Editing**: Perform edits of any size anywhere, anytime.
 
-* **Several Modes**: Switch between editing modes (moving, cloning, deleting, stacking) to make different kinds of edits fluidly.
+* **Modes**: Switch between editing modes (moving, cloning, deleting, stacking) to make different kinds of edits fluidly.
+
+* **Undo/Redo**: Easily undo and redo your last actions.
 
 * **Built for Simplicity**: No complex UIs or commands. Just fast, easy-to-master tools.
 
@@ -38,17 +40,17 @@ Download the latest release of **Nudge** from the [Releases Page](https://github
 
 Once installed on a world:
 
-1. Use `/nudge:edit` in creative mode to get the Nudge item.
-2. Use the item to start selecting an area or Sneak + Use to change the edit mode.
+1. Use `/nudge:edit` to get the Nudge item.
+2. "Hit" with the item to start selecting an area or "Use" it to change the edit mode.
 3. Instructions in-game will guide you through making edits.
 
 Nudge is designed to feel natural and quick — a companion tool for faster iteration.
 
 ### Additional Commands
 
-**`/nudge:undo`** - Undoes the last edit action.
+**`/nudge:undo <amount: int>`** - Undoes the last edit action, or several.
 
-**`/nudge:redo`** - Redoes the last undone edit action.
+**`/nudge:redo <amount: int>`** - Redoes the last undone edit action, or several.
 
 **`/nudge:here`** - Starts, extends, or moves your selection to your current location.
 
@@ -79,3 +81,7 @@ Have an idea? Found a bug?
 Open an issue on this repo — feedback is always welcome.
 
 If you're interested in contributing, feel free to open a pull request!
+
+### Adding Translations
+
+Nudge currently only supports American English, but has translation capabilities. If you would like to contribute a translation, please join our Discord and reach out!
