@@ -5,4 +5,4 @@ import './commands/redo';
 import './commands/here';
 
 // Setup
-import './classes/SelectionInteractor';
+import './classes/PlayerInteractions';

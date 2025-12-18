@@ -58,20 +58,19 @@ export class BuildNudgerStack extends BuildNudger {
 
     clampToSize(vector) {
         const size = this.selection.getSize().add(new Vector(1, 1, 1));
-        let clamped = new Vector();
         if (vector.x > 1)
-            clamped = clamped.add(new Vector(size.x, 0, 0));
+            return new Vector(size.x, 0, 0);
         if (vector.x < -1)
-            clamped = clamped.add(new Vector(-size.x, 0, 0));
+            return new Vector(-size.x, 0, 0);
         if (vector.y > 1)
-            clamped = clamped.add(new Vector(0, size.y, 0));
+            return new Vector(0, size.y, 0);
         if (vector.y < -1)
-            clamped = clamped.add(new Vector(0, -size.y, 0));
+            return new Vector(0, -size.y, 0);
         if (vector.z > 1)
-            clamped = clamped.add(new Vector(0, 0, size.z));
+            return new Vector(0, 0, size.z);
         if (vector.z < -1)
-            clamped = clamped.add(new Vector(0, 0, -size.z));
-        return clamped;
+            return new Vector(0, 0, -size.z);
+        return new Vector();
     }
 
     shouldMove(minOffset, maxOffset) {
@@ -80,12 +79,24 @@ export class BuildNudgerStack extends BuildNudger {
 
     refreshStackingRenderer(minOffset = new Vector(), maxOffset = new Vector()) {
         this.stackingRenderer?.destroy();
-        const selection = Builders.get(this.player.id).selection;
+        const selection = this.builder.getSelection();
         const { min, max } = selection.getBounds();
         const nudgedMin = min.add(selection.minOffset.add(minOffset));
         const nudgedMax = max.add(selection.maxOffset.add(maxOffset));
         const minVolume = new BlockVolume(min, nudgedMin);
         const maxVolume = new BlockVolume(max, nudgedMax);
         this.stackingRenderer = new StackingRenderer(selection.dimension, minVolume.getMin(), maxVolume.getMax(), selection.getSize());
+    }
+
+    snapToStackingGrid(location) {
+        const selectionMin = this.selection.getBounds().min;
+        const offset = Vector.from(location).subtract(selectionMin);
+        const size = this.selection.getSize().add(new Vector(1, 1, 1));
+        const snappedOffset = new Vector(
+            Math.floor(offset.x / size.x) * size.x,
+            Math.floor(offset.y / size.y) * size.y,
+            Math.floor(offset.z / size.z) * size.z
+        );
+        return Vector.from(selectionMin).add(snappedOffset);
     }
 }

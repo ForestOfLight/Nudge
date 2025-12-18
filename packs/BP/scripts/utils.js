@@ -1,6 +1,5 @@
 import { system } from '@minecraft/server';
 import { FormCancelationReason } from '@minecraft/server-ui';
-import { Vector } from './lib/Vector';
 
 export async function forceShow(player, form, timeout = Infinity) {
     const startTick = system.currentTick;
@@ -13,7 +12,3 @@ export async function forceShow(player, form, timeout = Infinity) {
     }
     throw new Error("Menu timed out.");
 };
-
-export function toChunkCoords(location) {
-    return Vector.from(location).multiply(1/16).floor();
-}

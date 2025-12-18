@@ -1,8 +1,8 @@
 import { BlockVolume } from "@minecraft/server";
 import { Vector } from "../../lib/Vector";
-import { Edit } from "./Edit";
+import { VolumeEdit } from "./VolumeEdit";
 
-export class StackEdit extends Edit {
+export class StackEdit extends VolumeEdit {
     copyBounds;
     pasteBounds;
     completeBounds;

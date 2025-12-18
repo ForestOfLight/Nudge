@@ -7,8 +7,11 @@
     "nudge:clone": {
       "textures": "textures/items/clone"
     },
-    "nudge:delete": {
-      "textures": "textures/items/delete"
+    "nudge:delete_volume": {
+      "textures": "textures/items/delete_volume"
+    },
+    "nudge:delete_connected": {
+      "textures": "textures/items/delete_connected"
     },
     "nudge:stack": {
       "textures": "textures/items/stack"

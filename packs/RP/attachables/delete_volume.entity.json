@@ -2,7 +2,7 @@
     "format_version": "1.10.0",
     "minecraft:attachable": {
         "description": {
-            "identifier": "nudge:delete",
+            "identifier": "nudge:delete_volume",
             "materials": {
                 "default": "entity",
                 "enchanted": "entity_alphatest_glint"

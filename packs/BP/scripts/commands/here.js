@@ -1,6 +1,7 @@
 import { system, CommandPermissionLevel, CustomCommandStatus, Player } from '@minecraft/server';
-import { SelectionInteractor } from '../classes/SelectionInteractor';
+import { PlayerInteractions } from '../classes/PlayerInteractions';
 import { Builders } from '../classes/Builders';
+import { Vector } from '../lib/Vector';
 
 system.beforeEvents.startup.subscribe((event) => {
     const command = {
@@ -17,19 +18,12 @@ function hereCommand(origin) {
         return { status: CustomCommandStatus.Failure, message: 'nudge.command.generic.invalidsource' };
     system.run(() => {
         const builder = Builders.get(player.id);
-        if (!SelectionInteractor.isHoldingNudgeItem(player)) {
+        if (!PlayerInteractions.isHoldingNudgeItem(player)) {
             player.sendMessage({ translate: 'nudge.command.here.holditem' });
             return;
         }
-        const location = new Vector.from(player.location).floor();
-        if (builder.isNudging()) {
-            builder.setNudgeLocation(location);
-            return;
-        }
-        if (builder.hasSelection())
-            builder.extendSelect(location);
-        else
-            builder.startSelection(player.dimension, location);
+        const block = player.dimension.getBlock(new Vector.from(player.location).floor());
+        builder.onHit(block);
     });
     return { status: CustomCommandStatus.Success };
 }

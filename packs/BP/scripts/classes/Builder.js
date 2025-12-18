@@ -1,18 +1,20 @@
-import { EntityComponentTypes, world } from "@minecraft/server";
-import { Selection } from "./Selection";
+import { EntityComponentTypes, EquipmentSlot, ItemStack, world } from "@minecraft/server";
 import { EditLog } from "./EditLog";
 import { EditModes } from "./Modes/EditModes";
 import { ModeSelectionForm } from "./Modes/ModeSelectionForm";
+import { Feedback } from "./Feedback";
+import { PlayerMovement } from "./PlayerMovement";
+import { PlayerInteractions } from "./PlayerInteractions";
+
 import { MoveMode } from "./Modes/MoveMode";
-import { DeleteMode } from "./Modes/DeleteMode";
 import { CloneMode } from "./Modes/CloneMode";
 import { StackMode } from "./Modes/StackMode";
-import { Feedback } from "./Feedback";
+import { DeleteVolumeMode } from "./Modes/DeleteVolumeMode";
+import { DeleteConnectedMode } from "./Modes/DeleteConnectedMode";
 
 export class Builder {
     playerId;
     player = void 0;
-    selection = void 0;
     editMode;
     editLog;
 
@@ -29,108 +31,84 @@ export class Builder {
     }
 
     onLeave() {
-        this.deselect();
+        this.editMode.deselect();
     }
 
-    select(dimension, from, to) {
-        this.selection?.destroy();
-        this.selection = new Selection(dimension, from, to);
+    onUse() {
+        this.editMode.onUse();
     }
 
-    deselect() {
-        if (this.editMode.isNudging)
-            this.exitNudgeMode();
-        this.selection?.destroy();
-        this.selection = void 0;
+    onHit(block) {
+        this.editMode.onHit(block);
     }
 
-    startSelection(dimension, from) {
-        this.select(dimension, from);
+    onStartHoldNudgeItem() {
+        this.setEditModeByHeldItemId();
     }
 
-    selectFrom(from) {
-        this.selection.setFrom(from);
-    }
-
-    selectTo(to) {
-        this.selection.setTo(to);
-    }
-
-    extendSelect(to) {
-        this.selection.extendTo(to);
-    }
-
-    hasSelection() {
-        return this.selection !== void 0;
-    }
-
-    confirmSelection() {
-        this.editMode.confirmSelection();
-    }
-
-    enterNudgeMode() {
-        this.editMode.enterNudgeMode();
-    }
-
-    exitNudgeMode() {
-        this.editMode.exitNudgeMode();
-    }
-
-    setNudgeLocation(min) {
-        this.editMode.setNudgeLocation(min);
-    }
-
-    suspendNudge() {
-        this.editMode.suspendNudge();
-        Feedback.send(this.player, this.editMode.getFreeMovementFeedback());
-    }
-
-    unsuspendNudge() {
-        this.editMode.unsuspendNudge();
-        Feedback.send(this.player, this.editMode.getStartNudgingFeedback());
-    }
-
-    confirmEdit() {
-        this.editMode.confirmEdit();
+    allowMovement(enable) {
+        const playerMovement = new PlayerMovement(this.player);
+        if (enable)
+            playerMovement.unfreeze();
+        else
+            playerMovement.freeze();
     }
 
     changeEditMode() {
         new ModeSelectionForm(this.getPlayer());
     }
 
-    mirrorOrRotate() {
-        this.editMode.mirrorOrRotate();
+    getSelection() {
+        return this.editMode.selection;
     }
 
-    detectHeldItemForEditMode() {
+    deselect() {
+        this.editMode.deselect();
+    }
+
+    setEditModeByHeldItemId() {
         const player = this.getPlayer();
         const inventoryContainer = player.getComponent(EntityComponentTypes.Inventory)?.container;
         if (!inventoryContainer)
             return false;
         const slotItem = inventoryContainer.getItem(player.selectedSlotIndex);
-        const validModes = Object.keys(EditModes);
-        const newMode = validModes.find((mode) => ('nudge:' + mode.toLowerCase()) === slotItem?.typeId);
-        this.setEditMode(EditModes[newMode]);
+        const newModeId = Object.values(EditModes).find(modeData => modeData.itemId === slotItem?.typeId)?.id;
+        this.setEditMode(newModeId);
     }
 
-    setEditMode(editMode) {
-        switch (editMode) {
-            case EditModes.Move:
+    setEditMode(newEditMode) {
+        switch (newEditMode) {
+            case EditModes.Move.id:
                 this.editMode = new MoveMode(this);
                 break;
-            case EditModes.Clone:
+            case EditModes.Clone.id:
                 this.editMode = new CloneMode(this);
                 break;
-            case EditModes.Delete:
-                this.editMode = new DeleteMode(this);
-                break;
-            case EditModes.Stack:
+            case EditModes.Stack.id:
                 this.editMode = new StackMode(this);
+                break;
+            case EditModes.DeleteVolume.id:
+                this.editMode = new DeleteVolumeMode(this);
+                break;
+            case EditModes.DeleteConnected.id:
+                this.editMode = new DeleteConnectedMode(this);
                 break;
             default:
                 this.editMode = new MoveMode(this);
+                newEditMode = 0;
                 break;
         }
+        this.replaceModeItemInHand(newEditMode);
+    }
+    
+    replaceModeItemInHand(newEditMode) {
+        const equippable = this.player.getComponent(EntityComponentTypes.Equippable);
+        const mainhandSlot = equippable.getEquipmentSlot(EquipmentSlot.Mainhand);
+        if (PlayerInteractions.isHoldingNudgeItem(this.player)) {
+            const modeItemId = Object.values(EditModes).find(mode => mode.id === newEditMode)?.itemId;
+            mainhandSlot.setItem(new ItemStack(modeItemId, 1));
+        }
+        Feedback.send(this.getPlayer(), this.editMode.getHoldItemFeedback());
     }
 
     undo(num = 1) {
@@ -147,17 +125,5 @@ export class Builder {
             Feedback.send(this.getPlayer(), { translate: 'nudge.tip.redo.none' });
         else
             Feedback.send(this.getPlayer(), { translate: 'nudge.tip.redo', with: [String(numRedone)] });
-    }
-
-    getDuringSelectionFeedback() {
-        return this.editMode.getDuringSelectionFeedback();
-    }
-
-    isNudging() {
-        return this.editMode.isNudging;
-    }
-
-    isNudgingSuspended() {
-        return this.editMode.isNudgingSuspended();
     }
 }

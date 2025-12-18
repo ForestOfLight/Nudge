@@ -1,7 +1,7 @@
 import { Vector } from "../../lib/Vector";
-import { Edit } from "./Edit";
+import { VolumeEdit } from "./VolumeEdit";
 
-export class CloneEdit extends Edit {
+export class CloneEdit extends VolumeEdit {
     copyBounds;
     pasteBounds;
     copyStructure;

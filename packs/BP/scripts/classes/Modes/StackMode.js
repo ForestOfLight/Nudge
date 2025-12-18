@@ -1,38 +1,51 @@
 import { StackEdit } from "../Edits/StackEdit";
 import { Feedback } from "../Feedback";
 import { BuildNudgerStack } from "../Nudges/BuildNudgerStack";
-import { Mode } from "./Mode";
+import { PlayerMovement } from "../PlayerMovement";
+import { NudgeableMode } from "./NudgableMode";
 
-export class StackMode extends Mode {
+export class StackMode extends NudgeableMode {
     isNudging = false;
     nudger;
 
     constructor(builder) {
         super(builder);
-        this.nudger = new BuildNudgerStack(this.player);
+        this.nudger = new BuildNudgerStack(builder);
     }
 
-    enterNudgeMode() {
-        this.isNudging = true;
-        this.allowPlayerMovement(false);
-        this.nudger.setSelection(this.builder.selection);
-        this.nudger.start();
+    onUse() {
+        if (this.isNudging)
+            this.onUseWhileNudging();
+        else if (this.hasSelection())
+            this.confirmSelection();
+        else
+            this.builder.changeEditMode();
     }
 
-    exitNudgeMode() {
-        this.isNudging = false;
-        this.allowPlayerMovement(true);
-        this.nudger?.stop();
+    onHit(block) {
+        if (this.isNudging)
+            this.setNudgeLocation(block.location);
+        else if (this.hasSelection())
+            this.extendSelection(block.location);
+        else
+            this.startSelection(block.dimension, block.location);
     }
 
-    suspendNudge() {
-        this.allowPlayerMovement(true);
-        this.nudger?.suspend();
+    onUseWhileNudging() {
+        const playerMovement = new PlayerMovement(this.player);
+        if (this.nudger?.isSuspended) {
+            this.unsuspendNudge();
+        } else {
+            if (playerMovement.isJumping())
+                this.suspendNudge();
+            else
+                this.confirmEdit();
+        }
     }
 
-    unsuspendNudge() {
-        this.allowPlayerMovement(false);
-        this.nudger?.unsuspend();
+    startSelection(dimension, location) {
+        this.select(dimension, location, location);
+        Feedback.send(this.player, this.getDuringSelectionFeedback());
     }
 
     confirmSelection() {
@@ -43,23 +56,18 @@ export class StackMode extends Mode {
     async confirmEdit() {
         const success = await super.confirmEdit();
         if (success)
-            this.builder.deselect();
+            this.deselect();
     }
     
     createNewEdit() {
-        return new StackEdit(this.builder.selection);
+        return new StackEdit(this.selection);
     }
 
-    setNudgeLocation(min) {
-        return;
-    }
-
-    getItemId() {
-        return 'nudge:stack';
-    }
-
-    mirrorOrRotate() {
-        return void 0;
+    getHoldItemFeedback() {
+        return { rawtext: [
+            { translate: 'nudge.tip.start', with: { rawtext: [Feedback.hitIcon(this.player)] } }, { text: '\n' },
+            { translate: 'nudge.tip.changemode', with: { rawtext: [Feedback.useIcon(this.player)] } }
+        ]}
     }
 
     getDuringSelectionFeedback() {
@@ -72,15 +80,25 @@ export class StackMode extends Mode {
     getStartNudgingFeedback() {
         return { rawtext: [
             { translate: 'nudge.tip.stack.confirm', with: { rawtext: [Feedback.useIcon(this.player)] } }, { text: '\n' },
+            { translate: 'nudge.tip.nudge.cursor', with: { rawtext: [Feedback.hitIcon(this.player)] } }, { text: '\n' },
             { translate: 'nudge.tip.freemove', with: { rawtext: [Feedback.jumpIcon(this.player), Feedback.useIcon(this.player)] } }
         ]};
     }
 
     getFreeMovementFeedback() {
-        return { translate: 'nudge.tip.stack.resume', with: { rawtext: [Feedback.useIcon(this.player)] } };
+        return { rawtext: [
+            { translate: 'nudge.tip.nudge.resume', with: { rawtext: [Feedback.useIcon(this.player)] } }, { text: '\n' },
+            { translate: 'nudge.tip.nudge.cursor', with: { rawtext: [Feedback.hitIcon(this.player)] } }
+        ]};
     }
     
     isNudgingSuspended() {
         return this.nudger?.isSuspended;
+    }
+
+    setNudgeLocation(location) {
+        const snappedLocation = this.nudger.snapToStackingGrid(location);
+        this.selection.setNudgeLocation(snappedLocation);
+        this.nudger.refreshStackingRenderer();
     }
 }

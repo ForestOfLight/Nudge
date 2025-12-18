@@ -1,6 +1,6 @@
-import { Edit } from "./Edit";
+import { VolumeEdit } from "./VolumeEdit";
 
-export class DeleteEdit extends Edit {
+export class DeleteVolumeEdit extends VolumeEdit {
     deleteMin;
     deleteMax;
     replacedStructure;
@@ -27,10 +27,10 @@ export class DeleteEdit extends Edit {
     }
 
     getDoingFeedback() {
-        return { translate: 'nudge.tip.delete.doing', with: [String(this.deleteMin), String(this.deleteMax)] };
+        return { translate: 'nudge.tip.deletevolume.doing', with: [String(this.deleteMin), String(this.deleteMax)] };
     }
 
     getSuccessFeedback() {
-        return { translate: 'nudge.tip.delete.success', with: [String(this.deleteMin), String(this.deleteMax)] };
+        return { translate: 'nudge.tip.deletevolume.success', with: [String(this.deleteMin), String(this.deleteMax)] };
     }
 }

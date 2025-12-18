@@ -1,11 +1,10 @@
 import { ActionFormData } from '@minecraft/server-ui';
 import { forceShow } from '../../utils';
 import { Builders } from '../Builders';
-import { EditModeTranslatableStrings } from './EditModeTranslatableStrings';
+import { EditModes } from './EditModes';
 
 export class ModeSelectionForm {
     #title = 'nudge.menu.title';
-    #buttons = EditModeTranslatableStrings;
 
     constructor(player) {
         this.player = player;
@@ -23,8 +22,8 @@ export class ModeSelectionForm {
     buildForm() {
         const form = new ActionFormData()
             .title({ translate: this.#title });
-        for (const [modeName, buttonName] of Object.entries(EditModeTranslatableStrings))
-            form.button(buttonName, 'textures/items/' + modeName.toLowerCase());
+        for (const [modeName, modeData] of Object.entries(EditModes))
+            form.button(modeData.translatableString, 'textures/items/' + modeData.itemId.split(':')[1]);
         form.button({ translate: 'nudge.menu.undo' }, 'textures/items/undo');
         form.button({ translate: 'nudge.menu.redo' }, 'textures/items/redo');
         return form;
@@ -32,12 +31,12 @@ export class ModeSelectionForm {
 
     handleSelection(selection) {
         const builder = Builders.get(this.player.id);
-        const buttons = Object.keys(EditModeTranslatableStrings);
-        if (selection === buttons.length)
+        const numModes = Object.keys(EditModes).length;
+        if (selection === numModes)
             builder.undo();
-        if (selection === buttons.length + 1)
+        if (selection === numModes + 1)
             builder.redo();
-        if (selection < buttons.length)
+        if (selection < numModes)
             builder.setEditMode(selection);
     }
 }

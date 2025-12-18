@@ -2,10 +2,10 @@ import { StructureMirrorAxis, StructureRotation } from "@minecraft/server";
 import { MoveEdit } from "../Edits/MoveEdit";
 import { Feedback } from "../Feedback";
 import { BuildNudgerMove } from "../Nudges/BuildNudgerMove";
-import { Mode } from "./Mode";
-import { Vector } from "../../lib/Vector";
+import { NudgeableMode } from "./NudgableMode";
+import { PlayerMovement } from "../PlayerMovement";
 
-export class MoveMode extends Mode {
+export class MoveMode extends NudgeableMode {
     isNudging = false;
     nudger;
     mirrorAxis = StructureMirrorAxis.None;
@@ -13,32 +13,44 @@ export class MoveMode extends Mode {
 
     constructor(builder) {
         super(builder);
-        this.nudger = new BuildNudgerMove(this.player);
+        this.nudger = new BuildNudgerMove(builder);
     }
 
-    enterNudgeMode() {
-        this.isNudging = true;
-        this.mirrorAxis = StructureMirrorAxis.None;
-        this.rotation = StructureRotation.None;
-        this.allowPlayerMovement(false);
-        this.nudger.setSelection(this.builder.selection);
-        this.nudger.start();
+    onUse() {
+        if (this.isNudging)
+            this.onUseWhileNudging();
+        else if (this.hasSelection())
+            this.confirmSelection();
+        else
+            this.builder.changeEditMode();
     }
 
-    exitNudgeMode() {
-        this.isNudging = false;
-        this.allowPlayerMovement(true);
-        this.nudger?.stop();
+    onHit(block) {
+        if (this.isNudging)
+            this.selection.setNudgeLocation(block.location);
+        else if (this.hasSelection())
+            this.extendSelection(block.location);
+        else
+            this.startSelection(block.dimension, block.location);
     }
 
-    suspendNudge() {
-        this.allowPlayerMovement(true);
-        this.nudger?.suspend();
+    onUseWhileNudging() {
+        const playerMovement = new PlayerMovement(this.player);
+        if (this.isNudgingSuspended()) {
+            this.unsuspendNudge();
+        } else {
+            if (playerMovement.isSneaking())
+                this.mirrorOrRotate();
+            else if (playerMovement.isJumping())
+                this.suspendNudge();
+            else
+                this.confirmEdit();
+        }
     }
 
-    unsuspendNudge() {
-        this.allowPlayerMovement(false);
-        this.nudger?.unsuspend();
+    startSelection(dimension, location) {
+        this.select(dimension, location, location);
+        Feedback.send(this.player, this.getDuringSelectionFeedback());
     }
 
     confirmSelection() {
@@ -49,55 +61,20 @@ export class MoveMode extends Mode {
     async confirmEdit() {
         const success = await super.confirmEdit();
         if (success)
-            this.builder.deselect();
+            this.deselect();
     }
 
     createNewEdit() {
-        return new MoveEdit(this.builder.selection, { mirrorAxis: this.mirrorAxis, rotation: this.rotation });
+        return new MoveEdit(this.selection, { mirrorAxis: this.mirrorAxis, rotation: this.rotation });
     }
 
-    mirrorOrRotate() {
-        const mirrorOrRotation = this.getNextMirrorOrRotation();
-        if (Object.values(StructureMirrorAxis).includes(mirrorOrRotation))
-            this.mirrorAxis = mirrorOrRotation;
-        else
-            this.mirrorAxis = StructureMirrorAxis.None;
-        if (Object.values(StructureRotation).includes(mirrorOrRotation))
-            this.rotation = mirrorOrRotation;
-        else
-            this.rotation = StructureRotation.None;
-        const selection = this.builder.selection;
-        selection.renderer.setMirrorAxis(this.mirrorAxis);
-        selection.renderer.setRotation(this.rotation);
-
-        if (Object.values(StructureRotation).includes(mirrorOrRotation) || mirrorOrRotation === void 0) {
-            const { min, max } = selection.getBounds();
-            const nudgedMin = min.add(selection.minOffset);
-            const nudgedMax = max.add(selection.maxOffset);
-            const size = Vector.from(nudgedMax).subtract(nudgedMin);
-            selection.nudgeOffset(new Vector(), new Vector(size.z - size.x, 0, size.x - size.z));
-        }
+    getHoldItemFeedback() {
+        return { rawtext: [
+            { translate: 'nudge.tip.start', with: { rawtext: [Feedback.hitIcon(this.player)] } }, { text: '\n' },
+            { translate: 'nudge.tip.changemode', with: { rawtext: [Feedback.useIcon(this.player)] } }
+        ]}
     }
-
-    getNextMirrorOrRotation() {
-        const queue = [
-            StructureMirrorAxis.X,
-            StructureMirrorAxis.Z,
-            StructureMirrorAxis.XZ,
-            StructureRotation.Rotate90,
-            StructureRotation.Rotate180,
-            StructureRotation.Rotate270
-        ];
-        const currMirrorOrRotation = queue.findIndex(mirrorOrRotation => 
-            mirrorOrRotation === this.mirrorAxis || mirrorOrRotation === this.rotation
-        );
-        return queue[currMirrorOrRotation + 1];
-    }
-
-    getItemId() {
-        return 'nudge:move';
-    }
-
+    
     getDuringSelectionFeedback() {
         return { rawtext: [
             { translate: 'nudge.tip.extend', with: { rawtext: [Feedback.hitIcon(this.player)] } }, { text: '\n' },
@@ -119,9 +96,5 @@ export class MoveMode extends Mode {
             { translate: 'nudge.tip.nudge.resume', with: { rawtext: [Feedback.useIcon(this.player)] } }, { text: '\n' },
             { translate: 'nudge.tip.nudge.cursor', with: { rawtext: [Feedback.hitIcon(this.player)] } }
         ]};
-    }
-
-    isNudgingSuspended() {
-        return this.nudger?.isSuspended;
     }
 }

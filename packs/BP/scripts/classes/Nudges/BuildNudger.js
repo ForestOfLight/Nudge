@@ -2,15 +2,15 @@ import { system } from "@minecraft/server";
 import { PlayerMovement } from "../PlayerMovement";
 
 export class BuildNudger {
-    player;
+    builder;
     playerMovement;
     selection;
     isSuspended = false;
     #runner;
 
-    constructor(player) {
-        this.player = player;
-        this.playerMovement = new PlayerMovement(this.player);
+    constructor(builder) {
+        this.builder = builder;
+        this.playerMovement = new PlayerMovement(builder.getPlayer());
     }
     
     start() {
@@ -22,7 +22,8 @@ export class BuildNudger {
     }
 
     stop() {
-        system.clearRun(this.#runner);
+        if (this.#runner)
+            system.clearRun(this.#runner);
         this.selection.endNudge();
     }
 
