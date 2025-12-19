@@ -12,7 +12,7 @@
 
 ---
 
-Nudge is a powerful world editing addon for Minecraft Bedrock Edition. Inspired by the simple tools from moulberry's Axiom, it is designed to give creators quick, intuitive control over their builds.
+Nudge is a powerful creative building addon for Minecraft Bedrock Edition. Inspired by the simple tools from moulberry's Axiom, it is designed to give creators quick, intuitive control over their builds.
 
 * **Selections**: Speedily define areas by clicking on blocks from any distance.
 
@@ -20,7 +20,7 @@ Nudge is a powerful world editing addon for Minecraft Bedrock Edition. Inspired 
 
 * **Large-Area Editing**: Perform edits of any size anywhere, anytime.
 
-* **Modes**: Switch between editing modes (moving, cloning, deleting, stacking) to make different kinds of edits fluidly.
+* **Modes**: Switch between editing modes (moving, cloning, stacking, deleting, etc.) to make different kinds of edits fluidly.
 
 * **Undo/Redo**: Easily undo and redo your last actions.
 
@@ -73,6 +73,8 @@ Need help, want to discuss technical Minecraft, or follow future updates?
 * [x] Ticking areas for edits
 * [x] Entities affected by edits
 * [x] Translation support
+* [x] Magic Delete edit
+* [ ] Extrude edit
 * [ ] Preview visualizations
 
 ## Issues & Suggestions
