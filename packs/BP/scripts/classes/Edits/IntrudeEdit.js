@@ -4,7 +4,7 @@ import { Direction } from "@minecraft/server";
 
 export class IntrudeEdit extends MagicEdit {
     replacedBlockStructures = [];
-    maxBlocks = 254;
+    maxBlocks = 10000;
     chunkRadiusToSearch = 3;
     intrudeDirection;
 
@@ -37,7 +37,8 @@ export class IntrudeEdit extends MagicEdit {
     }
 
     matchesSearch(block) {
-        return !block.isAir && block.offset(this.intrudeDirection)?.isAir
+        const offsetBlock = block.offset(this.intrudeDirection)
+        return !block.isAir && (offsetBlock?.isAir || offsetBlock?.isLiquid)
             && block.typeId === this.initialBlockType;
     }
 

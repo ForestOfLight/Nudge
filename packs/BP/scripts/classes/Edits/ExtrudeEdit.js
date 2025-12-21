@@ -4,7 +4,7 @@ import { Direction } from "@minecraft/server";
 
 export class ExtrudeEdit extends MagicEdit {
     replacedBlockStructures = [];
-    maxBlocks = 254;
+    maxBlocks = 10000;
     chunkRadiusToSearch = 3;
     extrudeDirection;
     extrudeLocation;
@@ -39,8 +39,10 @@ export class ExtrudeEdit extends MagicEdit {
     }
 
     matchesSearch(block) {
-        return !block.isAir && block.offset(this.extrudeDirection)?.isAir
+        const offsetBlock = block.offset(this.extrudeDirection);
+        return !block.isAir && (offsetBlock?.isAir || offsetBlock?.isLiquid)
             && block.typeId === this.initialBlockType;
+
     }
 
     getExtrudeDirectionVector(face) {
