@@ -11,6 +11,7 @@ import { CloneMode } from "./Modes/CloneMode";
 import { StackMode } from "./Modes/StackMode";
 import { DeleteVolumeMode } from "./Modes/DeleteVolumeMode";
 import { DeleteConnectedMode } from "./Modes/DeleteConnectedMode";
+import { ExtrudeMode } from "./Modes/ExtrudeMode";
 
 export class Builder {
     playerId;
@@ -92,6 +93,9 @@ export class Builder {
                 break;
             case EditModes.DeleteConnected.id:
                 this.editMode = new DeleteConnectedMode(this);
+                break;
+            case EditModes.Extrude.id:
+                this.editMode = new ExtrudeMode(this);
                 break;
             default:
                 this.editMode = new MoveMode(this);

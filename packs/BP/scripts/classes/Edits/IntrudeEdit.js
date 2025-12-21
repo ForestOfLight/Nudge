@@ -48,13 +48,13 @@ export class IntrudeEdit extends MagicEdit {
             case Direction.Down:
                 return Vector.down;
             case Direction.North:
-                return Vector.forward;
+                return Vector.backward;
             case Direction.South:
-                return Vector.backward
+                return Vector.forward;
             case Direction.East:
-                return Vector.left;
-            case Direction.West:
                 return Vector.right;
+            case Direction.West:
+                return Vector.left;
             default:
                 throw new Error('Invalid block face found for Intrusion:' + face);
         }
