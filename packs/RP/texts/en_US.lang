@@ -4,6 +4,7 @@ nudge.clone.name=Nudge§7: Clone
 nudge.stack.name=Nudge§7: Stack
 nudge.deletevolume.name=Nudge§7: Delete
 nudge.deleteconnected.name=Nudge§7: Magic Delete
+nudge.extrude.name=Nudge§7: Extrude
 
 ## Menu
 nudge.menu.closechat=§8Close your chat window to access the menu.
@@ -15,37 +16,54 @@ nudge.menu.clone=Clone
 nudge.menu.stack=Stack
 nudge.menu.deletevolume=Delete
 nudge.menu.deleteconnected=Magic Delete
+nudge.menu.extrude=Extrude
 
 ## Actionbar Tips
 nudge.tip.start=§a%s to select	## Insert string: hit icon
 nudge.tip.changemode=§a%s to switch mode	## Insert string: use icon
 nudge.tip.extend=§a%s to extend	## Insert string: hit icon
 nudge.tip.freemove=§a%1 + %2 to move freely	## Insert string: jump icon, use icon
+
 nudge.tip.nudge.start=§a%s to nudge	## Insert string: use icon
 nudge.tip.nudge.resume=§a%s to resume nudge	## Insert string: use icon
 nudge.tip.nudge.cursor=§a%s to nudge to cursor	## Insert string: hit icon
 nudge.tip.nudge.mirrororrotate=§a%1 + %2 + %3 to mirror/rotate	## Insert string: sneak icon, jump icon, use icon
+
+nudge.tip.undo=§aUndoing %s edits...	## Insert string: number of edits undone
+nudge.tip.undo.none=§7No edits to undo
+nudge.tip.redo=§aRedoing %s edits...	## Insert string: number of edits redone
+nudge.tip.redo.none=§7No edits to redo
+
 nudge.tip.move.confirm=§a%s to confirm move	## Insert string: use icon
 nudge.tip.move.doing=§7Moving selection to %s...	## Insert string: structure location
 nudge.tip.move.success=§aMoved selection to %s	## Insert string: structure location
+
 nudge.tip.clone.confirm=§a%s to confirm paste	## Insert string: use icon
 nudge.tip.clone.doing=§7Pasting selection at %s...	## Insert string: structure location
 nudge.tip.clone.success=§aPasted selection at %s	## Insert string: structure location
+
 nudge.tip.stack.start=§a%s to stack	## Insert string: use icon
 nudge.tip.stack.confirm=§a%s to confirm stack	## Insert string: use icon
 nudge.tip.stack.resume=§a%s to resume stack	## Insert string: use icon
 nudge.tip.stack.doing=§7Stacking selection from %1 to %2...	## Insert string: stacked structure minimum location, stacked structure maximum location
 nudge.tip.stack.success=§aStacked selection from %1 to %2	## Insert string: stacked structure minimum location, stacked structure maximum location
+
 nudge.tip.deletevolume=§a%s to delete	## Insert string: use icon
 nudge.tip.deletevolume.doing=§7Deleting from %1 to %2...	## Insert string: selection minimum location, selection maximum location
 nudge.tip.deletevolume.success=§aDeleted selection from %1 to %2	## Insert string: selection minimum location, selection maximum location.
+
 nudge.tip.deleteconnected=§a%s to magic delete	## Insert string: use icon
 nudge.tip.deleteconnected.doing=§7Deleting connected blocks...
 nudge.tip.deleteconnected.success=§aDeleted connected blocks
-nudge.tip.undo=§aUndoing %s edits...	## Insert string: number of edits undone
-nudge.tip.undo.none=§7No edits to undo
-nudge.tip.redo=§aRedoing %s edits...	## Insert string: number of edits redone
-nudge.tip.redo.none=§7No edits to redo
+
+nudge.tip.extrude.extrude=§a%s to extrude	## Insert string: hit icon
+nudge.tip.extrude.intrude=§a%s to intrude	## Insert string: use icon
+nudge.tip.extrude.changemode=§a%1 + %2 to switch mode	## Insert string: sneak icon, use icon
+nudge.tip.extrude.extrude.doing=§7Extruding...
+nudge.tip.extrude.extrude.success=§aExtruded
+nudge.tip.extrude.intrude.doing=§7Intruding...
+nudge.tip.extrude.intrude.success=§aIntruded
+
 nudge.tip.noblock=§cNo block found in view
 nudge.tip.unloadedvolume=§cThe selected area spans too many chunks
 nudge.tip.outofbounds=§cCannot edit blocks outside of the dimenson's height range
@@ -55,7 +73,7 @@ nudge.command.generic.invalidsource=This command can only be used by players.
 nudge.command.edit=Gives you the Nudge item.
 nudge.command.edit.fail=§cFailed to give you the Nudge item.
 nudge.command.edit.given=§aYou recieved the §fNudge§a item! %1 to select your build or %2 to change your editing mode.	## Insert strings: hit icon, use icon.
-nudge.command.here=Starts, extends, or moves your selection to your current location.
+nudge.command.here=Starts, extends, or nudges your selection to your current location.
 nudge.command.here.holditem=§cPlease hold the Nudge item to use this command.
 nudge.command.redo=Redo your last edit, or several.
 nudge.command.undo=Undo your last edit, or several.

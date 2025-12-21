@@ -1,8 +1,13 @@
 import { ListBlockVolume } from "@minecraft/server";
 import { Edit } from "../Edits/Edit";
 import { BlockBreadthFirstSearch } from "../BlockBreadthFirstSearch";
+import { Vector } from "../../lib/Vector";
 
 export class MagicEdit extends Edit {
+    initialLocation;
+    initialBlockType;
+    connectedBlocksVolume;
+
     constructor(dimension, initialLocation) {
         super(dimension);
         this.initialLocation = initialLocation;
@@ -24,21 +29,31 @@ export class MagicEdit extends Edit {
         throw new Error('getSuccessFeedback() must be implemented');
     }
 
-    getConnectedBlocks(location) {
+    matchesSearch() {
+        throw new Error('matchesSearch() must be implemented');
+    }
+
+    async loadChunkRadius(location, chunkRadius) {
+        const searchDistance = new Vector(chunkRadius, 0, chunkRadius).multiply(16);
+        const maxLoadLocation = Vector.from(location).add(searchDistance);
+        const minLoadLocation = Vector.from(location).subtract(searchDistance);
+        await this.loadArea(maxLoadLocation, minLoadLocation);
+    }
+
+    populateConnectedBlocks(location, { corners = true, maxBlocks = 128 }) {
         this.initialBlockType = this.dimension.getBlock(this.initialLocation).typeId;
         if (this.initialBlockType === 'minecraft:air')
-            return new ListBlockVolume([location]);
-        const listBlockVolume = new ListBlockVolume([location]);
+            this.connectedBlocksVolume = new ListBlockVolume([location]);
+        this.connectedBlocksVolume = new ListBlockVolume([location]);
         const bfs = new BlockBreadthFirstSearch(this.dimension);
-        const bfsOptions = { corners: true, maxFound: this.maxBlocks };
-        const connectedBlocks = bfs.run(this.initialLocation, this.isSameType.bind(this), bfsOptions);
-        listBlockVolume.add(connectedBlocks);
-        return listBlockVolume;
+        const bfsOptions = { corners, maxFound: maxBlocks };
+        const connectedBlocks = bfs.run(this.initialLocation, this.matchesSearch.bind(this), bfsOptions);
+        this.connectedBlocksVolume.add(connectedBlocks);
     }
 
     getBlocksAsStructures() {
         const structures = [];
-        const blockLocationIterator = this.listBlockVolume.getBlockLocationIterator();
+        const blockLocationIterator = this.connectedBlocksVolume.getBlockLocationIterator();
         let iteratorResult = blockLocationIterator.next();
         while (iteratorResult.done === false) {
             const location = iteratorResult.value;
@@ -48,24 +63,31 @@ export class MagicEdit extends Edit {
         return structures;
     }
 
-    clearConnectedBlocks() {
-        const blockLocationIterator = this.listBlockVolume.getBlockLocationIterator();
+    clearConnectedBlocks(clearLocation = void 0) {
+        const blockLocationIterator = this.connectedBlocksVolume.getBlockLocationIterator();
         let iteratorResult = blockLocationIterator.next();
+        let clearOffset = new Vector();
+        if (clearLocation)
+            clearOffset = Vector.from(clearLocation).subtract(this.initialLocation);
         while (iteratorResult.done === false) {
-            const location = iteratorResult.value;
+            const location = Vector.from(iteratorResult.value).add(clearOffset);
             this.dimension.setBlockType(location, 'minecraft:air');
             iteratorResult = blockLocationIterator.next();
         }
     }
 
-    pasteBlockStructures() {
-        const blockLocationIterator = this.listBlockVolume.getBlockLocationIterator();
-        for (const blockStructure of this.replacedBlockStructures) {
-            const iteratorResult = blockLocationIterator.next();
+    pasteBlockStructures(blockStructures, pasteLocation = void 0) {
+        const blockLocationIterator = this.connectedBlocksVolume.getBlockLocationIterator();
+        let iteratorResult = blockLocationIterator.next();
+        let pasteOffset = new Vector();
+        if (pasteLocation)
+            pasteOffset = Vector.from(pasteLocation).subtract(this.initialLocation);
+        for (const blockStructure of blockStructures) {
             if (iteratorResult.done)
                 throw new Error('Number of saved block structures does not match number of connected blocks.');
-            const location = iteratorResult.value;
+            const location = Vector.from(iteratorResult.value).add(pasteOffset);
             this.pasteSingleStructure(blockStructure, location);
+            iteratorResult = blockLocationIterator.next();
         }
     }
 }

@@ -52,7 +52,7 @@ Nudge is designed to feel natural and quick — a companion tool for faster iter
 
 **`/nudge:redo <amount: int>`** - Redoes the last undone edit action, or several.
 
-**`/nudge:here`** - Starts, extends, or moves your selection to your current location.
+**`/nudge:here`** - Starts, extends, or nudges your selection to your current location.
 
 ## Join the Community
 
@@ -74,7 +74,7 @@ Need help, want to discuss technical Minecraft, or follow future updates?
 * [x] Entities affected by edits
 * [x] Translation support
 * [x] Magic Delete edit
-* [ ] Extrude edit
+* [x] Extrude edit
 * [ ] Preview visualizations
 
 ## Issues & Suggestions

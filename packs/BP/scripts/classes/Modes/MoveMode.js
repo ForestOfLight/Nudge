@@ -59,20 +59,17 @@ export class MoveMode extends NudgeableMode {
     }
 
     async confirmEdit() {
-        const success = await super.confirmEdit();
+        const edit = new MoveEdit(this.selection, { mirrorAxis: this.mirrorAxis, rotation: this.rotation });
+        const success = await super.confirmEdit(edit);
         if (success)
             this.deselect();
-    }
-
-    createNewEdit() {
-        return new MoveEdit(this.selection, { mirrorAxis: this.mirrorAxis, rotation: this.rotation });
     }
 
     getHoldItemFeedback() {
         return { rawtext: [
             { translate: 'nudge.tip.start', with: { rawtext: [Feedback.hitIcon(this.player)] } }, { text: '\n' },
             { translate: 'nudge.tip.changemode', with: { rawtext: [Feedback.useIcon(this.player)] } }
-        ]}
+        ]};
     }
     
     getDuringSelectionFeedback() {

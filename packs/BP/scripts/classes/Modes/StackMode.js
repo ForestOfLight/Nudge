@@ -54,20 +54,17 @@ export class StackMode extends NudgeableMode {
     }
 
     async confirmEdit() {
-        const success = await super.confirmEdit();
+        const edit = new StackEdit(this.selection);
+        const success = await super.confirmEdit(edit);
         if (success)
             this.deselect();
-    }
-    
-    createNewEdit() {
-        return new StackEdit(this.selection);
     }
 
     getHoldItemFeedback() {
         return { rawtext: [
             { translate: 'nudge.tip.start', with: { rawtext: [Feedback.hitIcon(this.player)] } }, { text: '\n' },
             { translate: 'nudge.tip.changemode', with: { rawtext: [Feedback.useIcon(this.player)] } }
-        ]}
+        ]};
     }
 
     getDuringSelectionFeedback() {

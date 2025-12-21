@@ -50,8 +50,7 @@ export class NudgeableMode {
         throw new Error('confirmSelection() must be implemented.');
     }
 
-    async confirmEdit() {
-        const edit = this.createNewEdit();
+    async confirmEdit(edit) {
         Feedback.send(this.player, edit.getDoingFeedback());
         try {
             await edit.do();
@@ -67,7 +66,7 @@ export class NudgeableMode {
         }
         this.builder.editLog.save(edit);
         Feedback.send(this.player, edit.getSuccessFeedback());
-        return edit;
+        return true;
     }
 
     createNewEdit() {

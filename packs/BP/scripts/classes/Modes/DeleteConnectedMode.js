@@ -5,11 +5,6 @@ import { NudgeableMode } from "./NudgableMode";
 export class DeleteConnectedMode extends NudgeableMode {
     initialBlock;
 
-    confirmSelection() {
-        super.confirmEdit();
-        this.builder.deselect();
-    }
-
     onUse() {
         this.builder.changeEditMode();
     }
@@ -19,14 +14,15 @@ export class DeleteConnectedMode extends NudgeableMode {
         this.confirmEdit();
     }
 
-    createNewEdit() {
-        return new DeleteConnectedEdit(this.initialBlock);
+    confirmEdit() {
+        const edit = new DeleteConnectedEdit(this.initialBlock);
+        super.confirmEdit(edit);
     }
 
     getHoldItemFeedback() {
         return { rawtext: [
             { translate: 'nudge.tip.deleteconnected', with: { rawtext: [Feedback.hitIcon(this.player)] } }, { text: '\n' },
             { translate: 'nudge.tip.changemode', with: { rawtext: [Feedback.useIcon(this.player)] } }
-        ]}
+        ]};
     }
 }

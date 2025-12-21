@@ -65,22 +65,19 @@ export class CloneMode extends NudgeableMode {
     }
 
     async confirmEdit() {
-        const edit = await super.confirmEdit();
-        if (edit)
+        const edit = new CloneEdit(this.selection, { mirrorAxis: this.mirrorAxis, rotation: this.rotation }, this.copyStructure);
+        const success = await super.confirmEdit(edit);
+        if (success)
             this.copyStructure = edit.copyStructure;
         else
             this.deselect();
-    }
-
-    createNewEdit() {
-        return new CloneEdit(this.selection, { mirrorAxis: this.mirrorAxis, rotation: this.rotation }, this.copyStructure);
     }
 
     getHoldItemFeedback() {
         return { rawtext: [
             { translate: 'nudge.tip.start', with: { rawtext: [Feedback.hitIcon(this.player)] } }, { text: '\n' },
             { translate: 'nudge.tip.changemode', with: { rawtext: [Feedback.useIcon(this.player)] } }
-        ]}
+        ]};
     }
 
     getDuringSelectionFeedback() {

@@ -23,19 +23,16 @@ export class DeleteVolumeMode extends NudgeableMode {
     }
 
     confirmEdit() {
-        super.confirmEdit();
+        const edit = new DeleteVolumeEdit(this.selection);
+        super.confirmEdit(edit);
         this.builder.deselect();
-    }
-
-    createNewEdit() {
-        return new DeleteVolumeEdit(this.selection);
     }
 
     getHoldItemFeedback() {
         return { rawtext: [
             { translate: 'nudge.tip.start', with: { rawtext: [Feedback.hitIcon(this.player)] } }, { text: '\n' },
             { translate: 'nudge.tip.changemode', with: { rawtext: [Feedback.useIcon(this.player)] } }
-        ]}
+        ]};
     }
     
     getDuringSelectionFeedback() {
