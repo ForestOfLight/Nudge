@@ -71,7 +71,7 @@ export class MirrorRotateRenderer {
             const shift = new Vector(0, -1, 0);
             shape.setLocation(shift.add(shape.location));
             shape.endLocation = shift.add(shape.endLocation);
-            shape.color = RGBColor.Blue;
+            shape.color = RGBColor.Red;
         });
         return shapes;
     }
@@ -89,7 +89,7 @@ export class MirrorRotateRenderer {
             const shift = new Vector(0, -1, 0);
             shape.setLocation(shift.add(shape.location));
             shape.endLocation = shift.add(shape.endLocation);
-            shape.color = RGBColor.Red;
+            shape.color = RGBColor.Blue;
         });
         return shapes;
     }

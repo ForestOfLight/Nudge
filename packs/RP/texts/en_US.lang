@@ -29,6 +29,14 @@ nudge.tip.nudge.resume=§a%s to resume nudge	## Insert string: use icon
 nudge.tip.nudge.cursor=§a%s to nudge to cursor	## Insert string: hit icon
 nudge.tip.nudge.mirrororrotate=§a%1 + %2 + %3 to mirror/rotate	## Insert string: sneak icon, jump icon, use icon
 
+nudge.tip.nudge.mirrororrotate.x=§7Mirroring across §cX
+nudge.tip.nudge.mirrororrotate.z=§7Mirroring across §bZ
+nudge.tip.nudge.mirrororrotate.xz=§7Mirroring across §cX§7 and §bZ
+nudge.tip.nudge.mirrororrotate.90=§7Rotating §a90§7 degrees
+nudge.tip.nudge.mirrororrotate.180=§7Rotating §a180§7 degrees
+nudge.tip.nudge.mirrororrotate.270=§7Rotating §a270§7 degrees
+nudge.tip.nudge.mirrororrotate.reset=§7Reset mirroring and rotation
+
 nudge.tip.undo=§aUndoing %s edits...	## Insert string: number of edits undone
 nudge.tip.undo.none=§7No edits to undo
 nudge.tip.redo=§aRedoing %s edits...	## Insert string: number of edits redone

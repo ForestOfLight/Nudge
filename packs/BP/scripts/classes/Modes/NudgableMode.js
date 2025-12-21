@@ -1,4 +1,4 @@
-import { StructureMirrorAxis, StructureRotation } from "@minecraft/server";
+import { Structure, StructureMirrorAxis, StructureRotation } from "@minecraft/server";
 import { Feedback } from "../Feedback";
 import { Selection } from "../Selection";
 import { Vector } from "../../lib/Vector";
@@ -133,6 +133,7 @@ export class NudgeableMode {
         const selection = this.selection;
         selection.renderer.setMirrorAxis(this.mirrorAxis);
         selection.renderer.setRotation(this.rotation);
+        Feedback.send(this.player, this.getMirrorOrRotationFeedback(mirrorOrRotation));
 
         if (Object.values(StructureRotation).includes(mirrorOrRotation) || mirrorOrRotation === void 0) {
             const { min, max } = selection.getBounds();
@@ -156,5 +157,29 @@ export class NudgeableMode {
             mirrorOrRotation === this.mirrorAxis || mirrorOrRotation === this.rotation
         );
         return queue[currMirrorOrRotation + 1];
+    }
+
+    getMirrorOrRotationFeedback(mirrorOrRotation) {
+        switch (mirrorOrRotation) {
+            case StructureMirrorAxis.X:
+                return { translate: 'nudge.tip.nudge.mirrororrotate.x' };
+            case StructureMirrorAxis.Z:
+                return { translate: 'nudge.tip.nudge.mirrororrotate.z' };
+            case StructureMirrorAxis.XZ:
+                return { translate: 'nudge.tip.nudge.mirrororrotate.xz' };
+            default:
+                break;
+        }
+        switch (mirrorOrRotation) {
+            case StructureRotation.Rotate90:
+                return { translate: 'nudge.tip.nudge.mirrororrotate.90' };
+            case StructureRotation.Rotate180:
+                return { translate: 'nudge.tip.nudge.mirrororrotate.180' };
+            case StructureRotation.Rotate270:
+                return { translate: 'nudge.tip.nudge.mirrororrotate.270' };
+            default:
+                break;
+        }
+        return { translate: 'nudge.tip.nudge.mirrororrotate.reset' };
     }
 }
