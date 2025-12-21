@@ -18,7 +18,7 @@ export class DeleteConnectedEdit extends MagicEdit {
     }
 
     async undo() {
-        await this.loadArea(this.connectedBlockListVolume.getMin(), this.connectedBlockListVolume.getMax());
+        await this.loadArea(this.connectedBlocksVolume.getMin(), this.connectedBlocksVolume.getMax());
         this.pasteBlockStructures(this.replacedBlockStructures);
         this.unloadArea();
     }
