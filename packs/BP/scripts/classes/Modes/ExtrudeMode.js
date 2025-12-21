@@ -2,9 +2,9 @@ import { ExtrudeEdit } from "../Edits/ExtrudeEdit";
 import { IntrudeEdit } from "../Edits/IntrudeEdit";
 import { Feedback } from "../Feedback";
 import { PlayerMovement } from "../PlayerMovement";
-import { NudgeableMode } from "./NudgableMode";
+import { MagicMode } from "./MagicMode";
 
-export class ExtrudeMode extends NudgeableMode {
+export class ExtrudeMode extends MagicMode {
     onUse() {
         const playerMovement = new PlayerMovement(this.player);
         if (playerMovement.isSneaking())

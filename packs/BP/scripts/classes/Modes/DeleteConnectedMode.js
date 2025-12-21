@@ -1,8 +1,8 @@
 import { DeleteConnectedEdit } from "../Edits/DeleteConnectedEdit";
 import { Feedback } from "../Feedback";
-import { NudgeableMode } from "./NudgableMode";
+import { MagicMode } from "./MagicMode";
 
-export class DeleteConnectedMode extends NudgeableMode {
+export class DeleteConnectedMode extends MagicMode {
     initialBlock;
 
     onUse() {

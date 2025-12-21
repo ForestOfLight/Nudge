@@ -5,9 +5,6 @@ import { PlayerMovement } from "../PlayerMovement";
 import { NudgeableMode } from "./NudgableMode";
 
 export class StackMode extends NudgeableMode {
-    isNudging = false;
-    nudger;
-
     constructor(builder) {
         super(builder);
         this.nudger = new BuildNudgerStack(builder);

@@ -1,4 +1,4 @@
-import { Structure, StructureMirrorAxis, StructureRotation } from "@minecraft/server";
+import { StructureMirrorAxis, StructureRotation } from "@minecraft/server";
 import { Feedback } from "../Feedback";
 import { Selection } from "../Selection";
 import { Vector } from "../../lib/Vector";
@@ -7,6 +7,8 @@ export class NudgeableMode {
     builder;
     player;
     selection;
+    isNudging = false;
+    nudger;
     
     constructor(builder) {
         this.builder = builder;

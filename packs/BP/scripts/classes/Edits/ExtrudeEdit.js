@@ -12,7 +12,7 @@ export class ExtrudeEdit extends MagicEdit {
     constructor(blockRaycastHit) {
         const block = blockRaycastHit.block;
         super(block.dimension, block.location);
-        this.extrudeDirection = this.getExtrudeDirectionVector(blockRaycastHit.face);
+        this.extrudeDirection = Vector.from(this.getExtrudeDirectionVector(blockRaycastHit.face));
         this.extrudeLocation = Vector.from(this.initialLocation).add(this.extrudeDirection);
     }
     
@@ -25,7 +25,9 @@ export class ExtrudeEdit extends MagicEdit {
     }
     
     async undo() {
-        await this.loadArea(this.connectedBlocksVolume.getMin(), this.connectedBlocksVolume.getMax());
+        const min = this.extrudeDirection.add(this.connectedBlocksVolume.getMin());
+        const max = this.extrudeDirection.add(this.connectedBlocksVolume.getMax());
+        await this.loadArea(min, max);
         this.clearConnectedBlocks(this.extrudeLocation);
         this.unloadArea();
     }
@@ -42,7 +44,6 @@ export class ExtrudeEdit extends MagicEdit {
         const offsetBlock = block.offset(this.extrudeDirection);
         return !block.isAir && (offsetBlock?.isAir || offsetBlock?.isLiquid)
             && block.typeId === this.initialBlockType;
-
     }
 
     getExtrudeDirectionVector(face) {

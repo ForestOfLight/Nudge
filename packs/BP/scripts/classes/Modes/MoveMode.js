@@ -6,8 +6,6 @@ import { NudgeableMode } from "./NudgableMode";
 import { PlayerMovement } from "../PlayerMovement";
 
 export class MoveMode extends NudgeableMode {
-    isNudging = false;
-    nudger;
     mirrorAxis = StructureMirrorAxis.None;
     rotation = StructureRotation.None;
 
