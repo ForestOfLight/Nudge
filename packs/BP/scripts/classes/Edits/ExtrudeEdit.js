@@ -39,7 +39,8 @@ export class ExtrudeEdit extends MagicEdit {
     }
 
     matchesSearch(block) {
-        return !block.isAir && block.offset(this.extrudeDirection)?.isAir;
+        return !block.isAir && block.offset(this.extrudeDirection)?.isAir
+            && block.typeId === this.initialBlockType;
     }
 
     getExtrudeDirectionVector(face) {

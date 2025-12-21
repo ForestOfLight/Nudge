@@ -37,7 +37,8 @@ export class IntrudeEdit extends MagicEdit {
     }
 
     matchesSearch(block) {
-        return !block.isAir && block.offset(this.intrudeDirection)?.isAir;
+        return !block.isAir && block.offset(this.intrudeDirection)?.isAir
+            && block.typeId === this.initialBlockType;
     }
 
     getIntrudeDirectionVector(face) {
