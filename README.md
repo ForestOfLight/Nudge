@@ -75,6 +75,7 @@ Need help, want to discuss technical Minecraft, or follow future updates?
 * [x] Translation support
 * [x] Magic Delete edit
 * [x] Extrude edit
+* [x] Symmetry Building
 * [ ] Preview visualizations
 
 ## Issues & Suggestions

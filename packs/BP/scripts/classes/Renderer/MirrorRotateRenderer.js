@@ -6,12 +6,14 @@ import { RGBColor } from "./RGBColor";
 export class MirrorRotateRenderer {
     dimension;
     location;
-    mirrorAxis = StructureMirrorAxis.None;
-    rotation = StructureRotation.None;
+    mirrorAxis;
+    rotation;
     shapes = [];
 
-    constructor(dimension, location) {
+    constructor(dimension, location, { mirrorAxis = StructureMirrorAxis.None, rotation = StructureRotation.None } = {}) {
         this.dimension = dimension;
+        this.mirrorAxis = mirrorAxis;
+        this.rotation = rotation;
         this.setLocation(location);
     }
 

@@ -1,7 +1,7 @@
 import { EntityComponentTypes, EquipmentSlot, ItemStack, world } from "@minecraft/server";
 import { EditLog } from "./EditLog";
 import { EditModes } from "./Modes/EditModes";
-import { ModeSelectionForm } from "./Modes/ModeSelectionForm";
+import { ModeSelectionForm } from "./ModeSelectionForm";
 import { Feedback } from "./Feedback";
 import { PlayerMovement } from "./PlayerMovement";
 import { PlayerInteractions } from "./PlayerInteractions";
@@ -18,10 +18,11 @@ export class Builder {
     player = void 0;
     editMode;
     editLog;
+    symmetry;
 
     constructor(playerId) {
         this.playerId = playerId;
-        this.setEditMode();
+        this.setEditModeByHeldItemId();
         this.editLog = new EditLog();
     }
 
@@ -56,7 +57,7 @@ export class Builder {
     }
 
     changeEditMode() {
-        new ModeSelectionForm(this.getPlayer());
+        new ModeSelectionForm(this);
     }
 
     getSelection() {
@@ -69,9 +70,11 @@ export class Builder {
 
     setEditModeByHeldItemId() {
         const player = this.getPlayer();
-        const inventoryContainer = player.getComponent(EntityComponentTypes.Inventory)?.container;
-        if (!inventoryContainer)
-            return false;
+        const inventoryContainer = player?.getComponent(EntityComponentTypes.Inventory)?.container;
+        if (!inventoryContainer) {
+            this.setEditMode();
+            return;
+        }
         const slotItem = inventoryContainer.getItem(player.selectedSlotIndex);
         const newModeId = Object.values(EditModes).find(modeData => modeData.itemId === slotItem?.typeId)?.id;
         this.setEditMode(newModeId);
@@ -129,5 +132,23 @@ export class Builder {
             Feedback.send(this.getPlayer(), { translate: 'nudge.tip.redo.none' });
         else
             Feedback.send(this.getPlayer(), { translate: 'nudge.tip.redo', with: [String(numRedone)] });
+    }
+
+    getSymmetry() {
+        return this.symmetry;
+    }
+
+    setSymmetry(symmetry) {
+        this.symmetry?.destroy();
+        this.symmetry = symmetry;
+    }
+
+    removeSymmetry() {
+        this.symmetry?.destroy();
+        this.symmetry = void 0;
+    }
+
+    hasSymmetry() {
+        return this.symmetry !== void 0;
     }
 }
