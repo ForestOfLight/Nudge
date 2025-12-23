@@ -70,9 +70,26 @@ export class PlayerInteractions {
         const validModeItemIds = Object.values(EditModes).map(modeData => modeData.itemId);
         return validModeItemIds.includes(slotItem?.typeId);
     }
+
+    static onPlayerGameModeChange(event) {
+        const builder = Builders.get(event.player?.id);
+        system.run(() => builder?.onGameModeChange(event.fromGameMode, event.toGameMode));
+    }
+
+    static onEntitySpawn(event) {
+        const entity = event.entity;
+        const item = entity?.getComponent(EntityComponentTypes.Item)?.itemStack;
+        if (!item)
+            return;
+        const editModeItemTypes = Object.values(EditModes).map(editMode => editMode.itemId);
+        if (editModeItemTypes.some((editModeItemId) => editModeItemId === item.typeId));
+            entity.remove();
+    }
 }
 
 world.beforeEvents.playerBreakBlock.subscribe(PlayerInteractions.onPlayerBreakBlock);
 world.afterEvents.playerSwingStart.subscribe(PlayerInteractions.onPlayerAttack, { heldItemOption: HeldItemOption.AnyItem, swingSource: EntitySwingSource.Attack })
 world.beforeEvents.itemUse.subscribe(PlayerInteractions.onItemUse);
 playerChangeHotbarSlotEvent.subscribe(PlayerInteractions.onPlayerChangeHotbarSlot);
+world.beforeEvents.playerGameModeChange.subscribe(PlayerInteractions.onPlayerGameModeChange);
+world.afterEvents.entitySpawn.subscribe(PlayerInteractions.onEntitySpawn);

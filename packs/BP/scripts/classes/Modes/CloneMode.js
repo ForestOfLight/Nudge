@@ -3,7 +3,6 @@ import { CloneEdit } from "../Edits/CloneEdit";
 import { Feedback } from "../Feedback";
 import { BuildNudgerMove } from "../Nudges/BuildNudgerMove";
 import { NudgeableMode } from "./NudgableMode";
-import { PlayerMovement } from "../PlayerMovement";
 
 export class CloneMode extends NudgeableMode {
     copyStructure;
@@ -34,7 +33,7 @@ export class CloneMode extends NudgeableMode {
     }
 
     onUseWhileNudging() {
-        const playerMovement = new PlayerMovement(this.player);
+        const playerMovement = this.builder.getPlayerMovement();
         if (this.nudger?.isSuspended) {
             this.unsuspendNudge();
         } else {

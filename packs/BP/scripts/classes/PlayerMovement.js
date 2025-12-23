@@ -14,6 +14,14 @@ export class PlayerMovement {
         this.inputPermissions = player.inputPermissions;
         this.movementStartedTick = system.currentTick;
         this.runner = system.runInterval(this.onTick.bind(this));
+        this.unfreeze();
+    }
+
+    destroy() {
+        if (this.runner) {
+            system.clearRun(this.runner);
+            this.runner = void 0;
+        }
     }
 
     freeze() {

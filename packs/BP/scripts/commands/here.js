@@ -16,6 +16,8 @@ function hereCommand(origin) {
     const player = origin.sourceEntity;
     if (player instanceof Player === false)
         return { status: CustomCommandStatus.Failure, message: 'nudge.command.generic.invalidsource' };
+    if (player.getGameMode() !== GameMode.Creative)
+        return player.sendMessage({ translate: 'nudge.command.generic.creative' });
     system.run(() => {
         const builder = Builders.get(player.id);
         if (!PlayerInteractions.isHoldingNudgeItem(player)) {

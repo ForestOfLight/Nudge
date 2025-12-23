@@ -1,7 +1,6 @@
 import { StackEdit } from "../Edits/StackEdit";
 import { Feedback } from "../Feedback";
 import { BuildNudgerStack } from "../Nudges/BuildNudgerStack";
-import { PlayerMovement } from "../PlayerMovement";
 import { NudgeableMode } from "./NudgableMode";
 
 export class StackMode extends NudgeableMode {
@@ -29,7 +28,7 @@ export class StackMode extends NudgeableMode {
     }
 
     onUseWhileNudging() {
-        const playerMovement = new PlayerMovement(this.player);
+        const playerMovement = this.builder.getPlayerMovement();
         if (this.nudger?.isSuspended) {
             this.unsuspendNudge();
         } else {

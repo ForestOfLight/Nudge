@@ -1,12 +1,11 @@
 import { ExtrudeEdit } from "../Edits/ExtrudeEdit";
 import { IntrudeEdit } from "../Edits/IntrudeEdit";
 import { Feedback } from "../Feedback";
-import { PlayerMovement } from "../PlayerMovement";
 import { MagicMode } from "./MagicMode";
 
 export class ExtrudeMode extends MagicMode {
     onUse() {
-        const playerMovement = new PlayerMovement(this.player);
+        const playerMovement = this.builder.getPlayerMovement();
         if (playerMovement.isSneaking())
             this.builder.changeEditMode();
         else
