@@ -34,6 +34,7 @@ export class Builder {
 
     onLeave() {
         this.editMode.deselect();
+        this.symmetry?.destroy();
     }
 
     onUse() {

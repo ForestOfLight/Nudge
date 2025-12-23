@@ -1,4 +1,4 @@
-import { ActionFormData } from '@minecraft/server-ui';
+import { ActionFormData, ModalFormData } from '@minecraft/server-ui';
 import { forceShow } from '../../utils';
 import { Symmetry } from './Symmetry';
 import { StructureMirrorAxis } from '@minecraft/server';
@@ -16,75 +16,59 @@ export class SymmetryForm {
         forceShow(this.builder.getPlayer(), this.buildForm()).then((response) => {
             if (response.canceled)
                 return;
-            this.handleResponse(response.selection);
+            this.handleResponse(response.formValues);
         });
     }
 
     buildForm() {
         if (this.builder.hasSymmetry())
-            return this.buildEditSymmetryForm();
+            return this.buildModifySymmetryForm();
         else
             return this.buildSetupSymmetryForm();
     }
 
     buildSetupSymmetryForm() {
-        return new ActionFormData()
+        return new ModalFormData()
             .title({ translate: 'nudge.menu.symmetry.new' })
-            .button({ translate: 'nudge.menu.symmetry.mirror.x' })
-            .button({ translate: 'nudge.menu.symmetry.mirror.z' })
-            .button({ translate: 'nudge.menu.symmetry.mirror.xz' });
+            .label({ translate: 'nudge.menu.symmetry.description' })
+            .toggle({ translate: 'nudge.menu.symmetry.mirror.x' }, { defaultValue: false })
+            .toggle({ translate: 'nudge.menu.symmetry.mirror.z' }, { defaultValue: false })
+            .toggle({ translate: 'nudge.menu.symmetry.rotate' }, { defaultValue: false })
+            .submitButton({ translate: 'nudge.menu.symmetry.new' });
     }
 
-    buildEditSymmetryForm() {
+    buildModifySymmetryForm() {
         const symmetry = this.builder.getSymmetry();
-        return new ActionFormData()
+        return new ModalFormData()
             .title({ translate: 'nudge.menu.symmetry.modify' })
-            .body({ translate: 'nudge.menu.symmetry.location', with: { rawtext: [
+            .label({ translate: 'nudge.menu.symmetry.location', with: { rawtext: [
                 { text: String(Vector.from(symmetry.location)) },
                 { translate: symmetry.dimension.localizationKey }]
             } })
-            .button({ translate: 'nudge.menu.symmetry.mirror.x' })
-            .button({ translate: 'nudge.menu.symmetry.mirror.z' })
-            .button({ translate: 'nudge.menu.symmetry.mirror.xz' })
-            .button({ translate: 'nudge.menu.symmetry.remove' });
+            .toggle({ translate: 'nudge.menu.symmetry.mirror.x' }, { defaultValue: symmetry.isMirroringX() })
+            .toggle({ translate: 'nudge.menu.symmetry.mirror.z' }, { defaultValue: symmetry.isMirroringZ() })
+            .toggle({ translate: 'nudge.menu.symmetry.rotate' }, { defaultValue: symmetry.isRotating() })
+            .submitButton({ translate: 'nudge.menu.symmetry.modify' });
     }
 
-    handleResponse(selection) {
-        if (this.builder.hasSymmetry())
-            this.handleEditSymmetryResponse(selection);
+    handleResponse(formValues) {
+        let mirrorAxis = void 0;
+        if (formValues[1] && formValues[2])
+            mirrorAxis = StructureMirrorAxis.XZ;
+        else if (formValues[1])
+            mirrorAxis = StructureMirrorAxis.X;
+        else if (formValues[2])
+            mirrorAxis = StructureMirrorAxis.Z;
         else
-            this.handleSetupSymmetryResponse(selection);
-    }
-
-    handleSetupSymmetryResponse(seletion) {
-        const player = this.builder.getPlayer();
-        let mirrorAxis = StructureMirrorAxis.X;
-        switch (seletion) {
-            case 0:
-                mirrorAxis = StructureMirrorAxis.X;
-                break;
-            case 1:
-                mirrorAxis = StructureMirrorAxis.Z;
-                break;
-            case 2:
-                mirrorAxis = StructureMirrorAxis.XZ;
-                break;
-            default:
-                mirrorAxis = StructureMirrorAxis.X;
-        }
+            mirrorAxis = StructureMirrorAxis.None;
+        const rotation = formValues[3];
         if (this.builder.hasSymmetry()) {
             const symmetry = this.builder.getSymmetry();
             symmetry.setMirrorAxis(mirrorAxis);
+            symmetry.setRotation(rotation);
         } else {
-            const symmetry = new Symmetry(this.builder, mirrorAxis);
+            const symmetry = new Symmetry(this.builder, mirrorAxis, rotation);
             this.builder.setSymmetry(symmetry);
         }
-    }
-
-    handleEditSymmetryResponse(selection) {
-        if (selection < 3)
-            this.handleSetupSymmetryResponse(selection);
-        else
-            this.builder.removeSymmetry();
     }
 }

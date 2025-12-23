@@ -2,6 +2,7 @@ import { ListBlockVolume } from "@minecraft/server";
 import { Edit } from "../Edits/Edit";
 import { BlockBreadthFirstSearch } from "../BlockBreadthFirstSearch";
 import { Vector } from "../../lib/Vector";
+import { TickingAreaUtils } from "../TickingAreaUtils";
 
 export class MagicEdit extends Edit {
     initialLocation;
@@ -31,13 +32,6 @@ export class MagicEdit extends Edit {
 
     matchesSearch() {
         throw new Error('matchesSearch() must be implemented');
-    }
-
-    async loadChunkRadius(location, chunkRadius) {
-        const searchDistance = new Vector(chunkRadius, 0, chunkRadius).multiply(16);
-        const maxLoadLocation = Vector.from(location).add(searchDistance);
-        const minLoadLocation = Vector.from(location).subtract(searchDistance);
-        await this.loadArea(maxLoadLocation, minLoadLocation);
     }
 
     populateConnectedBlocks(location, { corners = true, maxBlocks = 128 }) {

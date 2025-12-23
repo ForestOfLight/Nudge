@@ -19,12 +19,14 @@ nudge.menu.deleteconnected=Magic Delete
 nudge.menu.extrude=Extrude
 nudge.menu.symmetry.new=Create Symmetry
 nudge.menu.symmetry.modify=Modify Symmetry
+nudge.menu.symmetry.remove=§cRemove Symmetry
 
-nudge.menu.symmetry.location=Symmetry at %1 in %2
+nudge.menu.symmetry.description=§aCreates a symmetry. Building will be mirrored within 256 blocks.
+nudge.menu.symmetry.location=§aSymmetry at %1 in %2
 nudge.menu.symmetry.mirror.x=Mirror §cX
 nudge.menu.symmetry.mirror.z=Mirror §bZ
 nudge.menu.symmetry.mirror.xz=§8Mirror §cX§8 and §bZ
-nudge.menu.symmetry.remove=§cRemove Symmetry
+nudge.menu.symmetry.rotate=Rotate
 
 ## Actionbar Tips
 nudge.tip.start=§a%s to select	## Insert string: hit icon
