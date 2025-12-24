@@ -1,7 +1,6 @@
 import { world, StructureSaveMode, system } from "@minecraft/server";
 import { IDGenerator } from "../IDGenerator";
 import { OutOfBoundsVolumeError } from "../Errors/OutOfBoundsVolumeError";
-import { TickingAreaUtils } from "../TickingAreaUtils";
 import { UnloadedVolumeError } from "../Errors/UnloadedVolumeError";
 
 export class Edit {

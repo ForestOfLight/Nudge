@@ -18,6 +18,10 @@ export class ExtrudeMode extends MagicMode {
 
     confirmExtrude() {
         const blockRaycastHit = this.player.getBlockFromViewDirection({ maxDistance: 1000, includePassableBlocks: true, includeLiquidBlocks: false });
+        if (!blockRaycastHit) {
+            Feedback.send(this.player, { translate: 'nudge.tip.noblock' });
+            return;
+        }
         const edit = new ExtrudeEdit(blockRaycastHit);
         super.confirmEdit(edit);
     }

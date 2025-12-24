@@ -78,6 +78,8 @@ export class PlayerInteractions {
 
     static onEntitySpawn(event) {
         const entity = event.entity;
+        if (!entity.isValid)
+            return;
         const item = entity?.getComponent(EntityComponentTypes.Item)?.itemStack;
         if (!item)
             return;

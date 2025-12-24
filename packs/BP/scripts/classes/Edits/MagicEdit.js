@@ -2,7 +2,6 @@ import { ListBlockVolume } from "@minecraft/server";
 import { Edit } from "../Edits/Edit";
 import { BlockBreadthFirstSearch } from "../BlockBreadthFirstSearch";
 import { Vector } from "../../lib/Vector";
-import { TickingAreaUtils } from "../TickingAreaUtils";
 
 export class MagicEdit extends Edit {
     initialLocation;
