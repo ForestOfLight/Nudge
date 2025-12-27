@@ -135,8 +135,8 @@ export class Builder {
         if (PlayerInteractions.isHoldingNudgeItem(this.player)) {
             const modeItemId = Object.values(EditModes).find(mode => mode.id === newEditMode)?.itemId;
             mainhandSlot.setItem(new ItemStack(modeItemId, 1));
+            Feedback.send(this.getPlayer(), this.editMode.getHoldItemFeedback());
         }
-        Feedback.send(this.getPlayer(), this.editMode.getHoldItemFeedback());
     }
 
     undo(num = 1) {
