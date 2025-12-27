@@ -84,7 +84,7 @@ export class PlayerInteractions {
         if (!item)
             return;
         const editModeItemTypes = Object.values(EditModes).map(editMode => editMode.itemId);
-        if (editModeItemTypes.some((editModeItemId) => editModeItemId === item.typeId));
+        if (editModeItemTypes.some((editModeItemId) => editModeItemId === item.typeId))
             entity.remove();
     }
 }
