@@ -36,15 +36,20 @@ Nudge is a powerful creative building addon for Minecraft Bedrock Edition. Inspi
 
 Download the latest release of **Nudge** from the [Releases Page](https://github.com/ForestOfLight/Nudge/releases). Install it like any other addon, making sure the **Beta APIs** experiment is enabled.
 
+> [!IMPORTANT]
+> This addon will not work on Realms until Mojang enables support for the `@minecraft/debug-utilities` scripting module.
+>
+> Using Nudge with Editor Mode will also cause Nudge not to render properly.
+
 ### Getting Started
 
 Once installed on a world:
 
-1. Use `/nudge:edit` to get the Nudge item.
+1. Use `/nudge:nudge` to get the Nudge item.
 2. "Hit" with the item to start selecting an area or "Use" it to change the edit mode.
 3. Instructions in-game will guide you through making edits.
 
-Nudge is designed to feel natural and quick — a companion tool for faster iteration.
+Nudge is designed to feel natural and quick - a companion tool for faster iteration.
 
 ### Additional Commands
 
@@ -53,6 +58,10 @@ Nudge is designed to feel natural and quick — a companion tool for faster iter
 **`/nudge:redo <amount: int>`** - Redoes the last undone edit action, or several.
 
 **`/nudge:here`** - Starts, extends, or nudges your selection to your current location.
+
+### Server Installation
+
+Before installing on a server, make sure the `config/default/permissions.json` file contains `"@minecraft/debug-utilities"`. Add it if not. Then, installing Nudge on a server is the same as installing any other addon.
 
 ## Join the Community
 
@@ -81,7 +90,7 @@ Need help, want to discuss technical Minecraft, or follow future updates?
 ## Issues & Suggestions
 
 Have an idea? Found a bug?
-Open an issue on this repo — feedback is always welcome.
+Open an issue on this repo - feedback is always welcome.
 
 If you're interested in contributing, feel free to open a pull request!
 

@@ -1,5 +1,5 @@
 // Commands
-import './commands/edit';
+import './commands/nudge';
 import './commands/undo';
 import './commands/redo';
 import './commands/here';

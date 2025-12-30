@@ -86,9 +86,9 @@ nudge.tip.outofbounds=§cCannot edit blocks outside of the dimenson's height ran
 
 ## Commands
 nudge.command.generic.invalidsource=This command can only be used by players.
-nudge.command.edit=Gives you the Nudge item.
-nudge.command.edit.fail=§cFailed to give you the Nudge item.
-nudge.command.edit.given=§aYou recieved the §fNudge§a item! %1 to select your build or %2 to change your editing mode.	## Insert strings: hit icon, use icon.
+nudge.command.nudge=Gives you the Nudge item.
+nudge.command.nudge.fail=§cFailed to give you the Nudge item.
+nudge.command.nudge.given=§aYou recieved the §fNudge§a item! %1 to select your build or %2 to change your editing mode.	## Insert strings: hit icon, use icon.
 nudge.command.here=Starts, extends, or nudges your selection to your current location.
 nudge.command.here.holditem=§cPlease hold the Nudge item to use this command.
 nudge.command.redo=Redo your last edit, or several.
