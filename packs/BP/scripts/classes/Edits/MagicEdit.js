@@ -33,13 +33,6 @@ export class MagicEdit extends Edit {
         throw new Error('matchesSearch() must be implemented');
     }
 
-    async loadChunkRadius(location, chunkRadius) {
-        const searchDistance = new Vector(chunkRadius, 0, chunkRadius).multiply(16);
-        const maxLoadLocation = Vector.from(location).add(searchDistance);
-        const minLoadLocation = Vector.from(location).subtract(searchDistance);
-        await this.loadArea(maxLoadLocation, minLoadLocation);
-    }
-
     populateConnectedBlocks(location, { corners = true, maxBlocks = 128 }) {
         this.initialBlockType = this.dimension.getBlock(this.initialLocation).typeId;
         if (this.initialBlockType === 'minecraft:air')

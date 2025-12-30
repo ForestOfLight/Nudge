@@ -70,9 +70,8 @@ export class MirrorRotateRenderer {
             new DebugLine({ ...this.location.add(new Vector(0, 0, -1)), dimension: this.dimension }, this.location.add(new Vector(0, 0, -0.25)))
         ]
         shapes.forEach(shape => {
-            const shift = new Vector(0, -1, 0);
-            shape.setLocation(shift.add(shape.location));
-            shape.endLocation = shift.add(shape.endLocation);
+            shape.setLocation(shape.location);
+            shape.endLocation = shape.endLocation;
             shape.color = RGBColor.Red;
         });
         return shapes;
@@ -88,9 +87,8 @@ export class MirrorRotateRenderer {
             new DebugLine({ ...this.location.add(new Vector(-1, 0, 0)), dimension: this.dimension }, this.location.add(new Vector(-0.25, 0, 0)))
         ]
         shapes.forEach(shape => {
-            const shift = new Vector(0, -1, 0);
-            shape.setLocation(shift.add(shape.location));
-            shape.endLocation = shift.add(shape.endLocation);
+            shape.setLocation(shape.location);
+            shape.endLocation = shape.endLocation;
             shape.color = RGBColor.Blue;
         });
         return shapes;
@@ -99,6 +97,11 @@ export class MirrorRotateRenderer {
     getRotationShapes() {
         const shapes = [];
         switch (this.rotation) {
+            case true:
+                shapes.push(...this.createCurvedLine(
+                    this.location.add(new Vector(0, 0, -2)),
+                    this.location.add(new Vector(2, 0, 0))
+                ));
             case StructureRotation.Rotate270:
                 shapes.push(...this.createCurvedLine(
                     this.location.add(new Vector(-2, 0, 0)),
@@ -116,12 +119,11 @@ export class MirrorRotateRenderer {
                 ));
                 break;
             default:
-            break;
+                break;
         }
         shapes.forEach(shape => {
-            const shift = new Vector(0, -1, 0);
-            shape.setLocation(shift.add(shape.location));
-            shape.endLocation = shift.add(shape.endLocation);
+            shape.setLocation(shape.location);
+            shape.endLocation = shape.endLocation;
             shape.headLength = 0.3;
             shape.headRadius = 0.15;
             shape.headSegments = 8;

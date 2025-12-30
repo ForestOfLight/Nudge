@@ -1,12 +1,11 @@
 import { ExtrudeEdit } from "../Edits/ExtrudeEdit";
 import { IntrudeEdit } from "../Edits/IntrudeEdit";
 import { Feedback } from "../Feedback";
-import { PlayerMovement } from "../PlayerMovement";
 import { MagicMode } from "./MagicMode";
 
 export class ExtrudeMode extends MagicMode {
     onUse() {
-        const playerMovement = new PlayerMovement(this.player);
+        const playerMovement = this.builder.getPlayerMovement();
         if (playerMovement.isSneaking())
             this.builder.changeEditMode();
         else
@@ -19,6 +18,10 @@ export class ExtrudeMode extends MagicMode {
 
     confirmExtrude() {
         const blockRaycastHit = this.player.getBlockFromViewDirection({ maxDistance: 1000, includePassableBlocks: true, includeLiquidBlocks: false });
+        if (!blockRaycastHit) {
+            Feedback.send(this.player, { translate: 'nudge.tip.noblock' });
+            return;
+        }
         const edit = new ExtrudeEdit(blockRaycastHit);
         super.confirmEdit(edit);
     }

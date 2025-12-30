@@ -9,11 +9,11 @@ export class SymmetryRenderer {
     shape = void 0;
     mirrorRenderer = void 0;
 
-    constructor(dimension, location, mirrorAxis) {
+    constructor(dimension, location, { mirrorAxis, rotation } = {}) {
         this.dimension = dimension;
         this.location = location;
         this.drawMarker();
-        this.mirrorRenderer = new MirrorRotateRenderer(dimension, location, { mirrorAxis });
+        this.mirrorRenderer = new MirrorRotateRenderer(dimension, location, { mirrorAxis, rotation });
     }
 
     destroy() {

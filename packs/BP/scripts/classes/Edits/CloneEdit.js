@@ -1,4 +1,5 @@
 import { Vector } from "../../lib/Vector";
+import { TickingAreaUtils } from "../TickingAreaUtils";
 import { VolumeEdit } from "./VolumeEdit";
 
 export class CloneEdit extends VolumeEdit {
@@ -26,21 +27,21 @@ export class CloneEdit extends VolumeEdit {
     }
 
     async do() {
-        this.loadArea(this.copyBounds.min, this.copyBounds.max);
-        await this.loadArea(this.pasteBounds.min, this.pasteBounds.max);
+        const copyTickingArea = TickingAreaUtils.loadArea(this.dimension, this.copyBounds.min, this.copyBounds.max);
+        const pasteTickingArea = await TickingAreaUtils.loadArea(this.dimension, this.pasteBounds.min, this.pasteBounds.max);
         if (!this.copyStructure)
             this.copyStructure = this.createPartitionedStructure(this.copyBounds.min, this.copyBounds.max);
         this.replacedStructure = this.createPartitionedStructure(this.pasteBounds.min, this.pasteBounds.max);
         this.pastePartitionedStructure(this.copyStructure, this.pasteBounds.min, this.mirrorAxis, this.rotation);
-        this.unloadArea();
+        TickingAreaUtils.unloadAreas([copyTickingArea, pasteTickingArea]);
     }
 
     async undo() {
-        this.loadArea(this.copyBounds.min, this.copyBounds.max);
-        await this.loadArea(this.pasteBounds.min, this.pasteBounds.max);
+        const copyTickingArea = TickingAreaUtils.loadArea(this.dimension, this.copyBounds.min, this.copyBounds.max);
+        const pasteTickingArea = await TickingAreaUtils.loadArea(this.dimension, this.pasteBounds.min, this.pasteBounds.max);
         this.clearArea(this.pasteBounds.min, this.pasteBounds.max);
         this.pastePartitionedStructure(this.replacedStructure, this.pasteBounds.min);
-        this.unloadArea();
+        TickingAreaUtils.unloadAreas([copyTickingArea, pasteTickingArea]);
     }
 
     getDoingFeedback() {

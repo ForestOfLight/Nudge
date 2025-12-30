@@ -1,6 +1,7 @@
 import { MagicEdit } from "./MagicEdit";
 import { Vector } from "../../lib/Vector";
-import { Direction } from "@minecraft/server";
+import { TickingAreaUtils } from "../TickingAreaUtils";
+import { getVectorByDirection } from "../../utils";
 
 export class ExtrudeEdit extends MagicEdit {
     replacedBlockStructures = [];
@@ -12,24 +13,24 @@ export class ExtrudeEdit extends MagicEdit {
     constructor(blockRaycastHit) {
         const block = blockRaycastHit.block;
         super(block.dimension, block.location);
-        this.extrudeDirection = Vector.from(this.getExtrudeDirectionVector(blockRaycastHit.face));
+        this.extrudeDirection = Vector.from(getVectorByDirection(blockRaycastHit.face));
         this.extrudeLocation = Vector.from(this.initialLocation).add(this.extrudeDirection);
     }
     
     async do() {
-        await this.loadChunkRadius(this.initialLocation, this.chunkRadiusToSearch);
+        const tickingArea = await TickingAreaUtils.loadChunkRadius(this.dimension, this.initialLocation, this.chunkRadiusToSearch);
         this.populateConnectedBlocks(this.initialLocation, { corners: false, maxBlocks: this.maxBlocks });
         const extrudedBlockStructures = this.getBlocksAsStructures();
         this.pasteBlockStructures(extrudedBlockStructures, this.extrudeLocation);
-        this.unloadArea();
+        TickingAreaUtils.unloadArea(tickingArea);
     }
     
     async undo() {
         const min = this.extrudeDirection.add(this.connectedBlocksVolume.getMin());
         const max = this.extrudeDirection.add(this.connectedBlocksVolume.getMax());
-        await this.loadArea(min, max);
+        const tickingArea = await TickingAreaUtils.loadArea(this.dimension, min, max);
         this.clearConnectedBlocks(this.extrudeLocation);
-        this.unloadArea();
+        TickingAreaUtils.unloadArea(tickingArea);
     }
 
     getDoingFeedback() {
@@ -44,24 +45,5 @@ export class ExtrudeEdit extends MagicEdit {
         const offsetBlock = block.offset(this.extrudeDirection);
         return !block.isAir && (offsetBlock?.isAir || offsetBlock?.isLiquid)
             && block.typeId === this.initialBlockType;
-    }
-
-    getExtrudeDirectionVector(face) {
-        switch (face) {
-            case Direction.Up:
-                return Vector.up;
-            case Direction.Down:
-                return Vector.down;
-            case Direction.North:
-                return Vector.backward;
-            case Direction.South:
-                return Vector.forward;
-            case Direction.East:
-                return Vector.right;
-            case Direction.West:
-                return Vector.left;
-            default:
-                throw new Error('Invalid block face found for Extrusion:' + face);
-        }
     }
 }

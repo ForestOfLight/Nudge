@@ -1,6 +1,7 @@
 import { BlockVolume } from "@minecraft/server";
 import { Vector } from "../../lib/Vector";
 import { VolumeEdit } from "./VolumeEdit";
+import { TickingAreaUtils } from "../TickingAreaUtils";
 
 export class StackEdit extends VolumeEdit {
     copyBounds;
@@ -26,7 +27,7 @@ export class StackEdit extends VolumeEdit {
     }
 
     async do() {
-        await this.loadArea(this.completeBounds.min, this.completeBounds.max);
+        const tickingArea = await TickingAreaUtils.loadArea(this.dimension, this.completeBounds.min, this.completeBounds.max);
         this.copyStructure = this.createPartitionedStructure(this.copyBounds.min, this.copyBounds.max);
         this.replacedStructure = this.createPartitionedStructure(this.completeBounds.min, this.completeBounds.max);
         for (let y = this.pasteBounds.min.y; y <= this.pasteBounds.max.y; y += this.stackableSize.y) {
@@ -39,14 +40,14 @@ export class StackEdit extends VolumeEdit {
                 }
             }
         }
-        this.unloadArea();
+        TickingAreaUtils.unloadArea(tickingArea);
     }
 
     async undo() {
-        await this.loadArea(this.completeBounds.min, this.completeBounds.max);
+        const tickingArea = await TickingAreaUtils.loadArea(this.dimension, this.completeBounds.min, this.completeBounds.max);
         this.clearArea(this.completeBounds.min, this.completeBounds.max);
         this.pastePartitionedStructure(this.replacedStructure, this.completeBounds.min);
-        this.unloadArea();
+        TickingAreaUtils.unloadArea(tickingArea);
     }
 
     getDoingFeedback() {

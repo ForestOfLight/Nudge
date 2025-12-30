@@ -3,7 +3,6 @@ import { MoveEdit } from "../Edits/MoveEdit";
 import { Feedback } from "../Feedback";
 import { BuildNudgerMove } from "../Nudges/BuildNudgerMove";
 import { NudgeableMode } from "./NudgableMode";
-import { PlayerMovement } from "../PlayerMovement";
 
 export class MoveMode extends NudgeableMode {
     mirrorAxis = StructureMirrorAxis.None;
@@ -33,7 +32,7 @@ export class MoveMode extends NudgeableMode {
     }
 
     onUseWhileNudging() {
-        const playerMovement = new PlayerMovement(this.player);
+        const playerMovement = this.builder.getPlayerMovement();
         if (this.isNudgingSuspended()) {
             this.unsuspendNudge();
         } else {

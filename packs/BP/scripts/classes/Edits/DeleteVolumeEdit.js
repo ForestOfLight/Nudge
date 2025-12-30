@@ -1,3 +1,4 @@
+import { TickingAreaUtils } from "../TickingAreaUtils";
 import { VolumeEdit } from "./VolumeEdit";
 
 export class DeleteVolumeEdit extends VolumeEdit {
@@ -13,17 +14,17 @@ export class DeleteVolumeEdit extends VolumeEdit {
     }
 
     async do() {
-        await this.loadArea(this.deleteMin, this.deleteMax);
+        const tickingArea = await TickingAreaUtils.loadArea(this.dimension, this.deleteMin, this.deleteMax);
         this.replacedStructure = this.createPartitionedStructure(this.deleteMin, this.deleteMax);
         this.clearArea(this.deleteMin, this.deleteMax);
-        this.unloadArea();
+        TickingAreaUtils.unloadArea(tickingArea);
     }
 
     async undo() {
-        await this.loadArea(this.deleteMin, this.deleteMax);
+        const tickingArea = await TickingAreaUtils.loadArea(this.dimension, this.deleteMin, this.deleteMax);
         this.clearArea(this.deleteMin, this.deleteMax);
         this.pastePartitionedStructure(this.replacedStructure, this.deleteMin);
-        this.unloadArea();
+        TickingAreaUtils.unloadArea(tickingArea);
     }
 
     getDoingFeedback() {

@@ -19,7 +19,8 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
         super(dimension, min, max);
         this.initialVolume = new BlockVolume(min, max);
         this.playerMovement = playerMovement;
-        this.mirrorRotateRenderer = new MirrorRotateRenderer(this.dimension, this.getCenterpoint());
+        const mirrorRotateRenderLocation = this.getCenterpoint().add(new Vector(0, -1, 0));
+        this.mirrorRotateRenderer = new MirrorRotateRenderer(this.dimension, mirrorRotateRenderLocation);
     }
 
     destroy() {
@@ -40,7 +41,8 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
         const oldMax = this.blockVolume.getMax();
         if (min.distance(oldMin) !== 0 || max.distance(oldMax) !== 0 || this.shouldRedraw) {
             super.setLocation(min, max);
-            this.mirrorRotateRenderer.setLocation(this.getCenterpoint());
+            const mirrorRotateRenderLocation = this.getCenterpoint().add(new Vector(0, -1, 0));
+            this.mirrorRotateRenderer.setLocation(mirrorRotateRenderLocation);
             this.drawOffsetText();
             this.shouldRedraw = false;
         }

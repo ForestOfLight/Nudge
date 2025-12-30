@@ -1,4 +1,4 @@
-import { EntityComponentTypes, EquipmentSlot, ItemStack, world } from "@minecraft/server";
+import { EntityComponentTypes, EquipmentSlot, GameMode, ItemStack, world } from "@minecraft/server";
 import { EditLog } from "./EditLog";
 import { EditModes } from "./Modes/EditModes";
 import { ModeSelectionForm } from "./ModeSelectionForm";
@@ -16,9 +16,11 @@ import { ExtrudeMode } from "./Modes/ExtrudeMode";
 export class Builder {
     playerId;
     player = void 0;
+    playerMovement;
     editMode;
     editLog;
     symmetry;
+    nudgeItemSlotDP = 'nudgeItemSlot';
 
     constructor(playerId) {
         this.playerId = playerId;
@@ -33,7 +35,10 @@ export class Builder {
     }
 
     onLeave() {
-        this.editMode.deselect();
+        this.playerMovement?.destroy();
+        this.playerMovement = void 0;
+        this.deselect();
+        this.removeSymmetry();
     }
 
     onUse() {
@@ -48,20 +53,36 @@ export class Builder {
         this.setEditModeByHeldItemId();
     }
 
+    onGameModeChange(fromGameMode, toGameMode) {
+        if (fromGameMode === GameMode.Creative && toGameMode !== GameMode.Creative) {
+            this.onLeave();
+            this.updateShouldHaveNudgeItem();
+            this.removeNudgeItem();
+        } else if (this.shouldHaveNudgeItem() && toGameMode === GameMode.Creative && fromGameMode !== GameMode.Creative) {
+            this.addNudgeItem();
+        }
+    }
+
+    getPlayerMovement() {
+        if (this.playerMovement === void 0)
+            this.playerMovement = new PlayerMovement(this.player);
+        return this.playerMovement;
+    }
+
     allowMovement(enable) {
-        const playerMovement = new PlayerMovement(this.player);
+        const playerMovement = this.getPlayerMovement();
         if (enable)
             playerMovement.unfreeze();
         else
             playerMovement.freeze();
     }
 
-    changeEditMode() {
-        new ModeSelectionForm(this);
-    }
-
     getSelection() {
         return this.editMode.selection;
+    }
+    
+    changeEditMode() {
+        new ModeSelectionForm(this);
     }
 
     deselect() {
@@ -114,8 +135,8 @@ export class Builder {
         if (PlayerInteractions.isHoldingNudgeItem(this.player)) {
             const modeItemId = Object.values(EditModes).find(mode => mode.id === newEditMode)?.itemId;
             mainhandSlot.setItem(new ItemStack(modeItemId, 1));
+            Feedback.send(this.getPlayer(), this.editMode.getHoldItemFeedback());
         }
-        Feedback.send(this.getPlayer(), this.editMode.getHoldItemFeedback());
     }
 
     undo(num = 1) {
@@ -150,5 +171,72 @@ export class Builder {
 
     hasSymmetry() {
         return this.symmetry !== void 0;
+    }
+
+    updateShouldHaveNudgeItem() {
+        const player = this.getPlayer();
+        const inventoryContainer = player?.getComponent(EntityComponentTypes.Inventory)?.container;
+        if (!inventoryContainer)
+            return;
+        const nudgeItemTypes = Object.values(EditModes).map(mode => mode.itemId);
+        for (const nudgeItemType of nudgeItemTypes) {
+            const nudgeItemSlot = inventoryContainer.find(new ItemStack(nudgeItemType));
+            if (nudgeItemSlot !== void 0) {
+                player.setDynamicProperty(this.nudgeItemSlotDP, nudgeItemSlot);
+                return true;
+            }
+        }
+        player.setDynamicProperty(this.nudgeItemSlotDP, void 0);
+        return false;
+    }
+
+    shouldHaveNudgeItem() {
+        const player = this.getPlayer();
+        return player?.getDynamicProperty(this.nudgeItemSlotDP) !== void 0;
+    }
+
+    addNudgeItem() {
+        if (this.hasNudgeItem())
+            return this.updateShouldHaveNudgeItem();
+        const player = this.getPlayer();
+        const inventoryContainer = player?.getComponent(EntityComponentTypes.Inventory)?.container;
+        if (!inventoryContainer)
+            return;
+        const mainNudgeItemType = Object.values(EditModes)[0].itemId;
+        const nudgeItemSlotNumber = player.getDynamicProperty(this.nudgeItemSlotDP) || 8;
+        const nudgeItemSlot = inventoryContainer.getItem(nudgeItemSlotNumber);
+        if (nudgeItemSlot) {
+            const givenItemStack = inventoryContainer?.addItem(new ItemStack(mainNudgeItemType));
+            if (givenItemStack)
+                Feedback.send(player, { translate: 'nudge.tip.inventory.full' });
+        } else {
+            inventoryContainer.setItem(nudgeItemSlotNumber, new ItemStack(mainNudgeItemType));
+        }
+        return this.updateShouldHaveNudgeItem();
+    }
+
+    removeNudgeItem() {
+        const player = this.getPlayer();
+        const inventoryContainer = player?.getComponent(EntityComponentTypes.Inventory)?.container;
+        if (!inventoryContainer)
+            return;
+        for (let slotIndex = 0; slotIndex < inventoryContainer.size; slotIndex++) {
+            const hasNudgeItem = inventoryContainer.getItem(slotIndex)?.typeId.startsWith('nudge:');
+            if (hasNudgeItem)
+                inventoryContainer.setItem(slotIndex, void 0);
+        }
+    }
+
+    hasNudgeItem() {
+        const player = this.getPlayer();
+        const inventoryContainer = player?.getComponent(EntityComponentTypes.Inventory)?.container;
+        if (!inventoryContainer)
+            return;
+        for (let slotIndex = 0; slotIndex < inventoryContainer.size; slotIndex++) {
+            const isNudgeItem = inventoryContainer.getItem(slotIndex)?.typeId.startsWith('nudge:');
+            if (isNudgeItem)
+                return true;
+        }
+        return false;
     }
 }

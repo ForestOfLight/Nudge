@@ -2,6 +2,7 @@ import { StructureRotation, BlockVolume } from "@minecraft/server";
 import { Edit } from "../Edits/Edit";
 import { Vector } from "../../lib/Vector";
 import { VolumePartitioner } from "../VolumePartitioner";
+import { TickingAreaUtils } from "../TickingAreaUtils";
 
 const MAX_FILL_VOLUME = 31;
 const MAX_STRUCTURE_SIZE = 63;
@@ -28,7 +29,7 @@ export class VolumeEdit extends Edit {
     }
 
     createPartitionedStructure(min, max) {
-        this.assertFullyLoaded();
+        this.assertFullyLoaded(min, max);
         this.assertInDimensionBounds(min, max);
         const blockVolume = new BlockVolume(min, max);
         this.replaceBlockInArea(min, max, 'minecraft:air', 'minecraft:structure_void');
@@ -43,10 +44,10 @@ export class VolumeEdit extends Edit {
     }
 
     pastePartitionedStructure(partitionedStructure, location, mirrorAxis = void 0, rotation = void 0) {
-        this.assertFullyLoaded();
         const size = Vector.from(partitionedStructure.blockVolume.getSpan()).subtract(new Vector(1, 1, 1));
         const max = Vector.from(location).add(this.getRotatedSize(size, rotation));
         const blockVolume = new BlockVolume(location, max);
+        this.assertFullyLoaded(blockVolume.getMin(), blockVolume.getMax());
         this.assertInDimensionBounds(blockVolume.getMin(), blockVolume.getMax());
         const structures = partitionedStructure.structures;
         const structurePartitioner = new VolumePartitioner(blockVolume, MAX_STRUCTURE_SIZE);
@@ -56,13 +57,13 @@ export class VolumeEdit extends Edit {
         for (let i = 0; i < structures.length; i++) {
             const structure = structures[i];
             const partition = partitions[i];
-            this.pasteSingleStructure(structure, partition.getMin(), mirrorAxis, rotation);
+            this.pasteSingleStructure(structure, partition.getMin(), { mirror: mirrorAxis, rotation });
         }
         this.replaceBlockInArea(location, max, 'minecraft:structure_void', 'minecraft:air');
     }
 
     clearArea(min, max) {
-        this.assertFullyLoaded();
+        this.assertFullyLoaded(min, max);
         this.assertInDimensionBounds(min, max);
         const blockVolume = new BlockVolume(min, max);
         this.clearEntities(blockVolume.getMin(), blockVolume.getSpan());
@@ -84,7 +85,7 @@ export class VolumeEdit extends Edit {
     }
 
     replaceBlockInArea(min, max, replaceBlock, newBlock) {
-        this.assertFullyLoaded();
+        this.assertFullyLoaded(min, max);
         this.assertInDimensionBounds(min, max);
         const blockVolume = new BlockVolume(min, max);
         const fillPartitioner = new VolumePartitioner(blockVolume, MAX_FILL_VOLUME);

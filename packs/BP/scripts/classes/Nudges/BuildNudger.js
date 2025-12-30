@@ -1,5 +1,4 @@
 import { system } from "@minecraft/server";
-import { PlayerMovement } from "../PlayerMovement";
 
 export class BuildNudger {
     builder;
@@ -10,7 +9,7 @@ export class BuildNudger {
 
     constructor(builder) {
         this.builder = builder;
-        this.playerMovement = new PlayerMovement(builder.getPlayer());
+        this.playerMovement = this.builder.getPlayerMovement();
     }
     
     start() {

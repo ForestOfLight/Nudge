@@ -19,12 +19,14 @@ nudge.menu.deleteconnected=Magic Delete
 nudge.menu.extrude=Extrude
 nudge.menu.symmetry.new=Create Symmetry
 nudge.menu.symmetry.modify=Modify Symmetry
+nudge.menu.symmetry.remove=§cRemove Symmetry
 
-nudge.menu.symmetry.location=Symmetry at %1 in %2
+nudge.menu.symmetry.description=§aCreates a symmetry. Building will be mirrored within 256 blocks.
+nudge.menu.symmetry.location=§aSymmetry at %1 in %2
 nudge.menu.symmetry.mirror.x=Mirror §cX
 nudge.menu.symmetry.mirror.z=Mirror §bZ
 nudge.menu.symmetry.mirror.xz=§8Mirror §cX§8 and §bZ
-nudge.menu.symmetry.remove=§cRemove Symmetry
+nudge.menu.symmetry.rotate=Rotate
 
 ## Actionbar Tips
 nudge.tip.start=§a%s to select	## Insert string: hit icon
@@ -82,15 +84,18 @@ nudge.tip.extrude.intrude.success=§aIntruded
 
 nudge.tip.noblock=§cNo block found in view
 nudge.tip.unloadedvolume=§cThe selected area spans too many chunks
-nudge.tip.outofbounds=§cCannot edit blocks outside of the dimenson's height range
+nudge.tip.outofbounds=§cCannot edit blocks outside of the dimension's height range
+nudge.tip.inventory.full=§cCould not add §fNudge§c item to your inventory
 
 ## Commands
 nudge.command.generic.invalidsource=This command can only be used by players.
+nudge.command.generic.creative=§fNudge§c can only be used in Creative mode.
+
 nudge.command.nudge=Gives you the Nudge item.
 nudge.command.nudge.fail=§cFailed to give you the Nudge item.
 nudge.command.nudge.given=§aYou recieved the §fNudge§a item! %1 to select your build or %2 to change your editing mode.	## Insert strings: hit icon, use icon.
 nudge.command.here=Starts, extends, or nudges your selection to your current location.
-nudge.command.here.holditem=§cPlease hold the Nudge item to use this command.
+nudge.command.here.holditem=§cPlease hold the §fNudge§c item to use this command.
 nudge.command.redo=Redo your last edit, or several.
 nudge.command.undo=Undo your last edit, or several.
 
