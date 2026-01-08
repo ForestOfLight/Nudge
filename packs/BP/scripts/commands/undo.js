@@ -1,4 +1,4 @@
-import { system, CommandPermissionLevel, CustomCommandStatus, CustomCommandParamType, Player } from '@minecraft/server';
+import { system, CommandPermissionLevel, CustomCommandStatus, CustomCommandParamType, Player, GameMode } from '@minecraft/server';
 import { Builders } from '../classes/Builders';
 
 system.beforeEvents.startup.subscribe((event) => {
