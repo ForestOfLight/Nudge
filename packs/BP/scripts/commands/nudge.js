@@ -1,4 +1,4 @@
-import { system, CommandPermissionLevel, CustomCommandStatus, Player, GameMode } from '@minecraft/server';
+import { system, CommandPermissionLevel, CustomCommandStatus, Player, GameMode, InputMode } from '@minecraft/server';
 import { Builders } from '../classes/Builders';
 import { Feedback } from '../classes/Feedback';
 
@@ -20,10 +20,13 @@ function givePlayerMenuItem(origin) {
     system.run(() => {
         const builder = Builders.get(player.id);
         const success = builder?.addNudgeItem();
-        if (success)
-            player.sendMessage({ translate: 'nudge.command.edit.given', with: { rawtext: [Feedback.hitIcon(player), Feedback.useIcon(player)] } });
-        else
-            player.sendMessage({ translate: 'nudge.command.edit.fail' });
+        if (success) {
+            player.sendMessage({ translate: 'nudge.command.nudge.given', with: { rawtext: [Feedback.hitIcon(player), Feedback.useIcon(player)] } });
+            if (player.inputInfo.lastInputModeUsed === InputMode.Touch)
+                player.sendMessage({ translate: 'nudge.command.nudge.touchsuggestion' });
+        } else {
+            player.sendMessage({ translate: 'nudge.command.nudge.fail' });
+        }
     });
     return { status: CustomCommandStatus.Success };
 }

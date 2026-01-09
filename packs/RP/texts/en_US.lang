@@ -94,6 +94,7 @@ nudge.command.generic.creative=§fNudge§c can only be used in Creative mode.
 nudge.command.nudge=Gives you the Nudge item.
 nudge.command.nudge.fail=§cFailed to give you the Nudge item.
 nudge.command.nudge.given=§aYou recieved the §fNudge§a item! %1 to select your build or %2 to change your editing mode.	## Insert strings: hit icon, use icon.
+nudge.command.nudge.touchsuggestion=§aIt is recommended to turn on action buttons when using touch controls. (Settings > Touch > Show Action Buttons) 
 nudge.command.here=Starts, extends, or nudges your selection to your current location.
 nudge.command.here.holditem=§cPlease hold the §fNudge§c item to use this command.
 nudge.command.redo=Redo your last edit, or several.
