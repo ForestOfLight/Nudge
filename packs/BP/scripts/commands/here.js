@@ -1,4 +1,4 @@
-import { system, CommandPermissionLevel, CustomCommandStatus, Player } from '@minecraft/server';
+import { system, CommandPermissionLevel, CustomCommandStatus, Player, GameMode } from '@minecraft/server';
 import { PlayerInteractions } from '../classes/PlayerInteractions';
 import { Builders } from '../classes/Builders';
 import { Vector } from '../lib/Vector';
