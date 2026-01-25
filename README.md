@@ -27,8 +27,8 @@ Nudge is a powerful creative building addon for Minecraft Bedrock Edition. Inspi
 * **Built for Simplicity**: No complex UIs or commands. Just fast, easy-to-master tools.
 
 <div align="center">
-    <a href="./demo.png">
-        <img src="./demo.png" alt="Nudge Editing Demo" height="350">
+    <a href="./demo.jpeg">
+        <img src="./demo.jpeg" alt="Nudge Editing Demo" height="350">
     </a>
 </div>
 
