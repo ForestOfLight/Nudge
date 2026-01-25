@@ -29,8 +29,8 @@ export class VolumeEdit extends Edit {
     }
 
     createPartitionedStructure(min, max) {
-        this.assertFullyLoaded(min, max);
         this.assertInDimensionBounds(min, max);
+        this.assertFullyLoaded(min, max);
         const blockVolume = new BlockVolume(min, max);
         this.replaceBlockInArea(min, max, 'minecraft:air', 'minecraft:structure_void');
         const structurePartitioner = new VolumePartitioner(blockVolume, MAX_STRUCTURE_SIZE);
@@ -47,8 +47,8 @@ export class VolumeEdit extends Edit {
         const size = Vector.from(partitionedStructure.blockVolume.getSpan()).subtract(new Vector(1, 1, 1));
         const max = Vector.from(location).add(this.getRotatedSize(size, rotation));
         const blockVolume = new BlockVolume(location, max);
-        this.assertFullyLoaded(blockVolume.getMin(), blockVolume.getMax());
         this.assertInDimensionBounds(blockVolume.getMin(), blockVolume.getMax());
+        this.assertFullyLoaded(blockVolume.getMin(), blockVolume.getMax());
         const structures = partitionedStructure.structures;
         const structurePartitioner = new VolumePartitioner(blockVolume, MAX_STRUCTURE_SIZE);
         const partitions = structurePartitioner.getPartitions();
@@ -63,8 +63,8 @@ export class VolumeEdit extends Edit {
     }
 
     clearArea(min, max) {
-        this.assertFullyLoaded(min, max);
         this.assertInDimensionBounds(min, max);
+        this.assertFullyLoaded(min, max);
         const blockVolume = new BlockVolume(min, max);
         this.clearEntities(blockVolume.getMin(), blockVolume.getSpan());
         const fillPartitioner = new VolumePartitioner(blockVolume, MAX_FILL_VOLUME);
@@ -85,8 +85,8 @@ export class VolumeEdit extends Edit {
     }
 
     replaceBlockInArea(min, max, replaceBlock, newBlock) {
-        this.assertFullyLoaded(min, max);
         this.assertInDimensionBounds(min, max);
+        this.assertFullyLoaded(min, max);
         const blockVolume = new BlockVolume(min, max);
         const fillPartitioner = new VolumePartitioner(blockVolume, MAX_FILL_VOLUME);
         const blockFillOptions = { blockFilter: { includeTypes: [replaceBlock] } };
