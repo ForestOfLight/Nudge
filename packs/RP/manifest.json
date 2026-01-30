@@ -1,10 +1,10 @@
 {
     "format_version": 2,
     "header": {
-        "name": "Nudge [RP] v1.0.0",
+        "name": "Nudge [RP] v1.0.1",
         "description": "Creative building addon by §aForestOfLight§r.",
         "uuid": "b6345514-8cd9-4dfe-b329-58574f000f3c",
-        "version": [1, 0, 0],
+        "version": [1, 0, 1],
         "min_engine_version": [1,17,1]
     },
     "modules": [
@@ -17,7 +17,7 @@
     "dependencies": [
         {
             "uuid": "f4114104-0e90-4211-a724-1bc9f274647f", // Nudge BP
-            "version": [1, 0, 0]
+            "version": [1, 0, 1]
         }
     ],
     "metadata": {
