@@ -4,7 +4,7 @@
 		"name": "Nudge [BP] v1.0.1",
 		"description": "Creative building addon by §aForestOfLight§r.",
 		"uuid": "f4114104-0e90-4211-a724-1bc9f274647f",
-		"min_engine_version": [1, 26, 10],
+		"min_engine_version": [1, 26, 0],
 		"version": [1, 0, 1]
 	},
 	"modules": [
@@ -26,7 +26,7 @@
 	"dependencies": [
 		{
 			"module_name": "@minecraft/server",
-			"version": "2.7.0-beta"
+			"version": "2.6.0-beta"
 		},
 		{
 			"module_name": "@minecraft/server-ui",

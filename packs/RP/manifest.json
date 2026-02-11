@@ -5,7 +5,7 @@
         "description": "Creative building addon by §aForestOfLight§r.",
         "uuid": "b6345514-8cd9-4dfe-b329-58574f000f3c",
         "version": [1, 0, 1],
-        "min_engine_version": [1,17,1]
+        "min_engine_version": [1,26,0]
     },
     "modules": [
         {
