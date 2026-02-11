@@ -1,6 +1,5 @@
 import { BlockVolume, TicksPerSecond } from "@minecraft/server";
 import { Vector } from "../../lib/Vector";
-import { Builders } from "../Builders";
 import { BuildNudger } from "./BuildNudger";
 import { StackingRenderer } from "../Renderer/StackingRenderer";
 

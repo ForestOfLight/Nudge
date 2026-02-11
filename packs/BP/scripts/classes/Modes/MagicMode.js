@@ -15,8 +15,8 @@ export class MagicMode {
         throw new Error('onUse() must be implemented.');
     }
 
-    onHit(block) {
-        throw new Error('onHit() must be implemented.');
+    onHit() {
+        throw new Error('onHit(block) must be implemented.');
     }
 
     select(dimension, from, to) {

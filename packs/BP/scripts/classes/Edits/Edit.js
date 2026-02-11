@@ -1,4 +1,4 @@
-import { world, StructureSaveMode, system } from "@minecraft/server";
+import { world, StructureSaveMode } from "@minecraft/server";
 import { IDGenerator } from "../IDGenerator";
 import { OutOfBoundsVolumeError } from "../Errors/OutOfBoundsVolumeError";
 import { UnloadedVolumeError } from "../Errors/UnloadedVolumeError";

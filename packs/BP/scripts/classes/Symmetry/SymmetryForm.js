@@ -1,4 +1,4 @@
-import { ActionFormData, ModalFormData } from '@minecraft/server-ui';
+import { ModalFormData } from '@minecraft/server-ui';
 import { forceShow } from '../../utils';
 import { Symmetry } from './Symmetry';
 import { StructureMirrorAxis } from '@minecraft/server';
