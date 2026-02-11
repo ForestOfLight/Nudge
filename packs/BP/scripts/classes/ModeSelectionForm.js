@@ -23,7 +23,7 @@ export class ModeSelectionForm {
     buildForm() {
         const form = new ActionFormData()
             .title({ translate: this.#title });
-        for (const [modeName, modeData] of Object.entries(EditModes))
+        for (const [_, modeData] of Object.entries(EditModes))
             form.button(modeData.translatableString, 'textures/items/' + modeData.itemId.split(':')[1]);
         form.button({ translate: 'nudge.menu.undo' }, 'textures/items/undo');
         form.button({ translate: 'nudge.menu.redo' }, 'textures/items/redo');

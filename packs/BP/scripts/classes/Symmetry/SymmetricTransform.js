@@ -27,8 +27,8 @@ export class SymmetricTransform {
         TickingAreaUtils.unloadArea(interactionTickingArea);
     }
 
-    getTransforms(location) {
-        throw new Error("Method 'getTransforms' must be implemented.");
+    getTransforms() {
+        throw new Error("Method 'getTransforms(location)' must be implemented.");
     }
 
     createSingleBlockStructure() {

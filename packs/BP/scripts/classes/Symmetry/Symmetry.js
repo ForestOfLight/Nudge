@@ -1,8 +1,6 @@
-import { StructureMirrorAxis, StructureRotation, StructureSaveMode, system, world } from "@minecraft/server";
+import { StructureMirrorAxis, system, world } from "@minecraft/server";
 import { SymmetryRenderer } from "./SymmetryRenderer";
 import { Vector } from "../../lib/Vector";
-import { IDGenerator } from "../IDGenerator";
-import { TickingAreaUtils } from "../TickingAreaUtils";
 import { getVectorByDirection } from "../../utils";
 import { EightDirectionalMirrorTransform } from "./EightDirectionalMirrorTransform";
 import { MirrorXZTransform } from "./MirrorXZTransform";

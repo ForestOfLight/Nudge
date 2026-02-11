@@ -2,7 +2,6 @@ import { StructureRotation, BlockVolume } from "@minecraft/server";
 import { Edit } from "../Edits/Edit";
 import { Vector } from "../../lib/Vector";
 import { VolumePartitioner } from "../VolumePartitioner";
-import { TickingAreaUtils } from "../TickingAreaUtils";
 
 const MAX_FILL_VOLUME = 31;
 const MAX_STRUCTURE_SIZE = 63;

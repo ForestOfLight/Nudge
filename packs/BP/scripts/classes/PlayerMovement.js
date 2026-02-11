@@ -47,7 +47,7 @@ export class PlayerMovement {
     }
 
     getMajorDirectionFacing() {
-        const { x, y, z } = this.player.getViewDirection();
+        const { x, z } = this.player.getViewDirection();
         const xzAngle = Math.atan2(z, x) * (180 / Math.PI);
         if (xzAngle >= -45 && xzAngle < 45)
             return new Vector(1, 0, 0);
