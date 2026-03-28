@@ -7,9 +7,11 @@ export class TickingAreaUtils {
     static async loadArea(dimension, min, max) {
         const tickingAreaID = IDGenerator.getNext().replace(':', '-');
         const tickingAreaOptions = { dimension: dimension, from: min, to: max };
-        if (!world.tickingAreaManager.hasCapacity(tickingAreaOptions))
+        const tickingAreaManager = world.tickingAreaManager;
+        if (!tickingAreaManager.hasCapacity(tickingAreaOptions))
             throw new UnloadedVolumeError("TickingArea could not be added. The area is too large or there are already too many ticking chunks.");
-        return await world.tickingAreaManager.createTickingArea(tickingAreaID, tickingAreaOptions);
+        await tickingAreaManager.createTickingArea(tickingAreaID, tickingAreaOptions);
+        return tickingAreaManager.getTickingArea(tickingAreaID);
     }
 
     static async loadChunkRadius(dimension, location, chunkRadius) {
