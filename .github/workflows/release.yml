@@ -15,14 +15,14 @@ jobs:
       BP_SOURCE: "packs/BP"
       RP_SOURCE: "packs/RP"
       CF_PROJECT_ID: 1443661
+      VERSION: ${{ github.event.release.tag_name }}
+      PACK_FILENAME: ${PROJECT_NAME}-${VERSION}.mcaddon
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Package mcaddon
         run: |
-            VERSION=${{ github.event.release.tag_name }}
-            OUTPUT="${PROJECT_NAME}-${VERSION}.mcaddon"
             BP_DIR="${PROJECT_NAME}[BP]"
             RP_DIR="${PROJECT_NAME}[RP]"
 
@@ -33,14 +33,14 @@ jobs:
             cp LICENSE "build/$RP_DIR"
 
             cd build
-            zip -r "$OUTPUT" "$BP_DIR" "$RP_DIR"
-            mv "$OUTPUT" ..
+            zip -r "$PACK_FILENAME" "$BP_DIR" "$RP_DIR"
+            mv "$PACK_FILENAME" ..
             cd ..
 
       - name: Upload asset to GitHub Release
         uses: softprops/action-gh-release@e798e6a1ede8d07b74ac4cdac6bdfa4cc1653907
         with:
-          files: ${{ env.PROJECT_NAME }}-${{ github.event.release.tag_name }}.mcaddon
+          files: ${{ env.PACK_FILENAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -91,8 +91,6 @@ jobs:
                 exit 1
             fi
             echo "Found CurseForge version IDs for game version $ENGINE_PREFIX: $GAME_VERSION_IDS"
-
-            PACK_FILENAME=${PROJECT_NAME}-$VERSION.mcaddon
 
             # Build metadata as JSON so the changelog is uploaded with preserved Markdown.
             printf "%s" "$RELEASE_BODY" > curseforge-changelog.md
