@@ -16,7 +16,7 @@ jobs:
       RP_SOURCE: "packs/RP"
       CF_PROJECT_ID: 1443661
       VERSION: ${{ github.event.release.tag_name }}
-      PACK_FILENAME: ${{ env.PROJECT_NAME }}-${{ env.VERSION }}.mcaddon
+      PACK_FILENAME: Nudge-${{ github.event.release.tag_name }}.mcaddon
 
     steps:
       - uses: actions/checkout@v4
