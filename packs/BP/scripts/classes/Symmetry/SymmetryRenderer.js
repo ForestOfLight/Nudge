@@ -25,7 +25,7 @@ export class SymmetryRenderer {
     drawMarker() {
         if (this.shape)
             this.shape.remove();
-        const dimensionLocation = Vector.from(this.location).subtract(new Vector(this.boxSize/2, 0, this.boxSize/2));
+        const dimensionLocation = this.location;
         dimensionLocation.dimension = this.dimension;
         const markerBox = new DebugBox(dimensionLocation);
         markerBox.bound = new Vector(this.boxSize, this.boxSize, this.boxSize);
