@@ -1,13 +1,13 @@
 import { debugDrawer, DebugBox, DebugLine } from "@minecraft/debug-utilities";
 import { CuboidRenderer } from "./CuboidRenderer";
-import { RGBColor } from "./RGBColor";
+import { RGBAColor } from "./RGBAColor";
 import { Vector } from "../../lib/Vector";
 
 export class StackingRenderer extends CuboidRenderer {
     selectionSize;
     cuboidShape;
     shapesOnFaces = [];
-    color = RGBColor.White;
+    color = RGBAColor.White;
 
     constructor(dimension, min, max, selectionSize) {
         super(dimension, min, max);
@@ -56,7 +56,7 @@ export class StackingRenderer extends CuboidRenderer {
             if (start.distance(end) === 0) continue;
             start.dimension = this.dimension;
             const line = new DebugLine(start, end);
-            line.color = RGBColor.LightGrey;
+            line.color = RGBAColor.LightGrey;
             this.shapesOnFaces.push(line);
             debugDrawer.addShape(line);
         }
