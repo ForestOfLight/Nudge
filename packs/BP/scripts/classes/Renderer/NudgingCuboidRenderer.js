@@ -3,7 +3,7 @@ import { Vector } from "../../lib/Vector";
 import { CuboidRenderer } from "./CuboidRenderer";
 import { BlockVolume } from "@minecraft/server";
 import { MirrorRotateRenderer } from "./MirrorRotateRenderer";
-import { RGBColor } from "./RGBColor";
+import { RGBAColor } from "./RGBAColor";
 
 export class NudgingCuboidRenderer extends CuboidRenderer {
     initialVolume;
@@ -100,19 +100,19 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
         if (isTouchingMin)
             line.color = this.getColorByAxis(startVertex, endVertex);
         else
-            line.color = RGBColor.White;
+            line.color = RGBAColor.White;
         return line;
     }
 
     getColorByAxis(startLocation, endLocation) {
         const span = endLocation.subtract(startLocation);
         if (span.x !== 0)
-            return RGBColor.Red;
+            return RGBAColor.Red;
         if (span.y !== 0)
-            return RGBColor.Green;
+            return RGBAColor.Green;
         if (span.z !== 0)
-            return RGBColor.Blue;
-        return RGBColor.White;
+            return RGBAColor.Blue;
+        return RGBAColor.White;
     }
 
     drawDirectionArrow() {

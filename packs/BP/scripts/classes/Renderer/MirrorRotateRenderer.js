@@ -1,7 +1,7 @@
 import { StructureMirrorAxis, StructureRotation } from "@minecraft/server";
 import { debugDrawer, DebugLine, DebugArrow } from "@minecraft/debug-utilities";
 import { Vector } from "../../lib/Vector";
-import { RGBColor } from "./RGBColor";
+import { RGBAColor } from "./RGBAColor";
 
 export class MirrorRotateRenderer {
     dimension;
@@ -72,7 +72,7 @@ export class MirrorRotateRenderer {
         shapes.forEach(shape => {
             shape.setLocation(shape.location);
             shape.endLocation = shape.endLocation;
-            shape.color = RGBColor.Red;
+            shape.color = RGBAColor.Red;
         });
         return shapes;
     }
@@ -89,7 +89,7 @@ export class MirrorRotateRenderer {
         shapes.forEach(shape => {
             shape.setLocation(shape.location);
             shape.endLocation = shape.endLocation;
-            shape.color = RGBColor.Blue;
+            shape.color = RGBAColor.Blue;
         });
         return shapes;
     }
@@ -127,7 +127,7 @@ export class MirrorRotateRenderer {
             shape.headLength = 0.3;
             shape.headRadius = 0.15;
             shape.headSegments = 8;
-            shape.color = RGBColor.Green;
+            shape.color = RGBAColor.Green;
         });
         return shapes;
     }

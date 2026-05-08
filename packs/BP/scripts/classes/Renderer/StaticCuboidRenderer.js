@@ -6,9 +6,9 @@ export class StaticCuboidRenderer extends CuboidRenderer {
     shape;
     color;
 
-    constructor(dimension, min, max, rgbColor) {
+    constructor(dimension, min, max, RGBAColor) {
         super(dimension, min, max);
-        this.color = rgbColor;
+        this.color = RGBAColor;
         this.drawCuboid();
     }
 
@@ -28,8 +28,8 @@ export class StaticCuboidRenderer extends CuboidRenderer {
         debugDrawer.addShape(boundingBox);
     }
 
-    setColor(rgb) {
-        this.color = rgb;
+    setColor(rgba) {
+        this.color = rgba;
         this.drawCuboid();
     }
 }
