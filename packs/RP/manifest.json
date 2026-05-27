@@ -16,7 +16,7 @@
     ],
     "dependencies": [
         {
-            "uuid": "f4114104-0e90-4211-a724-1bc9f274647f", // Nudge BP
+            "uuid": "f4114104-0e90-4211-a724-1bc9f274647f",
             "version": [1, 0, 3]
         }
     ],
