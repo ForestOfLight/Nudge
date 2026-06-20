@@ -99,3 +99,7 @@ If you're interested in contributing, feel free to open a pull request!
 ### Adding Translations
 
 Nudge currently only supports American English, but has translation capabilities. If you would like to contribute a translation, please join our Discord and reach out!
+
+## Donate
+
+If you appreciate my work here and would like to support the future development of my addons, please consider donating to me on [BuyMeACoffee](https://buymeacoffee.com/forestoflight). Your support is greatly appreciated!
