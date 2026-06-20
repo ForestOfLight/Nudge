@@ -6,7 +6,7 @@ system.beforeEvents.startup.subscribe((event) => {
         name: 'nudge:undo',
         description: 'nudge.command.undo',
         optionalParameters: [{ name: 'number', type: CustomCommandParamType.Integer }],
-        permissionLevel: CommandPermissionLevel.Admin
+        permissionLevel: CommandPermissionLevel.Any
     };
     event.customCommandRegistry.registerCommand(command, undoLastEdit);
 });

@@ -5,7 +5,6 @@ import { UnloadedVolumeError } from "../Errors/UnloadedVolumeError";
 
 export class Edit {
     dimension;
-    tickingAreas = [];
 
     constructor(dimension) {
         this.dimension = dimension;
