@@ -4,6 +4,7 @@ import { BuilderOptions } from '../Builders/BuilderOptions';
 import { naturalNudgingOption } from '../../options/NaturalNudgingOption';
 
 export class OptionsForm {
+    #title = 'nudge.menu.options';
     builder;
     options = [naturalNudgingOption];
 
@@ -15,7 +16,7 @@ export class OptionsForm {
     show() {
         const player = this.builder.getPlayer();
         const observables = [];
-        const title = new ObservableUIRawMessage({ translate: 'nudge.menu.options' });
+        const title = new ObservableUIRawMessage({ translate: this.#title });
         const form = new CustomForm(this.builder.getPlayer(), title);
         for (const option of this.options) {
             const observable = new ObservableBoolean(option.option.isEnabled(player.id), { clientWritable: true });

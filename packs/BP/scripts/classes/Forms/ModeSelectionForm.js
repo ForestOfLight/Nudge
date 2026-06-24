@@ -1,8 +1,9 @@
-import { ActionFormData } from '@minecraft/server-ui';
+import { ActionFormData, CustomForm } from '@minecraft/server-ui';
 import { forceShow } from '../../utils';
 import { EditModes } from '../Modes/EditModes';
 import { SymmetryForm } from './SymmetryForm';
 import { OptionsForm } from './OptionsForm';
+import { system } from '@minecraft/server';
 
 export class ModeSelectionForm {
     #title = 'nudge.menu.title';
@@ -14,50 +15,38 @@ export class ModeSelectionForm {
     }
 
     show() {
-        forceShow(this.builder.getPlayer(), this.buildForm()).then((response) => {
-            if (response.canceled)
-                return;
-            this.handleSelection(response.selection);
-        });
-    }
-
-    buildForm() {
-        const form = new ActionFormData()
-            .title({ translate: this.#title });
+        const player = this.builder.getPlayer();
+        const form = new CustomForm(player, { translate: this.#title });
         for (const modeData of Object.values(EditModes))
-            form.button(modeData.translatableString, 'textures/items/' + modeData.itemId.split(':')[1]);
-        form.button({ translate: 'nudge.menu.undo' }, 'textures/items/undo');
-        form.button({ translate: 'nudge.menu.redo' }, 'textures/items/redo');
-        if (this.builder.hasSymmetry())
-            form.button({ translate: 'nudge.menu.symmetry.modify' });
-        else
-            form.button({ translate: 'nudge.menu.symmetry.new' });
-        form.button({ translate: 'nudge.menu.options' });
-        return form;
-    }
-
-    handleSelection(selection) {
-        const numModes = Object.keys(EditModes).length;
-        if (selection < numModes) {
-            this.builder.setEditMode(selection);
-            return;
+            form.button({ translate: modeData.translatableString }, () => {
+                form.close();
+                this.builder.setEditMode(modeData.id);
+            });
+        form.button({ translate: 'nudge.menu.undo' }, () => this.builder.undo());
+        form.button({ translate: 'nudge.menu.redo' }, () => this.builder.redo());
+        if (this.builder.hasSymmetry()) {
+            form.button({ translate: 'nudge.menu.symmetry.modify' }, () => {
+                form.close();
+                system.run(() => {
+                    new SymmetryForm(this.builder);
+                });
+            });
+        } else {
+            form.button({ translate: 'nudge.menu.symmetry.new' }, () => {
+                form.close();
+                system.run(() => {
+                    new SymmetryForm(this.builder);
+                });
+            });
         }
-        selection -= numModes;
-        switch (selection) {
-            case 0:
-                this.builder.undo();
-                break;
-            case 1:
-                this.builder.redo();
-                break;
-            case 2:
-                new SymmetryForm(this.builder);
-                break;
-            case 3:
+        form.button({ translate: 'nudge.menu.options' }, () => {
+            form.close();
+            system.run(() => {
                 new OptionsForm(this.builder);
-                break;
-            default:
-                throw new Error('Undefined selection hit.');
-        }
+            });
+        });
+        form.show().catch(error => {
+            console.error(error);
+        });
     }
 }

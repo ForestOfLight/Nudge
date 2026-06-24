@@ -29,7 +29,6 @@ export class SymmetryForm {
             .catch(error => {
                 console.error(error);
             });
-
         this.handleToggleChanges(mirrorX, mirrorZ, rotate);
     }
 
