@@ -139,7 +139,11 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
 
     getArrowLocation() {
         const centerpoint = this.getCenterpoint();
-        const end = centerpoint.add(this.playerMovement.getMajorDirectionFacing().scale(3));
+        let end;
+        if (this.playerMovement.useSixDirectionMovement)
+            end = centerpoint.add(this.playerMovement.getSixDirectionFacing().scale(3));
+        else
+            end = centerpoint.add(this.playerMovement.getMajorDirectionFacing().scale(3));
         return { base: centerpoint, head: end };
     }
 
