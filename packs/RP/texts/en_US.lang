@@ -19,7 +19,8 @@ nudge.menu.deleteconnected=Magic Delete
 nudge.menu.extrude=Extrude
 nudge.menu.symmetry.new=Create Symmetry
 nudge.menu.symmetry.modify=Modify Symmetry
-nudge.menu.symmetry.remove=§cRemove Symmetry
+nudge.menu.symmetry.move=Move Symmetry Here
+nudge.menu.symmetry.remove=Remove Symmetry
 
 nudge.menu.symmetry.description=§aCreates a symmetry. Building will be mirrored within 256 blocks.
 nudge.menu.symmetry.location=§aSymmetry at %1 in %2

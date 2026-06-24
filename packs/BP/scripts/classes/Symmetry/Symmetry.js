@@ -22,11 +22,7 @@ export class Symmetry {
         this.builder = builder;
         const player = builder.getPlayer();
         this.dimension = player.dimension;
-        this.location = new Vector(
-            Math.round(player.location.x * 2) / 2,
-            Math.floor(player.location.y),
-            Math.round(player.location.z * 2) / 2
-        );
+        this.location = this.flattenLocation(player.location);
         this.mirrorAxis = mirrorAxis;
         this.rotation = rotation;
         this.render();
@@ -39,6 +35,11 @@ export class Symmetry {
     destroy() {
         this.renderer?.destroy();
         this.unsubscribeFromEvents();
+    }
+
+    move(location) {
+        this.location = this.flattenLocation(location);
+        this.render();
     }
 
     setMirrorAxis(mirrorAxis) {
@@ -136,5 +137,13 @@ export class Symmetry {
 
     isRotating() {
         return this.rotation === true;
+    }
+
+    flattenLocation(location) {
+        return new Vector(
+            Math.round(location.x * 2) / 2,
+            Math.floor(location.y),
+            Math.round(location.z * 2) / 2
+        );
     }
 }
