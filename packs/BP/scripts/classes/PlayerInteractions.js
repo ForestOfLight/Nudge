@@ -1,5 +1,5 @@
 import { EntityComponentTypes, system, HeldItemOption, EntitySwingSource } from "@minecraft/server";
-import { Builders } from "./Builders";
+import { Builders } from "./Builders/Builders";
 import { Feedback } from "./Feedback";
 import { world } from '@minecraft/server';
 import { playerChangeHotbarSlotEvent } from "../events/PlayerChangeHotbarSlotEvent";

@@ -1,5 +1,5 @@
 import { CustomForm, ObservableBoolean, ObservableUIRawMessage } from '@minecraft/server-ui';
-import { Symmetry } from './Symmetry';
+import { Symmetry } from '../Symmetry/Symmetry';
 import { StructureMirrorAxis } from '@minecraft/server';
 
 export class SymmetryForm {
@@ -15,7 +15,7 @@ export class SymmetryForm {
         const mirrorX = new ObservableBoolean(symmetry?.isMirroringX() || false, { clientWritable: true });
         const mirrorZ = new ObservableBoolean(symmetry?.isMirroringZ() || false, { clientWritable: true });
         const rotate = new ObservableBoolean(symmetry?.isRotating() || false, { clientWritable: true });
-        const title = new ObservableUIRawMessage({ translate: 'nudge.menu.symmetry' });
+        const title = new ObservableUIRawMessage({ translate: 'nudge.menu.symmetry.modify' });
         const form = new CustomForm(this.builder.getPlayer(), title)
             .label({ translate: 'nudge.menu.symmetry.description' })
             .spacer()

@@ -1,7 +1,8 @@
 import { ActionFormData } from '@minecraft/server-ui';
-import { forceShow } from '../utils';
-import { EditModes } from './Modes/EditModes';
-import { SymmetryForm } from './Symmetry/SymmetryForm';
+import { forceShow } from '../../utils';
+import { EditModes } from '../Modes/EditModes';
+import { SymmetryForm } from './SymmetryForm';
+import { OptionsForm } from './OptionsForm';
 
 export class ModeSelectionForm {
     #title = 'nudge.menu.title';
@@ -27,12 +28,11 @@ export class ModeSelectionForm {
             form.button(modeData.translatableString, 'textures/items/' + modeData.itemId.split(':')[1]);
         form.button({ translate: 'nudge.menu.undo' }, 'textures/items/undo');
         form.button({ translate: 'nudge.menu.redo' }, 'textures/items/redo');
-        if (this.builder.hasSymmetry()) {
+        if (this.builder.hasSymmetry())
             form.button({ translate: 'nudge.menu.symmetry.modify' });
-            form.button({ translate: 'nudge.menu.symmetry.remove' });
-        } else {
+        else
             form.button({ translate: 'nudge.menu.symmetry.new' });
-        }
+        form.button({ translate: 'nudge.menu.options' });
         return form;
     }
 
@@ -54,7 +54,7 @@ export class ModeSelectionForm {
                 new SymmetryForm(this.builder);
                 break;
             case 3:
-                this.builder.removeSymmetry();
+                new OptionsForm(this.builder);
                 break;
             default:
                 throw new Error('Undefined selection hit.');

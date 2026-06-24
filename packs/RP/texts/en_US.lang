@@ -19,14 +19,15 @@ nudge.menu.deleteconnected=Magic Delete
 nudge.menu.extrude=Extrude
 nudge.menu.symmetry.new=Create Symmetry
 nudge.menu.symmetry.modify=Modify Symmetry
-nudge.menu.symmetry.move=Move Symmetry Here
-nudge.menu.symmetry.remove=Remove Symmetry
+nudge.menu.options=Options
 
 nudge.menu.symmetry.description=§aCreates a symmetry. Building will be mirrored within 256 blocks.
 nudge.menu.symmetry.location=§aSymmetry at %1 in %2
-nudge.menu.symmetry.mirror.x=Mirror §cX
-nudge.menu.symmetry.mirror.z=Mirror §bZ
-nudge.menu.symmetry.mirror.xz=§8Mirror §cX§8 and §bZ
+nudge.menu.symmetry.mirror.x=Mirror X
+nudge.menu.symmetry.mirror.z=Mirror Z
+nudge.menu.symmetry.mirror.xz=Mirror X and Z
+nudge.menu.symmetry.move=Move Symmetry Here
+nudge.menu.symmetry.remove=Remove Symmetry
 nudge.menu.symmetry.rotate=Rotate
 
 ## Actionbar Tips
@@ -100,6 +101,10 @@ nudge.command.here=Starts, extends, or nudges your selection to your current loc
 nudge.command.here.holditem=§cPlease hold the §fNudge§c item to use this command.
 nudge.command.redo=Redo your last edit, or several.
 nudge.command.undo=Undo your last edit, or several.
+
+## Options
+nudge.option.naturalNudging=Natural Nudging
+nudge.option.naturalNudging.description=When enabled, vertical nudging will be controlled by jumping and sneaking. When disabled, vertical nudging will be controlled by the direction you face.
 
 ## Other
 nudge.missingicon.jump=Jump

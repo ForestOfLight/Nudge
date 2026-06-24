@@ -30,7 +30,7 @@ export class StackingRenderer extends CuboidRenderer {
     drawCuboid() {
         if (this.cuboidShape)
             this.cuboidShape.remove();
-        const dimensionLocation = Vector.from(this.blockVolume.getSpan()).multiply(0.5).add(this.blockVolume.getMin());
+        const dimensionLocation = Vector.from(this.blockVolume.getSpan()).scale(0.5).add(this.blockVolume.getMin());
         dimensionLocation.dimension = this.dimension;
         const boundingBox = new DebugBox(dimensionLocation);
         boundingBox.bound = this.blockVolume.getSpan();

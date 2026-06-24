@@ -1,17 +1,18 @@
-import { EntityComponentTypes, EquipmentSlot, GameMode, ItemStack, world } from "@minecraft/server";
-import { EditLog } from "./EditLog";
-import { EditModes } from "./Modes/EditModes";
-import { ModeSelectionForm } from "./ModeSelectionForm";
-import { Feedback } from "./Feedback";
-import { PlayerMovement } from "./PlayerMovement";
-import { PlayerInteractions } from "./PlayerInteractions";
+import { EntityComponentTypes, EquipmentSlot, GameMode, InputMode, ItemStack, world } from "@minecraft/server";
+import { EditLog } from "../EditLog";
+import { EditModes } from "../Modes/EditModes";
+import { ModeSelectionForm } from "../Forms/ModeSelectionForm";
+import { Feedback } from "../Feedback";
+import { BuilderMovement } from "./BuilderMovement";
+import { PlayerInteractions } from "../PlayerInteractions";
 
-import { MoveMode } from "./Modes/MoveMode";
-import { CloneMode } from "./Modes/CloneMode";
-import { StackMode } from "./Modes/StackMode";
-import { DeleteVolumeMode } from "./Modes/DeleteVolumeMode";
-import { DeleteConnectedMode } from "./Modes/DeleteConnectedMode";
-import { ExtrudeMode } from "./Modes/ExtrudeMode";
+import { MoveMode } from "../Modes/MoveMode";
+import { CloneMode } from "../Modes/CloneMode";
+import { StackMode } from "../Modes/StackMode";
+import { DeleteVolumeMode } from "../Modes/DeleteVolumeMode";
+import { DeleteConnectedMode } from "../Modes/DeleteConnectedMode";
+import { ExtrudeMode } from "../Modes/ExtrudeMode";
+import { BuilderOptions } from "./BuilderOptions";
 
 export class Builder {
     playerId;
@@ -25,6 +26,7 @@ export class Builder {
     constructor(playerId) {
         this.playerId = playerId;
         this.setEditModeByHeldItemId();
+        this.setNaturalNudgingOption();
         this.editLog = new EditLog();
     }
 
@@ -65,7 +67,7 @@ export class Builder {
 
     getPlayerMovement() {
         if (this.playerMovement === void 0)
-            this.playerMovement = new PlayerMovement(this.player);
+            this.playerMovement = new BuilderMovement(this.player);
         return this.playerMovement;
     }
 
@@ -238,5 +240,13 @@ export class Builder {
                 return true;
         }
         return false;
+    }
+
+    setNaturalNudgingOption() {
+        const playerMovement = this.getPlayerMovement();
+        if (playerMovement.getInputMode() === InputMode.Touch) {
+            playerMovement.useSixDirectionMovement = true;
+            BuilderOptions.setValue('naturalNudging', this.playerId, false);
+        }
     }
 }

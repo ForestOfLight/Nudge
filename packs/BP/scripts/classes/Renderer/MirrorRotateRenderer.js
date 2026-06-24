@@ -134,20 +134,20 @@ export class MirrorRotateRenderer {
 
     createCurvedLine(start, end, curveDistance = 1.25, segments = 8) {
         const lines = [];
-        const center = start.add(end).multiply(0.5);
+        const center = start.add(end).scale(0.5);
         const dir = start.subtract(center).normalized;
         const perp = new Vector(-dir.z, 0, dir.x).normalized;
-        const control = center.add(perp.multiply(curveDistance));
+        const control = center.add(perp.scale(curveDistance));
         for (let i = 0; i < segments; i++) {
             const t1 = i / segments;
             const t2 = (i + 1) / segments;
             // Quadratic Bezier curve: B(t) = (1-t)^2 * start + 2*(1-t)*t*control + t^2 * end
-            const p1 = start.multiply((1 - t1) * (1 - t1))
-                .add(control.multiply(2 * (1 - t1) * t1))
-                .add(end.multiply(t1 * t1));
-            const p2 = start.multiply((1 - t2) * (1 - t2))
-                .add(control.multiply(2 * (1 - t2) * t2))
-                .add(end.multiply(t2 * t2));
+            const p1 = start.scale((1 - t1) * (1 - t1))
+                .add(control.scale(2 * (1 - t1) * t1))
+                .add(end.scale(t1 * t1));
+            const p2 = start.scale((1 - t2) * (1 - t2))
+                .add(control.scale(2 * (1 - t2) * t2))
+                .add(end.scale(t2 * t2));
             p1.dimension = this.dimension;
             if (i === segments - 1)
                 lines.push(new DebugArrow(p1, p2));

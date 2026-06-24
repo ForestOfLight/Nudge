@@ -15,7 +15,7 @@ export class TickingAreaUtils {
     }
 
     static async loadChunkRadius(dimension, location, chunkRadius) {
-        const searchDistance = new Vector(chunkRadius, 0, chunkRadius).multiply(16);
+        const searchDistance = new Vector(chunkRadius, 0, chunkRadius).scale(16);
         const maxLoadLocation = Vector.from(location).add(searchDistance);
         const minLoadLocation = Vector.from(location).subtract(searchDistance);
         return await TickingAreaUtils.loadArea(dimension, maxLoadLocation, minLoadLocation);

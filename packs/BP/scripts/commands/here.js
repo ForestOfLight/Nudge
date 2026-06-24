@@ -1,6 +1,6 @@
 import { system, CommandPermissionLevel, CustomCommandStatus, Player, GameMode } from '@minecraft/server';
 import { PlayerInteractions } from '../classes/PlayerInteractions';
-import { Builders } from '../classes/Builders';
+import { Builders } from '../classes/Builders/Builders';
 import { Vector } from '../lib/Vector';
 
 system.beforeEvents.startup.subscribe((event) => {
