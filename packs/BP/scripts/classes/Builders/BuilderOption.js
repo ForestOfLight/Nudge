@@ -38,4 +38,8 @@ export class BuilderOption {
     save(playerId, value) {
         world.setDynamicProperty(`${this.#DP_NAMESPACE}:${playerId}:${this.identifier}`, value);
     }
+
+    isInitialized(playerId) {
+        return world.getDynamicProperty(`${this.#DP_NAMESPACE}:${playerId}:${this.identifier}`) !== void 0;
+    }
 }

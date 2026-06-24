@@ -10,18 +10,18 @@ export class NaturalNudgingOption {
             description: { translate: 'nudge.option.naturalNudging.description' },
             onEnableCallback: (playerId) => {
                 const builder = Builders.get(playerId);
-                builder.playerMovement.useSixDirectionMovement = false;
+                builder.getPlayerMovement().useSixDirectionMovement = false;
             },
             onDisableCallback: (playerId) => {
                 const builder = Builders.get(playerId);
-                builder.playerMovement.useSixDirectionMovement = true;
+                builder.getPlayerMovement().useSixDirectionMovement = true;
             }
         });
     }
 
     shouldDisableToggle(playerId) {
         const builder = Builders.get(playerId);
-        const playerMovement = builder.playerMovement;
+        const playerMovement = builder.getPlayerMovement();
         if (playerMovement.getInputMode() === InputMode.Touch)
             return true;
         return false;

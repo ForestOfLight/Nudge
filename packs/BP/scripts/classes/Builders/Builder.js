@@ -13,6 +13,7 @@ import { DeleteVolumeMode } from "../Modes/DeleteVolumeMode";
 import { DeleteConnectedMode } from "../Modes/DeleteConnectedMode";
 import { ExtrudeMode } from "../Modes/ExtrudeMode";
 import { BuilderOptions } from "./BuilderOptions";
+import { naturalNudgingOption } from "../../options/NaturalNudgingOption";
 
 export class Builder {
     playerId;
@@ -244,9 +245,10 @@ export class Builder {
 
     setNaturalNudgingOption() {
         const playerMovement = this.getPlayerMovement();
-        if (playerMovement.getInputMode() === InputMode.Touch) {
-            playerMovement.useSixDirectionMovement = true;
-            BuilderOptions.setValue('naturalNudging', this.playerId, false);
-        }
+        const naturalNudging = naturalNudgingOption.option;
+        if (playerMovement.getInputMode() === InputMode.Touch)
+            naturalNudging.setValue(this.playerId, false);
+        if (!naturalNudging.isInitialized(this.playerId))
+            naturalNudging.setValue(this.playerId, true);
     }
 }
