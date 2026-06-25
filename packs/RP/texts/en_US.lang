@@ -39,7 +39,8 @@ nudge.tip.freemove=§a%1 + %2 to move freely	## Insert string: jump icon, use ic
 nudge.tip.nudge.start=§a%s to nudge	## Insert string: use icon
 nudge.tip.nudge.resume=§a%s to resume nudge	## Insert string: use icon
 nudge.tip.nudge.cursor=§a%s to nudge to cursor	## Insert string: hit icon
-nudge.tip.nudge.mirrororrotate=§a%1 + %2 + %3 to mirror/rotate	## Insert string: sneak icon, jump icon, use icon
+nudge.tip.nudge.mirrororrotate.sixdirection=§a%1 / %2 + %3 to mirror/rotate	## Insert string: left icon, right icon, use icon
+nudge.tip.nudge.mirrororrotate.natural=§a%1 + %2 + %3 to mirror/rotate	## Insert string: sneak icon, jump icon, use icon
 
 nudge.tip.nudge.mirrororrotate.x=§7Mirroring across §cX
 nudge.tip.nudge.mirrororrotate.z=§7Mirroring across §bZ
@@ -111,3 +112,5 @@ nudge.missingicon.jump=Jump
 nudge.missingicon.sneak=Sneak
 nudge.missingicon.use=Use
 nudge.missingicon.hit=Hit
+nudge.missingicon.left=Left
+nudge.missingicon.right=Right

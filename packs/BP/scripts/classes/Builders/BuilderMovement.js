@@ -49,6 +49,14 @@ export class BuilderMovement {
         return Vector.from(this.inputInfo.getMovementVector());
     }
 
+    isPressingRight() {
+        return this.getMovementVector().x < 0;
+    }
+
+    isPressingLeft() {
+        return this.getMovementVector().x > 0;
+    }
+
     getMajorDirectionFacing() {
         const { x, z } = this.player.getViewDirection();
         const xzAngle = Math.atan2(z, x) * (180 / Math.PI);

@@ -9,6 +9,16 @@ export class NudgeableMode {
     selection;
     isNudging = false;
     nudger;
+    mirrorOrRotationQueue = [
+        StructureMirrorAxis.X,
+        StructureMirrorAxis.Z,
+        StructureMirrorAxis.XZ,
+        StructureRotation.Rotate90,
+        StructureRotation.Rotate180,
+        StructureRotation.Rotate270
+    ];
+    mirrorAxis = StructureMirrorAxis.None;
+    rotation = StructureRotation.None;
     
     constructor(builder) {
         this.builder = builder;
@@ -122,46 +132,62 @@ export class NudgeableMode {
         throw new Error('getFreeMovementFeedback() must be implemented.');
     }
 
-    mirrorOrRotate() {
-        const mirrorOrRotation = this.getNextMirrorOrRotation();
-        if (Object.values(StructureMirrorAxis).includes(mirrorOrRotation))
-            this.mirrorAxis = mirrorOrRotation;
+    mirrorOrRotate(getNext = true) {
+        const currentMirrorOrRotation = this.mirrorAxis !== StructureMirrorAxis.None ? this.mirrorAxis : this.rotation;
+        let newMirrorOrRotation;
+        if (getNext)
+            newMirrorOrRotation = this.#getNextMirrorOrRotation();
+        else
+            newMirrorOrRotation = this.#getPreviousMirrorOrRotation();
+        if (Object.values(StructureMirrorAxis).includes(newMirrorOrRotation))
+            this.mirrorAxis = newMirrorOrRotation;
         else
             this.mirrorAxis = StructureMirrorAxis.None;
-        if (Object.values(StructureRotation).includes(mirrorOrRotation))
-            this.rotation = mirrorOrRotation;
+        if (Object.values(StructureRotation).includes(newMirrorOrRotation))
+            this.rotation = newMirrorOrRotation;
         else
             this.rotation = StructureRotation.None;
         const selection = this.selection;
         selection.renderer.setMirrorAxis(this.mirrorAxis);
         selection.renderer.setRotation(this.rotation);
-        Feedback.send(this.player, this.getMirrorOrRotationFeedback(mirrorOrRotation));
+        Feedback.send(this.player, this.#getMirrorOrRotationFeedback(newMirrorOrRotation));
 
-        if (Object.values(StructureRotation).includes(mirrorOrRotation) || mirrorOrRotation === void 0) {
-            const { min, max } = selection.getBounds();
-            const nudgedMin = min.add(selection.minOffset);
-            const nudgedMax = max.add(selection.maxOffset);
-            const size = Vector.from(nudgedMax).subtract(nudgedMin);
-            selection.nudgeOffset(new Vector(), new Vector(size.z - size.x, 0, size.x - size.z));
-        }
+        if (this.#shouldFlipBounds90(currentMirrorOrRotation, newMirrorOrRotation))
+            this.#flipBounds90(selection);
     }
 
-    getNextMirrorOrRotation() {
-        const queue = [
-            StructureMirrorAxis.X,
-            StructureMirrorAxis.Z,
-            StructureMirrorAxis.XZ,
-            StructureRotation.Rotate90,
-            StructureRotation.Rotate180,
-            StructureRotation.Rotate270
-        ];
-        const currMirrorOrRotation = queue.findIndex(mirrorOrRotation => 
+    #getNextMirrorOrRotation() {
+        const currMirrorOrRotation = this.mirrorOrRotationQueue.findIndex(mirrorOrRotation => 
             mirrorOrRotation === this.mirrorAxis || mirrorOrRotation === this.rotation
         );
-        return queue[currMirrorOrRotation + 1];
+        if (currMirrorOrRotation === -1)
+            return this.mirrorOrRotationQueue[0];
+        return this.mirrorOrRotationQueue[currMirrorOrRotation + 1];
     }
 
-    getMirrorOrRotationFeedback(mirrorOrRotation) {
+    #getPreviousMirrorOrRotation() {
+        const currMirrorOrRotation = this.mirrorOrRotationQueue.findIndex(mirrorOrRotation => 
+            mirrorOrRotation === this.mirrorAxis || mirrorOrRotation === this.rotation
+        );
+        if (currMirrorOrRotation === -1)
+            return this.mirrorOrRotationQueue[this.mirrorOrRotationQueue.length - 1];
+        return this.mirrorOrRotationQueue[currMirrorOrRotation - 1];
+    }
+
+    #shouldFlipBounds90(currentMirrorOrRotation, newMirrorOrRotation) {
+        const nonZeroRotations = [ ...Object.values(StructureRotation) ].filter(rotation => rotation !== StructureRotation.None);
+        return nonZeroRotations.includes(newMirrorOrRotation) || (!nonZeroRotations.includes(newMirrorOrRotation) && nonZeroRotations.includes(currentMirrorOrRotation));
+    }
+
+    #flipBounds90(selection) {
+        const { min, max } = selection.getBounds();
+        const nudgedMin = min.add(selection.minOffset);
+        const nudgedMax = max.add(selection.maxOffset);
+        const size = Vector.from(nudgedMax).subtract(nudgedMin);
+        selection.nudgeOffset(new Vector(), new Vector(size.z - size.x, 0, size.x - size.z));
+    }
+
+    #getMirrorOrRotationFeedback(mirrorOrRotation) {
         switch (mirrorOrRotation) {
             case StructureMirrorAxis.X:
                 return { translate: 'nudge.tip.nudge.mirrororrotate.x' };

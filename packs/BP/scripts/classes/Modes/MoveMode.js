@@ -36,13 +36,25 @@ export class MoveMode extends NudgeableMode {
         if (this.isNudgingSuspended()) {
             this.unsuspendNudge();
         } else {
-            if (playerMovement.isSneaking())
+            if (this.#shouldMirrorOrRotateForward())
                 this.mirrorOrRotate();
+            else if (this.#shouldMirrorOrRotateBack())
+                this.mirrorOrRotate(false);
             else if (playerMovement.isJumping())
                 this.suspendNudge();
             else
                 this.confirmEdit();
         }
+    }
+
+    #shouldMirrorOrRotateForward() {
+        const playerMovement = this.builder.getPlayerMovement();
+        return (playerMovement.useSixDirectionMovement && playerMovement.isPressingRight()) || (!playerMovement.useSixDirectionMovement && playerMovement.isSneaking());
+    }
+
+    #shouldMirrorOrRotateBack() {
+        const playerMovement = this.builder.getPlayerMovement();
+        return playerMovement.useSixDirectionMovement && playerMovement.isPressingLeft();
     }
 
     startSelection(dimension, location) {
@@ -77,12 +89,17 @@ export class MoveMode extends NudgeableMode {
     }
 
     getStartNudgingFeedback() {
-        return { rawtext: [
+        const feedback = { rawtext: [
             { translate: 'nudge.tip.move.confirm', with: { rawtext: [Feedback.useIcon(this.player)] } }, { text: '\n' },
             { translate: 'nudge.tip.nudge.cursor', with: { rawtext: [Feedback.hitIcon(this.player)] } }, { text: '\n' },
-            { translate: 'nudge.tip.freemove', with: { rawtext: [Feedback.jumpIcon(this.player), Feedback.useIcon(this.player)] } }, { text: '\n' },
-            { translate: 'nudge.tip.nudge.mirrororrotate', with: { rawtext: [Feedback.sneakIcon(this.player), Feedback.jumpIcon(this.player), Feedback.useIcon(this.player)] } }
+            { translate: 'nudge.tip.freemove', with: { rawtext: [Feedback.jumpIcon(this.player), Feedback.useIcon(this.player)] } }, { text: '\n' }
         ]};
+        const playerMovement = this.builder.getPlayerMovement();
+        if (playerMovement.useSixDirectionMovement)
+            feedback.rawtext.push({ translate: 'nudge.tip.nudge.mirrororrotate.sixdirection', with: { rawtext: [Feedback.leftIcon(this.player), Feedback.rightIcon(this.player), Feedback.useIcon(this.player)] } });
+        else
+            feedback.rawtext.push({ translate: 'nudge.tip.nudge.mirrororrotate.natural', with: { rawtext: [Feedback.sneakIcon(this.player), Feedback.jumpIcon(this.player), Feedback.useIcon(this.player)] } });
+        return feedback;
     }
 
     getFreeMovementFeedback() {
