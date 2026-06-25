@@ -97,9 +97,8 @@ export class BuilderMovement {
     #getVelocityFromSixDirectionMovement() {
         const viewDir = this.getSixDirectionFacing();
         const forward = new Vector(viewDir.x, 0, viewDir.z);
-        const right = new Vector(forward.z, 0, -forward.x);
         const moveInput = this.getMovementVector();
-        const velocity = forward.scale(moveInput.y).add(right.scale(moveInput.x));
+        const velocity = forward.scale(moveInput.y);
         if (viewDir.y !== 0)
             velocity.y = Math.max(-0.7, Math.min(0.7, moveInput.y)) * viewDir.y;
         return velocity;
@@ -121,7 +120,7 @@ export class BuilderMovement {
     }
 
     onTick() {
-        if (this.getMovementVector().distance(Vector.zero) === 0 && !this.isSneaking() && !this.isJumping())
+        if (this.getVelocityFromMovement().length === 0)
             this.movementStartedTick = system.currentTick;
     }
 
