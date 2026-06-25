@@ -1,12 +1,13 @@
 import { ButtonState, InputButton, InputMode, InputPermissionCategory, system, TicksPerSecond } from "@minecraft/server";
 import { Vector } from "../../lib/Vector";
+import { naturalNudgingOption } from "../../options/NaturalNudgingOption";
 
 export class BuilderMovement {
     player;
     inputInfo;
     inputPermissions;
     movementStartedTick;
-    useSixDirectionMovement = false;
+    useSixDirectionMovement;
     runner = void 0;
 
     constructor(player) {
@@ -14,6 +15,7 @@ export class BuilderMovement {
         this.inputInfo = player.inputInfo;
         this.inputPermissions = player.inputPermissions;
         this.movementStartedTick = system.currentTick;
+        this.useSixDirectionMovement = !naturalNudgingOption.option.isEnabled(player.id);
         this.runner = system.runInterval(this.onTick.bind(this));
         this.unfreeze();
     }
