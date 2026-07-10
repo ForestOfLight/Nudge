@@ -21,10 +21,9 @@ export class BuilderMovement {
     }
 
     destroy() {
-        if (this.runner) {
+        if (this.runner !== void 0)
             system.clearRun(this.runner);
-            this.runner = void 0;
-        }
+        this.runner = void 0;
     }
 
     freeze() {
