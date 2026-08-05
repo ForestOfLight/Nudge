@@ -38,11 +38,6 @@ Nudge is a powerful creative building addon for Minecraft Bedrock Edition. Inspi
 
 Download the latest release of **Nudge** from the [Releases Page](https://github.com/ForestOfLight/Nudge/releases). Install it like any other addon, making sure the **Beta APIs** experiment is enabled.
 
-> [!IMPORTANT]
-> This addon will not work on Realms until Mojang enables support for the `@minecraft/debug-utilities` scripting module.
->
-> Using Nudge with Editor Mode will also cause Nudge not to render properly.
-
 ### Getting Started
 
 Once installed on a world:
