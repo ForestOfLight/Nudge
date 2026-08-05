@@ -63,7 +63,7 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
     getCenterpoint() {
         const min = Vector.from(this.blockVolume.getMin());
         const max = Vector.from(this.blockVolume.getMax());
-        const relativeCenterpoint = max.subtract(min).add(new Vector(1, 1, 1)).multiply(0.5);
+        const relativeCenterpoint = max.subtract(min).add(new Vector(1, 1, 1)).scale(0.5);
         return min.add(relativeCenterpoint);
     }
 
@@ -139,7 +139,11 @@ export class NudgingCuboidRenderer extends CuboidRenderer {
 
     getArrowLocation() {
         const centerpoint = this.getCenterpoint();
-        const end = centerpoint.add(this.playerMovement.getMajorDirectionFacing().multiply(3));
+        let end;
+        if (this.playerMovement.useSixDirectionMovement)
+            end = centerpoint.add(this.playerMovement.getSixDirectionFacing().scale(3));
+        else
+            end = centerpoint.add(this.playerMovement.getMajorDirectionFacing().scale(3));
         return { base: centerpoint, head: end };
     }
 

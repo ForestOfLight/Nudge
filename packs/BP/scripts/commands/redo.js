@@ -1,5 +1,5 @@
 import { system, CommandPermissionLevel, CustomCommandStatus, CustomCommandParamType, Player, GameMode } from '@minecraft/server';
-import { Builders } from '../classes/Builders';
+import { Builders } from '../classes/Builders/Builders';
 
 system.beforeEvents.startup.subscribe((event) => {
     const command = {

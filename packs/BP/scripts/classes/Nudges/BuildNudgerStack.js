@@ -1,4 +1,4 @@
-import { BlockVolume, TicksPerSecond } from "@minecraft/server";
+import { BlockVolume } from "@minecraft/server";
 import { Vector } from "../../lib/Vector";
 import { BuildNudger } from "./BuildNudger";
 import { StackingRenderer } from "../Renderer/StackingRenderer";
@@ -22,7 +22,8 @@ export class BuildNudgerStack extends BuildNudger {
     }
 
     getOffset() {
-        const velocity = this.getVelocityFromMovement();
+        let velocity = this.playerMovement.getVelocityFromMovement();
+        velocity = velocity.scale(this.movementSpeed);
         this.buildup.min = this.buildup.min.add(velocity);
         this.buildup.max = this.buildup.max.add(velocity);
 
@@ -34,25 +35,6 @@ export class BuildNudgerStack extends BuildNudger {
             this.refreshStackingRenderer(minOffset, maxOffset);
         }
         return { minOffset, maxOffset };
-    }
-
-    getVelocityFromMovement() {
-        const viewDir = this.playerMovement.getMajorDirectionFacing();
-        const forward = new Vector(viewDir.x, 0, viewDir.z);
-        const right = new Vector(forward.z, 0, -forward.x);
-        const moveInput = this.playerMovement.getMovementVector();
-        let velocity = forward.multiply(moveInput.y).add(right.multiply(moveInput.x));
-        if (this.playerMovement.isJumping())
-            velocity.y += 1;
-        if (this.playerMovement.isSneaking())
-            velocity.y -= 1;
-        return this.scaleByButtonHold(velocity).multiply(this.movementSpeed);
-    }
-
-    scaleByButtonHold(velocity) {
-        const elapsedTicks = this.playerMovement.getElapsedMovementTicks();
-        const scale = Math.min(Math.max(elapsedTicks / (2 * TicksPerSecond), 1), 4);
-        return velocity.multiply(scale);
     }
 
     clampToSize(vector) {

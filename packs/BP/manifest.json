@@ -1,11 +1,11 @@
 {
 	"format_version": 2,
 	"header": {
-		"name": "Nudge [BP] v1.0.4",
+		"name": "Nudge [BP] v1.0.5",
 		"description": "Creative building addon by §aForestOfLight§r.",
 		"uuid": "f4114104-0e90-4211-a724-1bc9f274647f",
 		"min_engine_version": [1, 26, 30],
-		"version": [1, 0, 4]
+		"version": [1, 0, 5]
 	},
 	"modules": [
 		{
@@ -26,11 +26,11 @@
 	"dependencies": [
 		{
 			"module_name": "@minecraft/server",
-			"version": "2.9.0-beta"
+			"version": "beta"
 		},
 		{
 			"module_name": "@minecraft/server-ui",
-			"version": "2.2.0-beta"
+			"version": "2.1.0"
 		},
 		{
 			"module_name": "@minecraft/debug-utilities",
@@ -38,7 +38,7 @@
 		},
 		{
 			"uuid": "b6345514-8cd9-4dfe-b329-58574f000f3c",
-			"version": [1, 0, 4]
+			"version": [1, 0, 5]
 		}
 	],
 	"metadata": {

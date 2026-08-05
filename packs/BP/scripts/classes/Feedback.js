@@ -48,4 +48,24 @@ export class Feedback {
                 return { translate: 'nudge.missingicon.hit' };
         }
     }
+
+    static leftIcon(player) {
+        const inputMode = player.inputInfo.lastInputModeUsed;
+        switch (inputMode) {
+            case InputMode.KeyboardAndMouse:
+            case InputMode.Touch:
+            default:
+                return { translate: 'nudge.missingicon.left' };
+        }
+    }
+
+    static rightIcon(player) {
+        const inputMode = player.inputInfo.lastInputModeUsed;
+        switch (inputMode) {
+            case InputMode.KeyboardAndMouse:
+            case InputMode.Touch:
+            default:
+                return { translate: 'nudge.missingicon.right' };
+        }
+    }
 }
