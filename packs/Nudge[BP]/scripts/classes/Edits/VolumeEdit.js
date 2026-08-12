@@ -1,5 +1,5 @@
 import { StructureRotation, BlockVolume } from "@minecraft/server";
-import { Edit } from "../Edits/Edit";
+import { Edit } from "./Edit";
 import { Vector } from "../../lib/Vector";
 import { VolumePartitioner } from "../VolumePartitioner";
 

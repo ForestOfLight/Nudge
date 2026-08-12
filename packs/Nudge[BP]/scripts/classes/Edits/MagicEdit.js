@@ -1,5 +1,5 @@
 import { ListBlockVolume } from "@minecraft/server";
-import { Edit } from "../Edits/Edit";
+import { Edit } from "./Edit";
 import { BlockBreadthFirstSearch } from "../BlockBreadthFirstSearch";
 import { Vector } from "../../lib/Vector";
 

@@ -3,8 +3,8 @@
 	"author": "ForestOfLight",
 	"name": "Nudge",
 	"packs": {
-		"behaviorPack": "./packs/BP",
-		"resourcePack": "./packs/RP"
+		"behaviorPack": "./packs/Nudge[BP]",
+		"resourcePack": "./packs/Nudge[RP]"
 	},
 	"regolith": {
 		"dataPath": "./packs/data",
