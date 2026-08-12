@@ -26,8 +26,11 @@ export class Builders {
     }
 
     static onLeave(playerId) {
-        this.get(playerId).onLeave();
-        this.remove(playerId);
+        try {
+            this.get(playerId)?.onLeave();
+        } finally {
+            this.remove(playerId);
+        }
     }
 }
 
@@ -40,7 +43,7 @@ world.beforeEvents.playerLeave.subscribe((event) => {
 world.afterEvents.worldLoad.subscribe(() => {
     for (const player of world.getAllPlayers()) {
         if (!player)
-            return;
+            continue;
         Builders.onJoin(player.id);
     }
 });

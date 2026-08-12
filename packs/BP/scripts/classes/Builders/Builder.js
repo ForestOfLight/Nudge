@@ -39,9 +39,9 @@ export class Builder {
 
     onLeave() {
         this.playerMovement?.destroy();
-        this.playerMovement = void 0;
         this.deselect();
         this.removeSymmetry();
+        this.playerMovement = void 0;
     }
 
     onUse() {
