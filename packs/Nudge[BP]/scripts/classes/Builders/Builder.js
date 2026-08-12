@@ -32,7 +32,7 @@ export class Builder {
     }
 
     getPlayer() {
-        if (this.player === void 0)
+        if (this.player?.isValid !== true)
             this.player = world.getEntity(this.playerId);
         return this.player;
     }
@@ -67,8 +67,8 @@ export class Builder {
     }
 
     getPlayerMovement() {
-        if (this.playerMovement === void 0)
-            this.playerMovement = new BuilderMovement(this.player);
+        if (this.playerMovement === void 0 || this.playerMovement.isDestroyed())
+            this.playerMovement = new BuilderMovement(this.playerId);
         return this.playerMovement;
     }
 
@@ -133,9 +133,12 @@ export class Builder {
     }
     
     replaceModeItemInHand(newEditMode) {
-        const equippable = this.player.getComponent(EntityComponentTypes.Equippable);
+        const player = this.getPlayer();
+        const equippable = player?.getComponent(EntityComponentTypes.Equippable);
+        if (!equippable)
+            return;
         const mainhandSlot = equippable.getEquipmentSlot(EquipmentSlot.Mainhand);
-        if (PlayerInteractions.isHoldingNudgeItem(this.player)) {
+        if (PlayerInteractions.isHoldingNudgeItem(player)) {
             const modeItemId = Object.values(EditModes).find(mode => mode.id === newEditMode)?.itemId;
             mainhandSlot.setItem(new ItemStack(modeItemId, 1));
             Feedback.send(this.getPlayer(), this.editMode.getHoldItemFeedback());

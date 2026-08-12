@@ -40,6 +40,9 @@ world.beforeEvents.playerLeave.subscribe((event) => {
         return;
     Builders.onLeave(event.player.id);
 });
+// Backstop for when the before-event is skipped because its player handle is
+// already gone, which would otherwise strand the builder and its runners.
+world.afterEvents.playerLeave.subscribe((event) => Builders.onLeave(event.playerId));
 world.afterEvents.worldLoad.subscribe(() => {
     for (const player of world.getAllPlayers()) {
         if (!player)

@@ -1,21 +1,21 @@
-import { ButtonState, InputButton, InputMode, InputPermissionCategory, system, TicksPerSecond } from "@minecraft/server";
+import { ButtonState, InputButton, InputMode, InputPermissionCategory, system, TicksPerSecond, world } from "@minecraft/server";
 import { Vector } from "../../lib/Vector";
 import { naturalNudgingOption } from "../../options/NaturalNudgingOption";
 
+const ticksWithoutPlayerBeforeStopping = TicksPerSecond;
+
 export class BuilderMovement {
-    player;
-    inputInfo;
-    inputPermissions;
+    playerId;
+    player = void 0;
     movementStartedTick;
     useSixDirectionMovement;
     runner = void 0;
+    #ticksWithoutPlayer = 0;
 
-    constructor(player) {
-        this.player = player;
-        this.inputInfo = player.inputInfo;
-        this.inputPermissions = player.inputPermissions;
+    constructor(playerId) {
+        this.playerId = playerId;
         this.movementStartedTick = system.currentTick;
-        this.useSixDirectionMovement = !naturalNudgingOption.option.isEnabled(player.id);
+        this.useSixDirectionMovement = !naturalNudgingOption.option.isEnabled(this.playerId);
         this.runner = system.runInterval(this.onTick.bind(this));
         this.unfreeze();
     }
@@ -24,28 +24,50 @@ export class BuilderMovement {
         if (this.runner !== void 0)
             system.clearRun(this.runner);
         this.runner = void 0;
+        this.player = void 0;
+    }
+
+    isDestroyed() {
+        return this.runner === void 0;
+    }
+
+    getPlayer() {
+        if (this.player?.isValid !== true)
+            this.player = world.getEntity(this.playerId);
+        return this.player;
+    }
+
+    get inputInfo() {
+        return this.getPlayer()?.inputInfo;
+    }
+
+    get inputPermissions() {
+        return this.getPlayer()?.inputPermissions;
     }
 
     freeze() {
-        this.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, false);
+        this.inputPermissions?.setPermissionCategory(InputPermissionCategory.Movement, false);
     }
 
     unfreeze() {
-        this.inputPermissions.setPermissionCategory(InputPermissionCategory.Movement, true);
+        this.inputPermissions?.setPermissionCategory(InputPermissionCategory.Movement, true);
     }
 
     isJumping() {
-        return this.inputInfo.getButtonState(InputButton.Jump) === ButtonState.Pressed;
+        return this.inputInfo?.getButtonState(InputButton.Jump) === ButtonState.Pressed;
     }
 
     isSneaking() {
-        if (this.inputInfo.lastInputModeUsed === InputMode.Touch)
-            return this.player.isSneaking;
-        return this.inputInfo.getButtonState(InputButton.Sneak) === ButtonState.Pressed;
+        const player = this.getPlayer();
+        if (player === void 0)
+            return false;
+        if (player.inputInfo.lastInputModeUsed === InputMode.Touch)
+            return player.isSneaking;
+        return player.inputInfo.getButtonState(InputButton.Sneak) === ButtonState.Pressed;
     }
 
     getMovementVector() {
-        return Vector.from(this.inputInfo.getMovementVector());
+        return Vector.from(this.inputInfo?.getMovementVector() ?? Vector.zero);
     }
 
     isPressingRight() {
@@ -56,8 +78,12 @@ export class BuilderMovement {
         return this.getMovementVector().x > 0;
     }
 
+    getViewDirection() {
+        return this.getPlayer()?.getViewDirection() ?? Vector.zero;
+    }
+
     getMajorDirectionFacing() {
-        const { x, z } = this.player.getViewDirection();
+        const { x, z } = this.getViewDirection();
         const xzAngle = Math.atan2(z, x) * (180 / Math.PI);
         if (xzAngle >= -45 && xzAngle < 45)
             return new Vector(1, 0, 0);
@@ -69,7 +95,7 @@ export class BuilderMovement {
     }
 
     getSixDirectionFacing() {
-        const { x, y, z } = this.player.getViewDirection();
+        const { x, y, z } = this.getViewDirection();
         const absX = Math.abs(x);
         const absY = Math.abs(y);
         const absZ = Math.abs(z);
@@ -121,7 +147,10 @@ export class BuilderMovement {
     }
 
     distance(vector) {
-        return Vector.distance(this.player.location, vector);
+        const location = this.getPlayer()?.location;
+        if (location === void 0)
+            return 0;
+        return Vector.distance(location, vector);
     }
 
     getElapsedMovementTicks() {
@@ -129,11 +158,22 @@ export class BuilderMovement {
     }
 
     onTick() {
+        if (this.getPlayer() === void 0) {
+            this.#onTickWithoutPlayer();
+            return;
+        }
+        this.#ticksWithoutPlayer = 0;
         if (this.getVelocityFromMovement().length === 0)
             this.movementStartedTick = system.currentTick;
     }
 
+    #onTickWithoutPlayer() {
+        this.#ticksWithoutPlayer++;
+        if (this.#ticksWithoutPlayer >= ticksWithoutPlayerBeforeStopping)
+            this.destroy();
+    }
+
     getInputMode() {
-        return this.inputInfo.lastInputModeUsed;
+        return this.inputInfo?.lastInputModeUsed;
     }
 }
