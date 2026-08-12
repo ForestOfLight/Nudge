@@ -1,4 +1,4 @@
-import { StructureRotation, BlockVolume } from "@minecraft/server";
+import { StructureMirrorAxis, StructureRotation, BlockVolume } from "@minecraft/server";
 import { Edit } from "./Edit";
 import { Vector } from "../../lib/Vector";
 import { VolumePartitioner } from "../VolumePartitioner";
@@ -43,20 +43,22 @@ export class VolumeEdit extends Edit {
     }
 
     pastePartitionedStructure(partitionedStructure, location, mirrorAxis = void 0, rotation = void 0) {
-        const size = Vector.from(partitionedStructure.blockVolume.getSpan()).subtract(new Vector(1, 1, 1));
+        const sourceVolume = partitionedStructure.blockVolume;
+        const size = Vector.from(sourceVolume.getSpan()).subtract(new Vector(1, 1, 1));
         const max = Vector.from(location).add(this.getRotatedSize(size, rotation));
         const blockVolume = new BlockVolume(location, max);
         this.assertInDimensionBounds(blockVolume.getMin(), blockVolume.getMax());
         this.assertFullyLoaded(blockVolume.getMin(), blockVolume.getMax());
         const structures = partitionedStructure.structures;
-        const structurePartitioner = new VolumePartitioner(blockVolume, MAX_STRUCTURE_SIZE);
+        const structurePartitioner = new VolumePartitioner(sourceVolume, MAX_STRUCTURE_SIZE);
         const partitions = structurePartitioner.getPartitions();
         if (structures.length !== partitions.length)
             throw new Error("Structures and partitions do not match.");
         for (let i = 0; i < structures.length; i++) {
             const structure = structures[i];
-            const partition = partitions[i];
-            this.pasteSingleStructure(structure, partition.getMin(), { mirror: mirrorAxis, rotation });
+            const partitionOffset = this.getTransformedPartitionOffset(partitions[i], sourceVolume, mirrorAxis, rotation);
+            const partitionLocation = Vector.from(location).add(partitionOffset);
+            this.pasteSingleStructure(structure, partitionLocation, { mirror: mirrorAxis, rotation });
         }
         this.replaceBlockInArea(location, max, 'minecraft:structure_void', 'minecraft:air');
     }
@@ -97,5 +99,41 @@ export class VolumeEdit extends Edit {
         if (rotation === StructureRotation.Rotate90 || rotation === StructureRotation.Rotate270)
             return new Vector(structureSize.z, structureSize.y, structureSize.x);
         return Vector.from(structureSize);
+    }
+
+    getTransformedPartitionOffset(partition, volume, mirrorAxis, rotation) {
+        const volumeMin = volume.getMin();
+        const volumeSize = volume.getSpan();
+        const [first, second] = [partition.getMin(), partition.getMax()]
+            .map(corner => Vector.from(corner).subtract(volumeMin))
+            .map(corner => this.getTransformedLocation(corner, volumeSize, mirrorAxis, rotation));
+        return new Vector(
+            Math.min(first.x, second.x),
+            Math.min(first.y, second.y),
+            Math.min(first.z, second.z)
+        );
+    }
+
+    getTransformedLocation(location, size, mirrorAxis, rotation) {
+        let x = location.x;
+        let z = location.z;
+        if (mirrorAxis === StructureMirrorAxis.X || mirrorAxis === StructureMirrorAxis.XZ)
+            z = size.z - 1 - z;
+        if (mirrorAxis === StructureMirrorAxis.Z || mirrorAxis === StructureMirrorAxis.XZ)
+            x = size.x - 1 - x;
+        switch (rotation) {
+            case StructureRotation.Rotate90:
+                [x, z] = [size.z - 1 - z, x];
+                break;
+            case StructureRotation.Rotate180:
+                [x, z] = [size.x - 1 - x, size.z - 1 - z];
+                break;
+            case StructureRotation.Rotate270:
+                [x, z] = [z, size.x - 1 - x];
+                break;
+            default:
+                break;
+        }
+        return new Vector(x, location.y, z);
     }
 }
