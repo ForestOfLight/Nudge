@@ -76,7 +76,7 @@ export class Selection {
     }
 
     setNudgeLocation(min) {
-        const size = this.getSize();
+        const size = this.getNudgedSize();
         const bounds = this.getBounds();
         const newMin = Vector.from(min);
         const newMax = newMin.add(size);
@@ -102,6 +102,11 @@ export class Selection {
     getSize() {
         const { min, max } = this.getBounds();
         return max.subtract(min);
+    }
+
+    getNudgedSize() {
+        const { min, max } = this.getBounds();
+        return max.add(this.maxOffset).floor().subtract(min.add(this.minOffset).floor());
     }
 
     updateRendererLocation() {
