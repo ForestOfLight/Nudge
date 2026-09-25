@@ -7,7 +7,9 @@ export class Builders {
     static add(playerId) {
         if (this.builders[playerId])
             return;
-        this.builders[playerId] = new Builder(playerId);
+        const builder = new Builder(playerId);
+        this.builders[playerId] = builder;
+        builder.initialize();
     }
 
     static remove(playerId) {

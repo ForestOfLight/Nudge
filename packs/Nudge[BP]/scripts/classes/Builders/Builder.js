@@ -26,9 +26,12 @@ export class Builder {
 
     constructor(playerId) {
         this.playerId = playerId;
+        this.editLog = new EditLog();
+    }
+
+    initialize() {
         this.setEditModeByHeldItemId();
         this.setNaturalNudgingOption();
-        this.editLog = new EditLog();
     }
 
     getPlayer() {
