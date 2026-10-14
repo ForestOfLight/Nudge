@@ -1,4 +1,4 @@
-import { StructureMirrorAxis, StructureRotation, BlockVolume } from "@minecraft/server";
+import { StructureMirrorAxis, StructureRotation, BlockVolume, BlockPermutation } from "@minecraft/server";
 import { Edit } from "./Edit";
 import { Vector } from "../../lib/Vector";
 import { VolumePartitioner } from "../VolumePartitioner";
@@ -31,14 +31,13 @@ export class VolumeEdit extends Edit {
         this.assertInDimensionBounds(min, max);
         this.assertFullyLoaded(min, max);
         const blockVolume = new BlockVolume(min, max);
-        this.replaceBlockInArea(min, max, 'minecraft:air', 'minecraft:structure_void');
         const structurePartitioner = new VolumePartitioner(blockVolume, MAX_STRUCTURE_SIZE);
         const structures = [];
         for (const partition of structurePartitioner.getPartitions()) {
             const structure = this.createSingleStructure(partition.getMin(), partition.getMax(), { includeEntities: true });
+            this.replaceBlockInStructure(structure, 'minecraft:air', 'minecraft:structure_void');
             structures.push(structure);
         }
-        this.replaceBlockInArea(min, max, 'minecraft:structure_void', 'minecraft:air');
         return { structures, blockVolume };
     }
 
@@ -93,6 +92,22 @@ export class VolumeEdit extends Edit {
         const blockFillOptions = { blockFilter: { includeTypes: [replaceBlock] } };
         for (const partition of fillPartitioner.getPartitions())
             this.dimension.fillBlocks(partition, newBlock, blockFillOptions);
+    }
+
+    replaceBlockInStructure(structure, replaceTypeId, newTypeId) {
+        const size = structure.size;
+        const permutation = newTypeId === 'minecraft:structure_void' ? void 0 : BlockPermutation.resolve(newTypeId);
+        if (replaceTypeId === 'minecraft:structure_void')
+            replaceTypeId = void 0;
+        for (let x = 0; x < size.x; x++) {
+            for (let y = 0; y < size.y; y++) {
+                for (let z = 0; z < size.z; z++) {
+                    const blockType = structure.getBlockPermutation({ x, y, z })?.type.id;
+                    if (blockType === replaceTypeId)
+                        structure.setBlockPermutation({ x, y, z }, permutation);
+                }
+            }
+        }
     }
 
     getRotatedSize(structureSize, rotation) {
