@@ -1,5 +1,4 @@
-import { ActionFormData, CustomForm } from '@minecraft/server-ui';
-import { forceShow } from '../../utils';
+import { CustomForm } from '@minecraft/server-ui';
 import { EditModes } from '../Modes/EditModes';
 import { SymmetryForm } from './SymmetryForm';
 import { OptionsForm } from './OptionsForm';

@@ -1,6 +1,4 @@
 import { CustomForm, ObservableBoolean, ObservableUIRawMessage } from '@minecraft/server-ui';
-import { StructureMirrorAxis } from '@minecraft/server';
-import { BuilderOptions } from '../Builders/BuilderOptions';
 import { naturalNudgingOption } from '../../options/NaturalNudgingOption';
 
 export class OptionsForm {
